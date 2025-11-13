@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\
 Infernal_Ink_Steel_Suite.manager
 none
 false
 DEBUG;TRACE
-C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\App.xaml
-1219584333
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\App.xaml
+4625120582
 
-6-451426193
-13-946294123
-MainWindow.xaml;
+171935763899
+1241084322928
+Login.xaml;Views\ClientsView.xaml;Views\DashboardWindow.xaml;Views\HomeView.xaml;
 
-True
+False
 
