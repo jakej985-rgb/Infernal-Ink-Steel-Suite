@@ -1,0 +1,15 @@
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\bin\Debug\Infernal-Ink-Steel-Suite.manager.exe.config
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\bin\Debug\Infernal-Ink-Steel-Suite.manager.exe
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\bin\Debug\Infernal-Ink-Steel-Suite.manager.pdb
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.csproj.AssemblyReference.cache
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\MainWindow.g.cs
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\App.g.cs
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager_MarkupCompile.cache
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager_MarkupCompile.lref
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\MainWindow.baml
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.g.resources
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal_Ink_Steel_Suite.manager.Properties.Resources.resources
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.csproj.GenerateResource.cache
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.csproj.CoreCompileInputs.cache
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.exe
+C:\Users\jakej\source\repos\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager.pdb
