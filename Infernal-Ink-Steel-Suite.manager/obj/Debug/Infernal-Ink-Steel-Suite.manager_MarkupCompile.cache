@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\App.xaml
-4327674174
+4625120582
 
-17-1344001517
+18-1065935775
 1241084322928
-MainWindow.xaml;Views\ClientsView.xaml;Views\DashboardWindow.xaml;Views\HomeView.xaml;
+Login.xaml;Views\ClientsView.xaml;Views\DashboardWindow.xaml;Views\HomeView.xaml;
 
-False
+True
 
