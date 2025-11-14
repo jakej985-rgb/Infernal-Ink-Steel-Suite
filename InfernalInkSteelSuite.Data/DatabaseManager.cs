@@ -48,6 +48,25 @@ namespace InfernalInkSteelSuite.Data
                     status TEXT NOT NULL DEFAULT 'Scheduled'
                 )";
             command.ExecuteNonQuery();
+
+            CreateClientsTable(connection);
+        }
+
+        private void CreateClientsTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS clients (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    firstName TEXT,
+                    middleName TEXT,
+                    lastName TEXT,
+                    phone TEXT,
+                    email TEXT,
+                    notes TEXT,
+                    visits INTEGER
+                )";
+            command.ExecuteNonQuery();
         }
 
         private void EnsureColumnsExist(SqliteConnection connection)
