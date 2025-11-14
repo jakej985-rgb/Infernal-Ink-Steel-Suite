@@ -50,6 +50,7 @@
     <Compile Include="UserRepository.cs" />
     <Compile Include="ClientRepository.cs" />
     <Compile Include="ShopSettingsRepository.cs" />
+    <Compile Include="DocumentRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj">
