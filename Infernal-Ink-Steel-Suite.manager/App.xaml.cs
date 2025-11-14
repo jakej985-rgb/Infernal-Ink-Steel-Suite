@@ -1,5 +1,6 @@
-﻿using System.Windows;
+using System.Windows;
 using InfernalInkSteelSuite.Data;
+using System;
 
 namespace InfernalInkSteelSuite
 {
@@ -9,7 +10,11 @@ namespace InfernalInkSteelSuite
         {
             base.OnStartup(e);
 
-            DatabaseTest.TestConnection(); // Just for now
+            var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
+            var connectionString = $"Data Source={dbPath}";
+
+            var databaseManager = new DatabaseManager(connectionString);
+            databaseManager.InitializeDatabase();
         }
     }
 }
