@@ -9,4 +9,3 @@ To use this "Core" package, also install a [SQLite binary package](https://www.n
 ### Getting support
 
 If you have a specific question about using these projects, we encourage you to [ask it on Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft.data.sqlite). If you encounter a bug or would like to request a feature, [submit an issue](https://github.com/dotnet/efcore/issues/new/choose). For more details, see [getting support](.github/SUPPORT.md).
-

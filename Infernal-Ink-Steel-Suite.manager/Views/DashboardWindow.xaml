@@ -1,35 +1,23 @@
-﻿<Window x:Class="InfernalInkSteelSuite.Views.DashboardWindow"
+<Window x:Class="InfernalInkSteelSuite.Views.DashboardWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Infernal Ink &amp; Steel Suite - Dashboard"
-        Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen"
-        Background="#111111">
+        Title="Dashboard" Height="720" Width="1280"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Sidebar -->
-        <StackPanel Background="#202020" Grid.Column="0">
-            <TextBlock Text="Infernal Ink &amp; Steel"
-                       FontSize="22"
-                       FontWeight="Bold"
-                       Foreground="#FF00FFFF"
-                       Margin="20,20,20,30" />
-
-            <Button Content="Home" Margin="10" Height="36" Click="Home_Click"/>
-            <Button Content="Clients" Margin="10" Height="36" Click="Clients_Click"/>
-            <Button Content="Appointments" Margin="10" Height="36" Click="Appointments_Click"/>
-            <Button Content="Quotes" Margin="10" Height="36" Click="Quotes_Click"/>
-            <Button Content="Documents" Margin="10" Height="36" Click="Documents_Click"/>
-            <Button Content="Settings" Margin="10" Height="36" Click="Settings_Click"/>
+        <StackPanel Grid.Column="0" Background="#2E2E2E">
+            <Button Content="Home" Click="Home_Click"/>
+            <Button Content="Clients" Click="Clients_Click"/>
+            <Button Content="Appointments" Click="Appointments_Click"/>
+            <Button Content="Quotes" Click="Quotes_Click"/>
+            <Button Content="Documents" Click="Documents_Click"/>
+            <Button Content="Settings" Click="Settings_Click"/>
         </StackPanel>
 
-        <!-- Main content -->
-        <ContentControl x:Name="MainContent"
-                        Grid.Column="1"
-                        Margin="10" />
+        <ContentControl Grid.Column="1" x:Name="MainContent"/>
     </Grid>
 </Window>

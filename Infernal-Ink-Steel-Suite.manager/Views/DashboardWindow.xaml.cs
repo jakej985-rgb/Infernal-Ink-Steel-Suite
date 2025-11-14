@@ -1,11 +1,14 @@
-﻿using System.Windows;
+using System.Windows;
 
 namespace InfernalInkSteelSuite.Views
 {
     public partial class DashboardWindow : Window
     {
-        public DashboardWindow()
+        private readonly string _connectionString;
+
+        public DashboardWindow(string connectionString)
         {
+            _connectionString = connectionString;
             InitializeComponent();
             MainContent.Content = new HomeView();
         }
@@ -17,7 +20,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ClientsView();
+            MainContent.Content = new ClientsView(_connectionString);
         }
 
         private void Appointments_Click(object sender, RoutedEventArgs e)

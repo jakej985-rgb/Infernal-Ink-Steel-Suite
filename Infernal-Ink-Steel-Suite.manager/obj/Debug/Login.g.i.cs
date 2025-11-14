@@ -156,7 +156,7 @@ namespace InfernalInkSteelSuite {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite.manager;component/login.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/InfernalInkSteelSuite;component/login.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\Login.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
