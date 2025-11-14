@@ -1,59 +1,103 @@
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
-using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Domain;
+using Microsoft.Data.Sqlite;
+using System;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
-        public List<User> GetAllUsers()
+        private readonly string _connectionString;
+
+        public UserRepository(string connectionString)
         {
-            var users = new List<User>();
-            using (var connection = Database.CreateConnection())
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, username, password_hash, role FROM users";
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        users.Add(new User
-                        {
-                            Id = reader.GetInt32(0),
-                            Username = reader.GetString(1),
-                            PasswordHash = reader.GetString(2),
-                            Role = reader.GetString(3)
-                        });
-                    }
-                }
-            }
-            return users;
+            _connectionString = connectionString;
         }
 
-        public User GetUserByUsername(string username)
+        public User GetUserById(int userId)
         {
-            User user = null;
-            using (var connection = Database.CreateConnection())
+            using (var connection = new SqliteConnection(_connectionString))
             {
+                connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, username, password_hash, role FROM users WHERE username = $username";
-                command.Parameters.AddWithValue("$username", username);
+                command.CommandText = "SELECT * FROM users WHERE id = @id";
+                command.Parameters.AddWithValue("@id", userId);
+
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        user = new User
+                        return new User
                         {
                             Id = reader.GetInt32(0),
                             Username = reader.GetString(1),
                             PasswordHash = reader.GetString(2),
-                            Role = reader.GetString(3)
+                            Role = reader.GetString(3),
+                            AvatarPath = reader.GetString(4),
+                            CreatedAt = reader.GetDateTime(5),
+                            UpdatedAt = reader.GetDateTime(6)
                         };
                     }
                 }
             }
-            return user;
+            return null;
+        }
+
+        public bool AddUser(User user)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+                    INSERT INTO users (username, passwordHash, role, avatarPath, createdAt, updatedAt)
+                    VALUES (@username, @passwordHash, @role, @avatarPath, @createdAt, @updatedAt)";
+                command.Parameters.AddWithValue("@username", user.Username);
+                command.Parameters.AddWithValue("@passwordHash", user.PasswordHash);
+                command.Parameters.AddWithValue("@role", user.Role);
+                command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
+                command.Parameters.AddWithValue("@createdAt", user.CreatedAt);
+                command.Parameters.AddWithValue("@updatedAt", user.UpdatedAt);
+
+                return command.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool UpdateUser(User user)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+                    UPDATE users
+                    SET username = @username,
+                        passwordHash = @passwordHash,
+                        role = @role,
+                        avatarPath = @avatarPath,
+                        updatedAt = @updatedAt
+                    WHERE id = @id";
+                command.Parameters.AddWithValue("@username", user.Username);
+                command.Parameters.AddWithValue("@passwordHash", user.PasswordHash);
+                command.Parameters.AddWithValue("@role", user.Role);
+                command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@id", user.Id);
+
+                return command.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool DeleteUser(int userId)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "DELETE FROM users WHERE id = @id";
+                command.Parameters.AddWithValue("@id", userId);
+
+                return command.ExecuteNonQuery() > 0;
+            }
         }
     }
 }
