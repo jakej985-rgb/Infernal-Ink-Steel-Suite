@@ -13,11 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Infernal_Ink_Steel_Suite.manager.Views
+namespace InfernalInkSteelSuite.Views
 {
-    /// <summary>
-    /// Interaction logic for HomeView.xaml
-    /// </summary>
     public partial class HomeView : Page
     {
         public HomeView()
