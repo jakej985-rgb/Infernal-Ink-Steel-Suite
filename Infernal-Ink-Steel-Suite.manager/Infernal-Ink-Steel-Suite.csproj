@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4F13DE96-BF67-401B-B6A6-3D43DEF95691}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Infernal_Ink_Steel_Suite.manager</RootNamespace>
-    <AssemblyName>Infernal-Ink-Steel-Suite.manager</AssemblyName>
+    <RootNamespace>InfernalInkSteelSuite</RootNamespace>
+    <AssemblyName>InfernalInkSteelSuite</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -74,6 +74,14 @@
       <Project>{a8b220b6-662c-45a5-9260-3135c7a52223}</Project>
       <Name>InfernalInkSteelSuite.Repositories</Name>
     </ProjectReference>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj">
+      <Project>{a5e689e6-562d-4c94-9113-2ba6e8e6f52b}</Project>
+      <Name>InfernalInkSteelSuite.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj">
+      <Project>{b6e689e6-562d-4c94-9113-2ba6e8e6f52b}</Project>
+      <Name>InfernalInkSteelSuite.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -99,13 +107,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Data\DatabaseTest.cs" />
-    <Compile Include="Data\Database.cs" />
-    <Compile Include="Domain\Appointment.cs" />
-    <Compile Include="Domain\#Document.cs" />
-    <Compile Include="Domain\ShopSettings.cs" />
-    <Compile Include="Domain\User.cs" />
-    <Compile Include="Domain\Client.cs" />
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -145,6 +146,7 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <CustomToolNamespace>InfernalInkSteelSuite.Properties</CustomToolNamespace>
     </None>
   </ItemGroup>
   <ItemGroup>
