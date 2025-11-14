@@ -8,12 +8,13 @@ namespace InfernalInkSteelSuite.Views
 {
     public partial class ClientsView : UserControl
     {
-        private readonly ClientRepository _clientRepo = new ClientRepository();
+        private readonly ClientRepository _clientRepo;
         public ObservableCollection<Client> Clients { get; } = new ObservableCollection<Client>();
 
-        public ClientsView()
+        public ClientsView(string connectionString)
         {
             InitializeComponent();
+            _clientRepo = new ClientRepository(connectionString);
             LoadClients();
             ClientsGrid.ItemsSource = Clients;
         }
