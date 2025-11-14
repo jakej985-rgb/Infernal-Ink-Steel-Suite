@@ -1,0 +1,2 @@
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\obj\Debug\InfernalInkSteelSuite.Repositories.csproj.AssemblyReference.cache
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\obj\Debug\InfernalInkSteelSuite.Repositories.csproj.CoreCompileInputs.cache
