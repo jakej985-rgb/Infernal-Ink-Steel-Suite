@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infernal_Ink_Steel_Suite.manager.Domain
+namespace InfernalInkSteelSuite.Domain
 {
-    internal class ShopSettings
+    public class ShopSettings
     {
+        public string ShopName { get; set; } = "";
+        public string LoginHeadline { get; set; } = "";
+        public string LoginTagline { get; set; } = "";
+        public string AccentColor { get; set; } = "";
+        public string LoginBackgroundPath { get; set; } = "";
     }
 }
