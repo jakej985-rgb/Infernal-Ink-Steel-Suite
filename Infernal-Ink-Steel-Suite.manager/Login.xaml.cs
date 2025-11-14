@@ -97,7 +97,7 @@ namespace InfernalInkSteelSuite
         private void ShowUserSelected(User user)
         {
             _currentUser = user;
-            AvatarLabel.Initials = user.Username.Substring(0, 1).ToUpper();
+            AvatarInitials.Text = user.Username.Substring(0, 1).ToUpper();
             SelectedUserLabel.Text = user.Username;
             PasswordEdit.Clear();
             PasswordTextBox.Clear();

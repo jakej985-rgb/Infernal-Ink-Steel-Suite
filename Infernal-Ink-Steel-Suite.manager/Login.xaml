@@ -30,7 +30,7 @@
                     <!-- Replace GlowAvatar with a simple Ellipse and TextBlock for initials -->
                     <Grid HorizontalAlignment="Center" Width="140" Height="140">
                         <Ellipse Fill="#444" Stroke="#888" StrokeThickness="4"/>
-                        <TextBlock Text="U" FontSize="64" FontWeight="Bold" Foreground="White" 
+                        <TextBlock x:Name="AvatarInitials" Text="U" FontSize="64" FontWeight="Bold" Foreground="White"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                     <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,12,0,0"
