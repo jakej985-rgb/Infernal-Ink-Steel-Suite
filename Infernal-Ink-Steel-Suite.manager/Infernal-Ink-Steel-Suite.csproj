@@ -70,6 +70,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj">
+      <Project>{a8b220b6-662c-45a5-9260-3135c7a52223}</Project>
+      <Name>InfernalInkSteelSuite.Repositories</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,7 +83,6 @@
     <Compile Include="Controls\GlowAvatar.cs" />
     <Compile Include="Controls\NeonButton.cs" />
     <Compile Include="Repositories\ClientRepository.cs" />
-    <Compile Include="Repositories\ShopSettingsRepository.cs" />
     <Compile Include="Views\ClientsView.xaml.cs">
       <DependentUpon>ClientsView.xaml</DependentUpon>
     </Compile>
