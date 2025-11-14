@@ -50,5 +50,15 @@
     <Compile Include="ClientRepository.cs" />
     <Compile Include="ShopSettingsRepository.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj">
+      <Project>{a5e689e6-562d-4c94-9113-2ba6e8e6f52b}</Project>
+      <Name>InfernalInkSteelSuite.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj">
+      <Project>{b6e689e6-562d-4c94-9113-2ba6e8e6f52b}</Project>
+      <Name>InfernalInkSteelSuite.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
