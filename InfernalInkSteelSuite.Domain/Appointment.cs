@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace InfernalInkSteelSuite.Domain
 {
@@ -6,10 +6,16 @@ namespace InfernalInkSteelSuite.Domain
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public DateTime StartTime { get; set; }
+        public int UserId { get; set; }
+        public DateTime DateTime { get; set; }
         public int DurationMinutes { get; set; }
-        public decimal Price { get; set; }
-        public string Status { get; set; } = "";
+        public string ServiceType { get; set; } = "";
+        public string ServiceCategory { get; set; } = "";
+        public string PriceType { get; set; } = "";
+        public decimal PriceCharged { get; set; }
         public string Notes { get; set; } = "";
+        public string ClientName { get; set; } = "";
+        public string Color { get; set; } = "";
+        public string Status { get; set; } = "Scheduled";
     }
 }
