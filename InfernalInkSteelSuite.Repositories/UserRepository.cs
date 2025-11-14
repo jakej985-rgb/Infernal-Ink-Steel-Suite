@@ -51,6 +51,20 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
+        public string GetUsernameById(int userId)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT username FROM users WHERE id = @id";
+                command.Parameters.AddWithValue("@id", userId);
+
+                var result = command.ExecuteScalar();
+                return result?.ToString();
+            }
+        }
+
         public bool AddUser(User user)
         {
             using (var connection = new SqliteConnection(_connectionString))

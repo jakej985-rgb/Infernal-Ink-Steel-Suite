@@ -50,6 +50,22 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
 
             CreateClientsTable(connection);
+            CreateDocumentsTable(connection);
+        }
+
+        private void CreateDocumentsTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS documents (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    userId INTEGER,
+                    clientId INTEGER,
+                    title TEXT,
+                    filePath TEXT,
+                    createdAt TEXT
+                )";
+            command.ExecuteNonQuery();
         }
 
         private void CreateClientsTable(SqliteConnection connection)

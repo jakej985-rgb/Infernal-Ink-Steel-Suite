@@ -6,17 +6,25 @@ using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class ClientRepository
+    public class ClientRepository : IClientRepository
     {
+        private readonly string _connectionString;
+
+        public ClientRepository(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
         public Client Get(int id)
         {
-            using (var conn = Database.CreateConnection())
-            using (var cmd = conn.CreateCommand())
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                cmd.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients WHERE id = $id;";
-                cmd.Parameters.AddWithValue("$id", id);
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients WHERE id = $id;";
+                command.Parameters.AddWithValue("$id", id);
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
@@ -41,12 +49,13 @@ namespace InfernalInkSteelSuite.Repositories
         {
             var result = new List<Client>();
 
-            using (var conn = Database.CreateConnection())
-            using (var cmd = conn.CreateCommand())
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                cmd.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients ORDER BY firstName, lastName;";
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients ORDER BY firstName, lastName;";
 
-                using (var reader = cmd.ExecuteReader())
+                using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
@@ -71,34 +80,36 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Insert(Client client)
         {
-            using (var conn = Database.CreateConnection())
-            using (var cmd = conn.CreateCommand())
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                cmd.CommandText =
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText =
                     @"INSERT INTO clients (firstName, middleName, lastName, phone, email, notes, visits)
                       VALUES ($firstName, $middleName, $lastName, $phone, $email, $notes, $visits);";
 
-                cmd.Parameters.AddWithValue("$firstName", client.FirstName);
-                cmd.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("$lastName", client.LastName);
-                cmd.Parameters.AddWithValue("$phone", client.Phone);
-                cmd.Parameters.AddWithValue("$email", client.Email);
-                cmd.Parameters.AddWithValue("$notes", client.Notes);
-                cmd.Parameters.AddWithValue("$visits", client.Visits);
+                command.Parameters.AddWithValue("$firstName", client.FirstName);
+                command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
+                command.Parameters.AddWithValue("$lastName", client.LastName);
+                command.Parameters.AddWithValue("$phone", client.Phone);
+                command.Parameters.AddWithValue("$email", client.Email);
+                command.Parameters.AddWithValue("$notes", client.Notes);
+                command.Parameters.AddWithValue("$visits", client.Visits);
 
-                cmd.ExecuteNonQuery();
+                command.ExecuteNonQuery();
 
-                cmd.CommandText = "SELECT last_insert_rowid();";
-                client.Id = Convert.ToInt32(cmd.ExecuteScalar());
+                command.CommandText = "SELECT last_insert_rowid();";
+                client.Id = Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
         public void Update(Client client)
         {
-            using (var conn = Database.CreateConnection())
-            using (var cmd = conn.CreateCommand())
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                cmd.CommandText =
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText =
                     @"UPDATE clients
                       SET firstName = $firstName,
                           middleName = $middleName,
@@ -109,28 +120,81 @@ namespace InfernalInkSteelSuite.Repositories
                           visits = $visits
                       WHERE id = $id;";
 
-                cmd.Parameters.AddWithValue("$firstName", client.FirstName);
-                cmd.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("$lastName", client.LastName);
-                cmd.Parameters.AddWithValue("$phone", client.Phone);
-                cmd.Parameters.AddWithValue("$email", client.Email);
-                cmd.Parameters.AddWithValue("$notes", client.Notes);
-                cmd.Parameters.AddWithValue("$visits", client.Visits);
-                cmd.Parameters.AddWithValue("$id", client.Id);
+                command.Parameters.AddWithValue("$firstName", client.FirstName);
+                command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
+                command.Parameters.AddWithValue("$lastName", client.LastName);
+                command.Parameters.AddWithValue("$phone", client.Phone);
+                command.Parameters.AddWithValue("$email", client.Email);
+                command.Parameters.AddWithValue("$notes", client.Notes);
+                command.Parameters.AddWithValue("$visits", client.Visits);
+                command.Parameters.AddWithValue("$id", client.Id);
 
-                cmd.ExecuteNonQuery();
+                command.ExecuteNonQuery();
             }
         }
 
         public void Delete(int id)
         {
-            using (var conn = Database.CreateConnection())
-            using (var cmd = conn.CreateCommand())
+            using (var connection = new SqliteConnection(_connectionString))
             {
-                cmd.CommandText = "DELETE FROM clients WHERE id = $id;";
-                cmd.Parameters.AddWithValue("$id", id);
-                cmd.ExecuteNonQuery();
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "DELETE FROM clients WHERE id = $id;";
+                command.Parameters.AddWithValue("$id", id);
+                command.ExecuteNonQuery();
             }
+        }
+
+        public string GetClientNameById(int clientId)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT firstName, middleName, lastName FROM clients WHERE id = $id";
+                command.Parameters.AddWithValue("$id", clientId);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        var parts = new List<string>();
+                        if (!reader.IsDBNull(0)) parts.Add(reader.GetString(0));
+                        if (!reader.IsDBNull(1)) parts.Add(reader.GetString(1));
+                        if (!reader.IsDBNull(2)) parts.Add(reader.GetString(2));
+                        return string.Join(" ", parts);
+                    }
+                }
+            }
+            return null;
+        }
+
+        public int GetClientIdByName(string name)
+        {
+            var normalizedName = name.Trim().ToLower();
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "SELECT id, firstName, middleName, lastName FROM clients";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var parts = new List<string>();
+                        if (!reader.IsDBNull(1)) parts.Add(reader.GetString(1));
+                        if (!reader.IsDBNull(2)) parts.Add(reader.GetString(2));
+                        if (!reader.IsDBNull(3)) parts.Add(reader.GetString(3));
+                        var clientName = string.Join(" ", parts).Trim().ToLower();
+                        if (clientName == normalizedName)
+                        {
+                            return reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return 0;
         }
     }
 }
