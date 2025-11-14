@@ -20,11 +20,11 @@ namespace InfernalInkSteelSuite
         private readonly ShopSettingsRepository _settingsRepository;
         private User _currentUser;
 
-        public Login()
+        public Login(string connectionString)
         {
             InitializeComponent();
-            _userRepository = new UserRepository();
-            _settingsRepository = new ShopSettingsRepository();
+            _userRepository = new UserRepository(connectionString);
+            _settingsRepository = new ShopSettingsRepository(connectionString);
             BuildUserGrid();
             ApplyBranding();
         }
@@ -97,7 +97,7 @@ namespace InfernalInkSteelSuite
         private void ShowUserSelected(User user)
         {
             _currentUser = user;
-            AvatarLabel.Initials = user.Username.Substring(0, 1).ToUpper();
+            AvatarInitials.Text = user.Username.Substring(0, 1).ToUpper();
             SelectedUserLabel.Text = user.Username;
             PasswordEdit.Clear();
             PasswordTextBox.Clear();

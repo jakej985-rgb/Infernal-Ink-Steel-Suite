@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace InfernalInkSteelSuite.manager.Views
+namespace InfernalInkSteelSuite.Views
 {
     public partial class SettingsView : UserControl
     {
