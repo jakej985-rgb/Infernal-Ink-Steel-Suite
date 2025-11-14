@@ -50,6 +50,7 @@
     <Compile Include="IClientRepository.cs" />
     <Compile Include="IDocumentRepository.cs" />
     <Compile Include="IUserRepository.cs" />
+    <Compile Include="IShopSettingsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShopSettingsRepository.cs" />
     <Compile Include="AppointmentRepository.cs" />
