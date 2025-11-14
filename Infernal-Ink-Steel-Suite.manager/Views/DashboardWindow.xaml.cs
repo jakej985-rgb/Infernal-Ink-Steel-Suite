@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using InfernalInkSteelSuite.Views;
+using System.Windows;
 
 namespace InfernalInkSteelSuite.Views
 {
