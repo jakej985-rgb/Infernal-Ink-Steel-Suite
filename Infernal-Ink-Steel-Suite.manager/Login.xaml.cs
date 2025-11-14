@@ -19,10 +19,12 @@ namespace InfernalInkSteelSuite
         private readonly UserRepository _userRepository;
         private readonly ShopSettingsRepository _settingsRepository;
         private User _currentUser;
+        private readonly string _connectionString;
 
         public Login(string connectionString)
         {
             InitializeComponent();
+            _connectionString = connectionString;
             _userRepository = new UserRepository(connectionString);
             _settingsRepository = new ShopSettingsRepository(connectionString);
             BuildUserGrid();
@@ -129,7 +131,7 @@ namespace InfernalInkSteelSuite
                 return;
             }
 
-            var dashboard = new DashboardWindow();
+            var dashboard = new DashboardWindow(_connectionString);
             dashboard.Show();
             Close();
         }
