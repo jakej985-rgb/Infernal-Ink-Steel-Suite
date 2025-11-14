@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernal-Ink-Steel-Suite", "Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.csproj", "{4F13DE96-BF67-401B-B6A6-3D43DEF95691}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite", "Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.csproj", "{4F13DE96-BF67-401B-B6A6-3D43DEF95691}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
