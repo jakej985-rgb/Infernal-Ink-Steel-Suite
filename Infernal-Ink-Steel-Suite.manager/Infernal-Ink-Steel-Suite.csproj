@@ -77,6 +77,7 @@
     <Compile Include="Controls\GlowAvatar.cs" />
     <Compile Include="Controls\NeonButton.cs" />
     <Compile Include="Repositories\ClientRepository.cs" />
+    <Compile Include="Repositories\ShopSettingsRepository.cs" />
     <Compile Include="Views\ClientsView.xaml.cs">
       <DependentUpon>ClientsView.xaml</DependentUpon>
     </Compile>
