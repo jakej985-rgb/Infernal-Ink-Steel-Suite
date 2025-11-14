@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 
 namespace InfernalInkSteelSuite.Views
 {
-    public partial class HomeView : Page
+    public partial class HomeView : UserControl
     {
         public HomeView()
         {
