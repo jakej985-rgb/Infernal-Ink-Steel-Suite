@@ -15,6 +15,9 @@ namespace InfernalInkSteelSuite
 
             var databaseManager = new DatabaseManager(connectionString);
             databaseManager.InitializeDatabase();
+
+            var login = new Login(connectionString);
+            login.Show();
         }
     }
 }

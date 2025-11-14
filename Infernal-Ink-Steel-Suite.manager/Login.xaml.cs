@@ -20,11 +20,11 @@ namespace InfernalInkSteelSuite
         private readonly ShopSettingsRepository _settingsRepository;
         private User _currentUser;
 
-        public Login()
+        public Login(string connectionString)
         {
             InitializeComponent();
-            _userRepository = new UserRepository();
-            _settingsRepository = new ShopSettingsRepository();
+            _userRepository = new UserRepository(connectionString);
+            _settingsRepository = new ShopSettingsRepository(connectionString);
             BuildUserGrid();
             ApplyBranding();
         }
