@@ -11,23 +11,27 @@ namespace InfernalInkSteelSuite.Repositories
         {
             var result = new List<Client>();
 
-            using var conn = Database.CreateConnection();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT id, name, phone, email, notes, visits FROM clients ORDER BY name;";
-
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            using (var conn = Database.CreateConnection())
+            using (var cmd = conn.CreateCommand())
             {
-                var client = new Client
+                cmd.CommandText = "SELECT id, name, phone, email, notes, visits FROM clients ORDER BY name;";
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    Id = reader.GetInt32(0),
-                    Name = reader.GetString(1),
-                    Phone = reader.GetString(2),
-                    Email = reader.GetString(3),
-                    Notes = reader.GetString(4),
-                    Visits = reader.GetInt32(5)
-                };
-                result.Add(client);
+                    while (reader.Read())
+                    {
+                        var client = new Client
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Phone = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            Notes = reader.GetString(4),
+                            Visits = reader.GetInt32(5)
+                        };
+                        result.Add(client);
+                    }
+                }
             }
 
             return result;
@@ -35,19 +39,21 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Add(Client client)
         {
-            using var conn = Database.CreateConnection();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText =
-                @"INSERT INTO clients (name, phone, email, notes, visits)
-                  VALUES ($name, $phone, $email, $notes, $visits);";
+            using (var conn = Database.CreateConnection())
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText =
+                    @"INSERT INTO clients (name, phone, email, notes, visits)
+                      VALUES ($name, $phone, $email, $notes, $visits);";
 
-            cmd.Parameters.AddWithValue("$name", client.Name);
-            cmd.Parameters.AddWithValue("$phone", client.Phone);
-            cmd.Parameters.AddWithValue("$email", client.Email);
-            cmd.Parameters.AddWithValue("$notes", client.Notes);
-            cmd.Parameters.AddWithValue("$visits", client.Visits);
+                cmd.Parameters.AddWithValue("$name", client.Name);
+                cmd.Parameters.AddWithValue("$phone", client.Phone);
+                cmd.Parameters.AddWithValue("$email", client.Email);
+                cmd.Parameters.AddWithValue("$notes", client.Notes);
+                cmd.Parameters.AddWithValue("$visits", client.Visits);
 
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

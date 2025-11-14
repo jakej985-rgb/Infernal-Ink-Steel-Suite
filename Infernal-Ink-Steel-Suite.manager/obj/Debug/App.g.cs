@@ -57,7 +57,7 @@ namespace InfernalInkSteelSuite {
             
             #line default
             #line hidden
-            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite.manager;component/app.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/InfernalInkSteelSuite;component/app.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\App.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

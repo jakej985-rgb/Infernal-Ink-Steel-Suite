@@ -8,6 +8,5 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\Views\DashboardWindow.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\Views\HomeView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\App.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\GeneratedInternalTypeHelper.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager_MarkupCompile.cache
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\Infernal-Ink-Steel-Suite.manager_MarkupCompile.lref
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\InfernalInkSteelSuite_MarkupCompile.cache
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\InfernalInkSteelSuite_MarkupCompile.lref
