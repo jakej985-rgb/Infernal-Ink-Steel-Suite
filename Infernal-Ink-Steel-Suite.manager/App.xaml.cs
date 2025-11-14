@@ -1,5 +1,6 @@
 using System.Windows;
 using InfernalInkSteelSuite.Data;
+using SQLitePCL;
 using System;
 
 namespace InfernalInkSteelSuite
@@ -9,6 +10,8 @@ namespace InfernalInkSteelSuite
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            SQLitePCL.Batteries.Init();
 
             var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
             var connectionString = $"Data Source={dbPath}";
