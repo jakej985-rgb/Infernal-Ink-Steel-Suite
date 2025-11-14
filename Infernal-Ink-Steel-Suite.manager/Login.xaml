@@ -27,7 +27,12 @@
             <!-- Login View -->
             <Grid x:Name="UserLoginView" Grid.Row="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel>
-                    <controls:GlowAvatar x:Name="AvatarLabel" Size="140" Initials="U" HorizontalAlignment="Center"/>
+                    <!-- Replace GlowAvatar with a simple Ellipse and TextBlock for initials -->
+                    <Grid HorizontalAlignment="Center" Width="140" Height="140">
+                        <Ellipse Fill="#444" Stroke="#888" StrokeThickness="4"/>
+                        <TextBlock Text="U" FontSize="64" FontWeight="Bold" Foreground="White" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
                     <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,12,0,0"
                                Padding="14,6"
                                >
@@ -49,8 +54,9 @@
                     <TextBox x:Name="PasswordTextBox" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0" Visibility="Collapsed"
                              Style="{StaticResource TextBoxStyle}"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
-                        <controls:NeonButton x:Name="BackButton" Content="Back" Width="140" Height="44" Margin="0,0,10,0" Click="Back_Click"/>
-                        <controls:NeonButton x:Name="SignInButton" Content="Sign In" Width="140" Height="44" Click="SignIn_Click"/>
+                        <!-- Replace NeonButton with standard Button if custom control is missing -->
+                        <Button x:Name="BackButton" Content="Back" Width="140" Height="44" Margin="0,0,10,0" Click="Back_Click"/>
+                        <Button x:Name="SignInButton" Content="Sign In" Width="140" Height="44" Click="SignIn_Click"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

@@ -4,13 +4,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using InfernalInkSteelSuite.Domain;
-using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Controls;
 using System.IO;
 using System;
 using System.Text;
 using System.Security.Cryptography;
 using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Repositories;
 
 namespace InfernalInkSteelSuite
 {
@@ -57,6 +57,11 @@ namespace InfernalInkSteelSuite
 
         private void ApplyBranding()
         {
+            ApplyBranding(BackButton);
+        }
+
+        private void ApplyBranding(Button backButton)
+        {
             var settings = _settingsRepository.LoadSettings();
 
             Title = string.IsNullOrWhiteSpace(settings.ShopName) ? "Login" : $"{settings.ShopName} Login";
@@ -71,8 +76,8 @@ namespace InfernalInkSteelSuite
             if (!string.IsNullOrWhiteSpace(settings.AccentColor))
             {
                 var accentColor = (Color)ColorConverter.ConvertFromString(settings.AccentColor);
-                SignInButton.GlowColor = accentColor;
-                BackButton.GlowColor = accentColor;
+                SignInButton.Background = new SolidColorBrush(accentColor);
+                backButton.Background = new SolidColorBrush(accentColor);
 
                 var lighterAccent = GetLighterColor(accentColor, 1.3f);
 

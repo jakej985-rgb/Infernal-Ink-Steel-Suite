@@ -1,12 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\jakej\\Documents\\GitHub\\Infernal-Ink-Steel-Suite\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{4F13DE96-BF67-401B-B6A6-3D43DEF95691}|Infernal-Ink-Steel-Suite.manager\\Infernal-Ink-Steel-Suite.csproj|c:\\users\\jakej\\documents\\github\\infernal-ink-steel-suite\\infernal-ink-steel-suite.manager\\login.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{4F13DE96-BF67-401B-B6A6-3D43DEF95691}|Infernal-Ink-Steel-Suite.manager\\Infernal-Ink-Steel-Suite.csproj|solutionrelative:infernal-ink-steel-suite.manager\\login.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -14,19 +9,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": -1,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Login.xaml",
-              "DocumentMoniker": "C:\\Users\\jakej\\Documents\\GitHub\\Infernal-Ink-Steel-Suite\\Infernal-Ink-Steel-Suite.manager\\Login.xaml",
-              "RelativeDocumentMoniker": "Infernal-Ink-Steel-Suite.manager\\Login.xaml",
-              "ToolTip": "C:\\Users\\jakej\\Documents\\GitHub\\Infernal-Ink-Steel-Suite\\Infernal-Ink-Steel-Suite.manager\\Login.xaml",
-              "RelativeToolTip": "Infernal-Ink-Steel-Suite.manager\\Login.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-11-13T23:55:15.964Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
             },
             {
               "$type": "Bookmark",
