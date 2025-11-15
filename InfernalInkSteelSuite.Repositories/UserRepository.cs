@@ -2,6 +2,7 @@ using InfernalInkSteelSuite.Domain;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -78,8 +79,8 @@ namespace InfernalInkSteelSuite.Repositories
                 command.Parameters.AddWithValue("@passwordHash", HashPassword(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
                 command.Parameters.AddWithValue("@role", string.IsNullOrEmpty(user.Role) ? "User" : user.Role);
                 command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
-                command.Parameters.AddWithValue("@createdAt", user.CreatedAt == DateTime.MinValue ? DateTime.UtcNow : user.CreatedAt);
-                command.Parameters.AddWithValue("@updatedAt", user.UpdatedAt == DateTime.MinValue ? DateTime.UtcNow : user.UpdatedAt);
+                command.Parameters.AddWithValue("@createdAt", (user.CreatedAt == DateTime.MinValue ? DateTime.UtcNow : user.CreatedAt).ToString("o"));
+                command.Parameters.AddWithValue("@updatedAt", (user.UpdatedAt == DateTime.MinValue ? DateTime.UtcNow : user.UpdatedAt).ToString("o"));
 
                 return command.ExecuteNonQuery() > 0;
             }
@@ -133,7 +134,7 @@ namespace InfernalInkSteelSuite.Repositories
                 command.Parameters.AddWithValue("@passwordHash", newPasswordHash);
                 command.Parameters.AddWithValue("@role", user.Role);
                 command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
-                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
                 command.Parameters.AddWithValue("@id", user.Id);
 
                 return command.ExecuteNonQuery() > 0;
@@ -160,8 +161,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
                         };
                     }
                 }
@@ -197,7 +198,7 @@ namespace InfernalInkSteelSuite.Repositories
                 var command = connection.CreateCommand();
                 command.CommandText = "UPDATE users SET role = @role, updatedAt = @updatedAt WHERE username = @username";
                 command.Parameters.AddWithValue("@role", role);
-                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
                 command.Parameters.AddWithValue("@username", username);
 
                 return command.ExecuteNonQuery() > 0;
@@ -212,7 +213,7 @@ namespace InfernalInkSteelSuite.Repositories
                 var command = connection.CreateCommand();
                 command.CommandText = "UPDATE users SET passwordHash = @passwordHash, updatedAt = @updatedAt WHERE username = @username";
                 command.Parameters.AddWithValue("@passwordHash", HashPassword(password));
-                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
                 command.Parameters.AddWithValue("@username", username);
 
                 return command.ExecuteNonQuery() > 0;
@@ -239,8 +240,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
                         });
                     }
                 }
@@ -268,8 +269,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
                         };
                     }
                 }
