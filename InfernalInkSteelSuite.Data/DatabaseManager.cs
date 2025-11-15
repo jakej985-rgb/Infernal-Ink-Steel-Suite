@@ -51,6 +51,8 @@ namespace InfernalInkSteelSuite.Data
 
             CreateClientsTable(connection);
             CreateDocumentsTable(connection);
+            CreateUsersTable(connection);
+            CreateShopSettingsTable(connection);
         }
 
         private void CreateDocumentsTable(SqliteConnection connection)
@@ -64,6 +66,45 @@ namespace InfernalInkSteelSuite.Data
                     title TEXT,
                     filePath TEXT,
                     createdAt TEXT
+                )";
+            command.ExecuteNonQuery();
+        }
+
+        private void CreateShopSettingsTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS shopsettings (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    ShopName TEXT,
+                    LogoPath TEXT,
+                    AccentColor TEXT,
+                    SidebarArtworkPath TEXT,
+                    LoginHeadline TEXT,
+                    LoginTagline TEXT,
+                    LoginBackgroundPath TEXT,
+                    LoginHeadlineFontFamily TEXT,
+                    LoginTaglineFontFamily TEXT,
+                    LoginTextColor TEXT,
+                    TattooPerHour REAL NOT NULL DEFAULT 0,
+                    PiercingSingle REAL NOT NULL DEFAULT 0,
+                    PiercingMulti REAL NOT NULL DEFAULT 0,
+                    CreatedAt TEXT,
+                    UpdatedAt TEXT
+                )";
+            command.ExecuteNonQuery();
+        }
+
+        private void CreateUsersTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS users (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Username TEXT NOT NULL UNIQUE,
+                    PasswordHash TEXT NOT NULL,
+                    Salt TEXT NOT NULL,
+                    Role TEXT NOT NULL
                 )";
             command.ExecuteNonQuery();
         }
