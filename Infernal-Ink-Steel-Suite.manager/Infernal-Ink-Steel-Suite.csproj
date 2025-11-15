@@ -120,6 +120,25 @@
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AppointmentDialog.xaml.cs">
+      <DependentUpon>AppointmentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditAppointmentDialog.xaml.cs">
+      <DependentUpon>EditAppointmentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Appointments\CalendarTab.xaml.cs">
+      <DependentUpon>CalendarTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Appointments\CompletedAppointmentsTab.xaml.cs">
+      <DependentUpon>CompletedAppointmentsTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Appointments\PendingAppointmentsTab.xaml.cs">
+      <DependentUpon>PendingAppointmentsTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Appointments\UpcomingAppointmentsTab.xaml.cs">
+      <DependentUpon>UpcomingAppointmentsTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Appointments\IAppointmentTabView.cs" />
     <Page Include="Login.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,6 +152,30 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AppointmentsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppointmentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditAppointmentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Appointments\CalendarTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Appointments\CompletedAppointmentsTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Appointments\PendingAppointmentsTab.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Appointments\UpcomingAppointmentsTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
