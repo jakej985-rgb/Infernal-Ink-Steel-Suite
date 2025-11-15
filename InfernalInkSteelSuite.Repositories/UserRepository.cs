@@ -160,8 +160,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5)),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6))
                         };
                     }
                 }
@@ -239,8 +239,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5)),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6))
                         });
                     }
                 }
@@ -268,8 +268,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.GetDateTime(5),
-                            UpdatedAt = reader.GetDateTime(6)
+                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5)),
+                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6))
                         };
                     }
                 }

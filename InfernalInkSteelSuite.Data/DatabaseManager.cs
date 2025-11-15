@@ -1,6 +1,8 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InfernalInkSteelSuite.Data
 {
@@ -25,6 +27,7 @@ namespace InfernalInkSteelSuite.Data
                 connection.Open();
                 CreateTable(connection);
                 EnsureColumnsExist(connection);
+                EnsureDefaultUserExists(connection);
             }
         }
 
@@ -100,11 +103,13 @@ namespace InfernalInkSteelSuite.Data
             var command = connection.CreateCommand();
             command.CommandText =
                 @"CREATE TABLE IF NOT EXISTS users (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Username TEXT NOT NULL UNIQUE,
-                    PasswordHash TEXT NOT NULL,
-                    Salt TEXT NOT NULL,
-                    Role TEXT NOT NULL
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    passwordHash TEXT NOT NULL,
+                    role TEXT NOT NULL,
+                    avatarPath TEXT DEFAULT '',
+                    createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
+                    updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
                 )";
             command.ExecuteNonQuery();
         }
@@ -131,6 +136,9 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "serviceCategory", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
+            EnsureColumnExists(connection, "users", "avatarPath", "TEXT DEFAULT ''");
+            EnsureColumnExists(connection, "users", "createdAt", "TEXT");
+            EnsureColumnExists(connection, "users", "updatedAt", "TEXT");
         }
 
         private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)
@@ -157,6 +165,44 @@ namespace InfernalInkSteelSuite.Data
                 var command = connection.CreateCommand();
                 command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}";
                 command.ExecuteNonQuery();
+            }
+        }
+        private void EnsureDefaultUserExists(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM users";
+            var userCount = (long)command.ExecuteScalar();
+
+            if (userCount == 0)
+            {
+                command.CommandText =
+                    @"INSERT INTO users (username, passwordHash, role, avatarPath, createdAt, updatedAt)
+                        VALUES (@username, @passwordHash, @role, @avatarPath, @createdAt, @updatedAt)";
+
+                var passwordHash = GetSha256Hash("password");
+
+                command.Parameters.AddWithValue("@username", "admin");
+                command.Parameters.AddWithValue("@passwordHash", passwordHash);
+                command.Parameters.AddWithValue("@role", "Admin");
+                command.Parameters.AddWithValue("@avatarPath", "");
+                command.Parameters.AddWithValue("@createdAt", DateTime.UtcNow);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow);
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static string GetSha256Hash(string input)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                var builder = new StringBuilder();
+                foreach (var b in bytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
             }
         }
     }
