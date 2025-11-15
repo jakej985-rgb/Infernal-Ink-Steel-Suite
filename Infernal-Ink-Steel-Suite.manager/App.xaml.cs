@@ -1,34 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using InfernalInkSteelSuite.Data;
-using SQLitePCL;
-using System;
 
-namespace InfernalInkSteelSuite
+namespace Infernal_Ink_Steel_Suite.manager
 {
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
     public partial class App : Application
     {
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            try
+            DatabaseManager.InitializeDatabase();
+
+            var loginWindow = new Window
             {
-                SQLitePCL.Batteries.Init();
-
-                var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
-                var connectionString = $"Data Source={dbPath}";
-
-                var databaseManager = new DatabaseManager(connectionString);
-                databaseManager.InitializeDatabase();
-
-                var login = new Login(connectionString);
-                login.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred during application startup: {ex.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Shutdown();
-            }
+                Title = "Login",
+                Content = new LoginPage(),
+                Width = 300,
+                Height = 200
+            };
+            loginWindow.Show();
         }
     }
 }

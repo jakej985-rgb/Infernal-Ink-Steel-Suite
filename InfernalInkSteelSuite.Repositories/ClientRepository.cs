@@ -1,200 +1,125 @@
+using InfernalInkSteelSuite.Domain;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
-using InfernalInkSteelSuite.Data;
-using InfernalInkSteelSuite.Domain;
+using System.IO;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class ClientRepository : IClientRepository
+    public class ClientRepository
     {
-        private readonly string _connectionString;
+        private static readonly string DbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
 
-        public ClientRepository(string connectionString)
+        private SqliteConnection GetConnection()
         {
-            _connectionString = connectionString;
+            return new SqliteConnection($"Data Source={DbPath}");
         }
 
-        public Client Get(int id)
+        public List<Client> GetAllClients()
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            var clients = new List<Client>();
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients WHERE id = $id;";
-                command.Parameters.AddWithValue("$id", id);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return new Client
-                        {
-                            Id = reader.GetInt32(0),
-                            FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
-                            MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                            LastName = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                            Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
-                            Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
-                            Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
-                            Visits = reader.GetInt32(7)
-                        };
-                    }
-                }
-            }
-            return null;
-        }
-
-        public List<Client> GetAll()
-        {
-            var result = new List<Client>();
-
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients ORDER BY firstName, lastName;";
-
+                command.CommandText = "SELECT * FROM clients";
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var client = new Client
+                        clients.Add(new Client
                         {
                             Id = reader.GetInt32(0),
-                            FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
-                            MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                            LastName = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                            Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
-                            Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
-                            Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
-                            Visits = reader.GetInt32(7)
-                        };
-                        result.Add(client);
+                            FirstName = reader.GetString(1),
+                            MiddleName = reader.GetString(2),
+                            LastName = reader.GetString(3),
+                            Phone = reader.GetString(4),
+                            Email = reader.GetString(5)
+                        });
                     }
                 }
             }
-
-            return result;
+            return clients;
         }
 
-        public void Insert(Client client)
+        public Client GetClientById(int id)
         {
-            using (var connection = new SqliteConnection(_connectionString))
+            Client client = null;
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText =
-                    @"INSERT INTO clients (firstName, middleName, lastName, phone, email, notes, visits)
-                      VALUES ($firstName, $middleName, $lastName, $phone, $email, $notes, $visits);";
-
-                command.Parameters.AddWithValue("$firstName", client.FirstName);
-                command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
-                command.Parameters.AddWithValue("$lastName", client.LastName);
-                command.Parameters.AddWithValue("$phone", client.Phone);
-                command.Parameters.AddWithValue("$email", client.Email);
-                command.Parameters.AddWithValue("$notes", client.Notes);
-                command.Parameters.AddWithValue("$visits", client.Visits);
-
-                command.ExecuteNonQuery();
-
-                command.CommandText = "SELECT last_insert_rowid();";
-                client.Id = Convert.ToInt32(command.ExecuteScalar());
-            }
-        }
-
-        public void Update(Client client)
-        {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                    @"UPDATE clients
-                      SET firstName = $firstName,
-                          middleName = $middleName,
-                          lastName = $lastName,
-                          phone = $phone,
-                          email = $email,
-                          notes = $notes,
-                          visits = $visits
-                      WHERE id = $id;";
-
-                command.Parameters.AddWithValue("$firstName", client.FirstName);
-                command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
-                command.Parameters.AddWithValue("$lastName", client.LastName);
-                command.Parameters.AddWithValue("$phone", client.Phone);
-                command.Parameters.AddWithValue("$email", client.Email);
-                command.Parameters.AddWithValue("$notes", client.Notes);
-                command.Parameters.AddWithValue("$visits", client.Visits);
-                command.Parameters.AddWithValue("$id", client.Id);
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public void Delete(int id)
-        {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "DELETE FROM clients WHERE id = $id;";
-                command.Parameters.AddWithValue("$id", id);
-                command.ExecuteNonQuery();
-            }
-        }
-
-        public string GetClientNameById(int clientId)
-        {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT firstName, middleName, lastName FROM clients WHERE id = $id";
-                command.Parameters.AddWithValue("$id", clientId);
-
+                command.CommandText = "SELECT * FROM clients WHERE id = @id";
+                command.Parameters.AddWithValue("@id", id);
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        var parts = new List<string>();
-                        if (!reader.IsDBNull(0)) parts.Add(reader.GetString(0));
-                        if (!reader.IsDBNull(1)) parts.Add(reader.GetString(1));
-                        if (!reader.IsDBNull(2)) parts.Add(reader.GetString(2));
-                        return string.Join(" ", parts);
+                        client = new Client
+                        {
+                            Id = reader.GetInt32(0),
+                            FirstName = reader.GetString(1),
+                            MiddleName = reader.GetString(2),
+                            LastName = reader.GetString(3),
+                            Phone = reader.GetString(4),
+                            Email = reader.GetString(5)
+                        };
                     }
                 }
             }
-            return null;
+            return client;
         }
 
-        public int GetClientIdByName(string name)
+        public void AddClient(Client client)
         {
-            var normalizedName = name.Trim().ToLower();
-            using (var connection = new SqliteConnection(_connectionString))
+            using (var connection = GetConnection())
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, firstName, middleName, lastName FROM clients";
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var parts = new List<string>();
-                        if (!reader.IsDBNull(1)) parts.Add(reader.GetString(1));
-                        if (!reader.IsDBNull(2)) parts.Add(reader.GetString(2));
-                        if (!reader.IsDBNull(3)) parts.Add(reader.GetString(3));
-                        var clientName = string.Join(" ", parts).Trim().ToLower();
-                        if (clientName == normalizedName)
-                        {
-                            return reader.GetInt32(0);
-                        }
-                    }
-                }
+                command.CommandText = @"
+                    INSERT INTO clients (firstName, middleName, lastName, phone, email)
+                    VALUES (@firstName, @middleName, @lastName, @phone, @email)
+                ";
+                command.Parameters.AddWithValue("@firstName", client.FirstName);
+                command.Parameters.AddWithValue("@middleName", client.MiddleName);
+                command.Parameters.AddWithValue("@lastName", client.LastName);
+                command.Parameters.AddWithValue("@phone", client.Phone);
+                command.Parameters.AddWithValue("@email", client.Email);
+                command.ExecuteNonQuery();
             }
-            return 0;
+        }
+
+        public void UpdateClient(Client client)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+                    UPDATE clients
+                    SET firstName = @firstName, middleName = @middleName, lastName = @lastName, phone = @phone, email = @email
+                    WHERE id = @id
+                ";
+                command.Parameters.AddWithValue("@id", client.Id);
+                command.Parameters.AddWithValue("@firstName", client.FirstName);
+                command.Parameters.AddWithValue("@middleName", client.MiddleName);
+                command.Parameters.AddWithValue("@lastName", client.LastName);
+                command.Parameters.AddWithValue("@phone", client.Phone);
+                command.Parameters.AddWithValue("@email", client.Email);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void DeleteClient(int id)
+        {
+            using (var connection = GetConnection())
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "DELETE FROM clients WHERE id = @id";
+                command.Parameters.AddWithValue("@id", id);
+                command.ExecuteNonQuery();
+            }
         }
     }
 }

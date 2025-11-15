@@ -9,13 +9,13 @@ namespace InfernalInkSteelSuite.Domain
         public int UserId { get; set; }
         public DateTime DateTime { get; set; }
         public int DurationMinutes { get; set; }
-        public string ServiceType { get; set; } = "";
-        public string ServiceCategory { get; set; } = "";
-        public string PriceType { get; set; } = "";
-        public decimal PriceCharged { get; set; }
-        public string Notes { get; set; } = "";
-        public string ClientName { get; set; } = "";
-        public string Color { get; set; } = "";
-        public string Status { get; set; } = "Scheduled";
+        public string ServiceType { get; set; }
+        public string ServiceCategory { get; set; }
+        public string PriceType { get; set; }
+        public double PriceCharged { get; set; }
+        public string Notes { get; set; }
+        public string ClientName { get; set; }
+        public string Color { get; set; }
+        public string Status { get; set; }
     }
 }

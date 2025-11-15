@@ -1,269 +1,84 @@
 using Microsoft.Data.Sqlite;
 using System;
-using System.Data;
-using System.Globalization;
-using System.Security.Cryptography;
-using System.Text;
+using System.IO;
 
 namespace InfernalInkSteelSuite.Data
 {
     public class DatabaseManager
     {
-        private readonly string _connectionString;
+        private static readonly string DbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
 
-        public DatabaseManager(string connectionString)
+        public static void InitializeDatabase()
         {
-            _connectionString = connectionString;
-        }
+            if (!File.Exists(DbPath))
+            {
+                File.Create(DbPath).Close();
+            }
 
-        private SqliteConnection GetConnection()
-        {
-            return new SqliteConnection(_connectionString);
-        }
-
-        public void InitializeDatabase()
-        {
-            using (var connection = GetConnection())
+            using (var connection = new SqliteConnection($"Data Source={DbPath}"))
             {
                 connection.Open();
-                CreateTable(connection);
-                EnsureColumnsExist(connection);
-                EnsureDefaultUserExists(connection);
-                MigrateUserDateFormats(connection);
-            }
-        }
 
-        private void CreateTable(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"CREATE TABLE IF NOT EXISTS appointments (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    clientId INTEGER,
-                    userId INTEGER,
-                    clientName TEXT,
-                    dateTime TEXT,
-                    durationMinutes INTEGER,
-                    serviceType TEXT,
-                    serviceCategory TEXT DEFAULT '',
-                    priceType TEXT DEFAULT '',
-                    priceCharged REAL NOT NULL DEFAULT 0,
-                    notes TEXT,
-                    color TEXT,
-                    status TEXT NOT NULL DEFAULT 'Scheduled'
-                )";
-            command.ExecuteNonQuery();
+                var appointmentsCommand = connection.CreateCommand();
+                appointmentsCommand.CommandText =
+                @"
+                    CREATE TABLE IF NOT EXISTS appointments (
+                        id INTEGER PRIMARY KEY,
+                        clientId INTEGER,
+                        userId INTEGER,
+                        dateTime TEXT,
+                        durationMinutes INTEGER,
+                        serviceType TEXT,
+                        serviceCategory TEXT,
+                        priceType TEXT,
+                        priceCharged REAL,
+                        notes TEXT,
+                        clientName TEXT,
+                        color TEXT,
+                        status TEXT
+                    )
+                ";
+                appointmentsCommand.ExecuteNonQuery();
 
-            CreateClientsTable(connection);
-            CreateDocumentsTable(connection);
-            CreateUsersTable(connection);
-            CreateShopSettingsTable(connection);
-        }
+                var clientsCommand = connection.CreateCommand();
+                clientsCommand.CommandText =
+                @"
+                    CREATE TABLE IF NOT EXISTS clients (
+                        id INTEGER PRIMARY KEY,
+                        firstName TEXT,
+                        middleName TEXT,
+                        lastName TEXT,
+                        phone TEXT,
+                        email TEXT
+                    )
+                ";
+                clientsCommand.ExecuteNonQuery();
 
-        private void CreateDocumentsTable(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"CREATE TABLE IF NOT EXISTS documents (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    userId INTEGER,
-                    clientId INTEGER,
-                    title TEXT,
-                    filePath TEXT,
-                    createdAt TEXT
-                )";
-            command.ExecuteNonQuery();
-        }
+                var documentsCommand = connection.CreateCommand();
+                documentsCommand.CommandText =
+                @"
+                    CREATE TABLE IF NOT EXISTS documents (
+                        id INTEGER PRIMARY KEY,
+                        userId INTEGER,
+                        clientId INTEGER,
+                        title TEXT,
+                        filePath TEXT,
+                        createdAt TEXT
+                    )
+                ";
+                documentsCommand.ExecuteNonQuery();
 
-        private void CreateShopSettingsTable(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"CREATE TABLE IF NOT EXISTS shopsettings (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    ShopName TEXT,
-                    LogoPath TEXT,
-                    AccentColor TEXT,
-                    SidebarArtworkPath TEXT,
-                    LoginHeadline TEXT,
-                    LoginTagline TEXT,
-                    LoginBackgroundPath TEXT,
-                    LoginHeadlineFontFamily TEXT,
-                    LoginTaglineFontFamily TEXT,
-                    LoginTextColor TEXT,
-                    TattooPerHour REAL NOT NULL DEFAULT 0,
-                    PiercingSingle REAL NOT NULL DEFAULT 0,
-                    PiercingMulti REAL NOT NULL DEFAULT 0,
-                    CreatedAt TEXT,
-                    UpdatedAt TEXT
-                )";
-            command.ExecuteNonQuery();
-        }
-
-        private void CreateUsersTable(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    username TEXT UNIQUE NOT NULL,
-                    passwordHash TEXT NOT NULL,
-                    role TEXT NOT NULL,
-                    avatarPath TEXT,
-                    createdAt TEXT,
-                    updatedAt TEXT
-                )";
-            command.ExecuteNonQuery();
-        }
-
-        private void CreateClientsTable(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"CREATE TABLE IF NOT EXISTS clients (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    firstName TEXT,
-                    middleName TEXT,
-                    lastName TEXT,
-                    phone TEXT,
-                    email TEXT,
-                    notes TEXT,
-                    visits INTEGER
-                )";
-            command.ExecuteNonQuery();
-        }
-
-        private void EnsureColumnsExist(SqliteConnection connection)
-        {
-            EnsureColumnExists(connection, "appointments", "serviceCategory", "TEXT DEFAULT ''");
-            EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
-            EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
-            EnsureColumnExists(connection, "users", "avatarPath", "TEXT DEFAULT ''");
-            EnsureColumnExists(connection, "users", "createdAt", "TEXT");
-            EnsureColumnExists(connection, "users", "updatedAt", "TEXT");
-        }
-
-        private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = $"PRAGMA table_info({tableName})";
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    if (reader.GetString(1) == columnName)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        private void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition)
-        {
-            if (!TableHasColumn(connection, tableName, columnName))
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}";
-                command.ExecuteNonQuery();
-            }
-        }
-        private void EnsureDefaultUserExists(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT COUNT(*) FROM users";
-            var userCount = (long)command.ExecuteScalar();
-
-            if (userCount == 0)
-            {
-                command.CommandText =
-                    @"INSERT INTO users (username, passwordHash, role, avatarPath, createdAt, updatedAt)
-                        VALUES (@username, @passwordHash, @role, @avatarPath, @createdAt, @updatedAt)";
-
-                var passwordHash = GetSha256Hash("password");
-
-                command.Parameters.AddWithValue("@username", "admin");
-                command.Parameters.AddWithValue("@passwordHash", passwordHash);
-                command.Parameters.AddWithValue("@role", "Admin");
-                command.Parameters.AddWithValue("@avatarPath", "");
-                command.Parameters.AddWithValue("@createdAt", DateTime.UtcNow.ToString("o"));
-                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
-
-                command.ExecuteNonQuery();
-            }
-        }
-
-        private static string GetSha256Hash(string input)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-                var builder = new StringBuilder();
-                foreach (var b in bytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
-
-        private void MigrateUserDateFormats(SqliteConnection connection)
-        {
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, createdAt, updatedAt FROM users";
-
-            var usersToUpdate = new System.Collections.Generic.List<(int id, string createdAt, string updatedAt)>();
-
-            using (var reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    var id = reader.GetInt32(0);
-                    var createdAt = reader.IsDBNull(1) ? null : reader.GetString(1);
-                    var updatedAt = reader.IsDBNull(2) ? null : reader.GetString(2);
-
-                    string newCreatedAt = null;
-                    string newUpdatedAt = null;
-
-                    if (createdAt != null && !DateTime.TryParse(createdAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _))
-                    {
-                        newCreatedAt = DateTime.Parse(createdAt).ToString("o");
-                    }
-
-                    if (updatedAt != null && !DateTime.TryParse(updatedAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _))
-                    {
-                        newUpdatedAt = DateTime.Parse(updatedAt).ToString("o");
-                    }
-
-                    if (newCreatedAt != null || newUpdatedAt != null)
-                    {
-                        usersToUpdate.Add((id, newCreatedAt, newUpdatedAt));
-                    }
-                }
-            }
-
-            foreach (var user in usersToUpdate)
-            {
-                var updateCommand = connection.CreateCommand();
-                var setClauses = new System.Collections.Generic.List<string>();
-                if (user.createdAt != null)
-                {
-                    setClauses.Add("createdAt = @createdAt");
-                    updateCommand.Parameters.AddWithValue("@createdAt", user.createdAt);
-                }
-                if (user.updatedAt != null)
-                {
-                    setClauses.Add("updatedAt = @updatedAt");
-                    updateCommand.Parameters.AddWithValue("@updatedAt", user.updatedAt);
-                }
-
-                if (setClauses.Count > 0)
-                {
-                    updateCommand.CommandText = $"UPDATE users SET {string.Join(", ", setClauses)} WHERE id = @id";
-                    updateCommand.Parameters.AddWithValue("@id", user.id);
-                    updateCommand.ExecuteNonQuery();
-                }
+                var usersCommand = connection.CreateCommand();
+                usersCommand.CommandText =
+                @"
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY,
+                        username TEXT,
+                        password TEXT,
+                        role TEXT
+                    )
+                ";
+                usersCommand.ExecuteNonQuery();
             }
         }
     }
