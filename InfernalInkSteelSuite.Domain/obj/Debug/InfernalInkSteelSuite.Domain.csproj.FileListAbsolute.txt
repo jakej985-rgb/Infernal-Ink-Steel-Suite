@@ -1,6 +1,0 @@
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\InfernalInkSteelSuite.Domain.dll
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\InfernalInkSteelSuite.Domain.pdb
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\InfernalInkSteelSuite.Domain.csproj.AssemblyReference.cache
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\InfernalInkSteelSuite.Domain.csproj.CoreCompileInputs.cache
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\InfernalInkSteelSuite.Domain.dll
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\InfernalInkSteelSuite.Domain.pdb
