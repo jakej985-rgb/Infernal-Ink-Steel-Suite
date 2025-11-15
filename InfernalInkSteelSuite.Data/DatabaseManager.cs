@@ -28,8 +28,8 @@ namespace InfernalInkSteelSuite.Data
                 connection.Open();
                 CreateTable(connection);
                 EnsureColumnsExist(connection);
-                MigrateUserDateFormats(connection);
                 EnsureDefaultUserExists(connection);
+                MigrateUserDateFormats(connection);
             }
         }
 
