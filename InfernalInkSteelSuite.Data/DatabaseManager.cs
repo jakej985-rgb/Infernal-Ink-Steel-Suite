@@ -1,6 +1,8 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.Data;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace InfernalInkSteelSuite.Data
 {
@@ -25,6 +27,7 @@ namespace InfernalInkSteelSuite.Data
                 connection.Open();
                 CreateTable(connection);
                 EnsureColumnsExist(connection);
+                EnsureDefaultUserExists(connection);
             }
         }
 
@@ -157,6 +160,43 @@ namespace InfernalInkSteelSuite.Data
                 var command = connection.CreateCommand();
                 command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}";
                 command.ExecuteNonQuery();
+            }
+        }
+        private void EnsureDefaultUserExists(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM users";
+            var userCount = (long)command.ExecuteScalar();
+
+            if (userCount == 0)
+            {
+                command.CommandText =
+                    @"INSERT INTO users (Username, PasswordHash, Salt, Role)
+                        VALUES (@Username, @PasswordHash, @Salt, @Role)";
+
+                var salt = Guid.NewGuid().ToString();
+                var passwordHash = GetSha256Hash("password");
+
+                command.Parameters.AddWithValue("@Username", "admin");
+                command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                command.Parameters.AddWithValue("@Salt", salt);
+                command.Parameters.AddWithValue("@Role", "Admin");
+
+                command.ExecuteNonQuery();
+            }
+        }
+
+        private static string GetSha256Hash(string input)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                var builder = new StringBuilder();
+                foreach (var b in bytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
             }
         }
     }
