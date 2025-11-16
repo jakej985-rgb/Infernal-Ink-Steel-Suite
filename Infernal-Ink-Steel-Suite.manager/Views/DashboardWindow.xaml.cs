@@ -1,7 +1,6 @@
-using Infernal_Ink_Steel_Suite.manager.ViewModels;
-using Infernal_Ink_Steel_Suite.manager.Views;
-using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
+using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Repositories;
 using System.Windows;
 
 namespace InfernalInkSteelSuite.Views
@@ -58,6 +57,11 @@ namespace InfernalInkSteelSuite.Views
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             MainContent.Content = new SettingsView();
+        }
+
+        private void Statistics_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new StatsView();
         }
     }
 }

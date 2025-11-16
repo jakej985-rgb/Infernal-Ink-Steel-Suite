@@ -18,8 +18,8 @@ namespace InfernalInkSteelSuite.ViewModels
             _clientRepository = clientRepository;
             Client = client;
 
-            SaveCommand = new RelayCommand(Save);
-            CancelCommand = new RelayCommand(Cancel);
+            SaveCommand = new RelayCommand(p => Save(p));
+            CancelCommand = new RelayCommand(p => Cancel(p));
         }
 
         public Client Client
@@ -35,7 +35,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        private void Save(object parameter)
+        private void Save(object? parameter)
         {
             if (Client.Id == 0)
             {
@@ -48,13 +48,13 @@ namespace InfernalInkSteelSuite.ViewModels
             OnRequestClose();
         }
 
-        private void Cancel(object parameter)
+        private void Cancel(object? parameter)
         {
             OnRequestClose();
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -64,29 +64,6 @@ namespace InfernalInkSteelSuite.ViewModels
         protected virtual void OnRequestClose()
         {
             RequestClose?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
-    // A simple RelayCommand implementation
-    public class RelayCommand : ICommand
-    {
-        private readonly System.Action<object> _execute;
-        private readonly System.Predicate<object> _canExecute;
-
-        public RelayCommand(System.Action<object> execute, System.Predicate<object> canExecute = null)
-        {
-            _execute = execute;
-            _canExecute = canExecute;
-        }
-
-        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
-
-        public void Execute(object parameter) => _execute(parameter);
-
-        public event System.EventHandler CanExecuteChanged
-        {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
         }
     }
 }

@@ -1,6 +1,6 @@
 using InfernalInkSteelSuite.Domain;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class DocumentViewModel : BaseViewModel
     {

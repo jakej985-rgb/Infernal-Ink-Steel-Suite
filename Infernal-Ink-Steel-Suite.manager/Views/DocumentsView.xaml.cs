@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace Infernal_Ink_Steel_Suite.manager.Views
+namespace InfernalInkSteelSuite.Views
 {
     public partial class DocumentsView : UserControl
     {

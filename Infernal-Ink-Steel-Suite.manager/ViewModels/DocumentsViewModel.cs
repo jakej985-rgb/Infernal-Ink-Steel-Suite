@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class DocumentsViewModel : BaseViewModel
     {
@@ -48,12 +48,12 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels
 
             Documents = new ObservableCollection<DocumentViewModel>();
 
-            AddDocumentCommand = new RelayCommand(AddDocument);
-            RefreshDocumentsCommand = new RelayCommand(LoadDocuments);
-            FilterDocumentsCommand = new RelayCommand(FilterDocuments);
-            OpenDocumentCommand = new RelayCommand(OpenDocument, () => SelectedDocument != null);
-            RenameDocumentCommand = new RelayCommand(RenameDocument, () => SelectedDocument != null);
-            DeleteDocumentCommand = new RelayCommand(DeleteDocument, () => SelectedDocument != null);
+            AddDocumentCommand = new RelayCommand(() => AddDocument());
+            RefreshDocumentsCommand = new RelayCommand(() => LoadDocuments());
+            FilterDocumentsCommand = new RelayCommand(() => FilterDocuments());
+            OpenDocumentCommand = new RelayCommand(() => OpenDocument(), () => SelectedDocument != null);
+            RenameDocumentCommand = new RelayCommand(() => RenameDocument(), () => SelectedDocument != null);
+            DeleteDocumentCommand = new RelayCommand(() => DeleteDocument(), () => SelectedDocument != null);
 
             LoadDocuments();
         }

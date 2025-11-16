@@ -1,13 +1,13 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
