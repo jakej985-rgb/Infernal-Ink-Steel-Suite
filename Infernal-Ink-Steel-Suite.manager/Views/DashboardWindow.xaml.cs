@@ -43,7 +43,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Quotes_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new QuotesView();
+            MainContent.Content = new QuotesView(_appointmentRepository);
         }
 
         private void Documents_Click(object sender, RoutedEventArgs e)
