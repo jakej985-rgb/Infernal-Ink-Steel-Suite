@@ -75,7 +75,6 @@
     <Compile Include="ShopSettingsRepository.cs" />
     <Compile Include="AppointmentRepository.cs" />
     <Compile Include="DocumentRepository.cs" />
-    <Compile Include="IAppointmentRepository.cs" />
     <Compile Include="UserRepository.cs" />
   </ItemGroup>
   <ItemGroup>

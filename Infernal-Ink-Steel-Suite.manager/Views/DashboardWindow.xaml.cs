@@ -1,3 +1,5 @@
+using Infernal_Ink_Steel_Suite.manager.ViewModels;
+using Infernal_Ink_Steel_Suite.manager.Views;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
 using System.Windows;
