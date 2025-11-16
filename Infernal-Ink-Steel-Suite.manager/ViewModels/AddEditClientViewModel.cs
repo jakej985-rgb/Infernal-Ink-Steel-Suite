@@ -39,11 +39,11 @@ namespace InfernalInkSteelSuite.ViewModels
         {
             if (Client.Id == 0)
             {
-                _clientRepository.AddClient(Client);
+                _clientRepository.Insert(Client);
             }
             else
             {
-                _clientRepository.UpdateClient(Client);
+                _clientRepository.Update(Client);
             }
             OnRequestClose();
         }

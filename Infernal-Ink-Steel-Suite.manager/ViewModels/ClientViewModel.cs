@@ -50,7 +50,7 @@ namespace InfernalInkSteelSuite.ViewModels
 
         private void LoadClients()
         {
-            _allClients = _clientRepository.GetAllClients();
+            _allClients = _clientRepository.GetAll();
             Clients = _allClients;
         }
 
