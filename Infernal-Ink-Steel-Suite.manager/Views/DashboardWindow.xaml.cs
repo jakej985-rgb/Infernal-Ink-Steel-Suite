@@ -52,5 +52,10 @@ namespace InfernalInkSteelSuite.Views
         {
             MainContent.Content = new SettingsView();
         }
+
+        private void Statistics_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new StatsView();
+        }
     }
 }

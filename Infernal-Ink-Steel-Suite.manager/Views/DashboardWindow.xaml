@@ -15,6 +15,7 @@
             <Button Content="Appointments" Click="Appointments_Click"/>
             <Button Content="Quotes" Click="Quotes_Click"/>
             <Button Content="Documents" Click="Documents_Click"/>
+            <Button Content="Statistics" Click="Statistics_Click"/>
             <Button Content="Settings" Click="Settings_Click"/>
         </StackPanel>
 
