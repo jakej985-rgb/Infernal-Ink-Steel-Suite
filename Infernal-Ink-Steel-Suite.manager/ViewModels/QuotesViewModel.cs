@@ -1,12 +1,12 @@
-using Infernal_Ink_Steel_Suite.manager.ViewModels;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using InfernalInkSteelSuite.ViewModels;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class QuotesViewModel : BaseViewModel
     {
