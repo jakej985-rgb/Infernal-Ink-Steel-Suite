@@ -1,7 +1,6 @@
 using InfernalInkSteelSuite.ViewModels;
 using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Repositories;
-using InfernalInkSteelSuite.ViewModels;
 using System.Windows;
 
 namespace InfernalInkSteelSuite.Views
