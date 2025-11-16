@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class RelayCommand : ICommand
     {
