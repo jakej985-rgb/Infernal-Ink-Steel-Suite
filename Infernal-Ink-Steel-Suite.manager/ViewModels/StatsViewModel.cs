@@ -12,7 +12,7 @@ namespace InfernalInkSteelSuite.ViewModels
 {
     public class StatsViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private IAppointmentRepository _appointmentRepository;
         private IShopSettingsRepository _shopSettingsRepository;
@@ -128,23 +128,23 @@ namespace InfernalInkSteelSuite.ViewModels
         {
             IncomeChart.Plot.Clear();
             IncomeChart.Plot.Add.Bars(IncomeData);
-            IncomeChart.Plot.XAxis.Label("Month");
-            IncomeChart.Plot.YAxis.Label("Income");
-            IncomeChart.Plot.Title.Label($"Monthly Income - {SelectedYear}");
+            IncomeChart.Plot.XLabel("Month");
+            IncomeChart.Plot.YLabel("Income");
+            IncomeChart.Plot.Title($"Monthly Income - {SelectedYear}");
             IncomeChart.Refresh();
 
             VisitsChart.Plot.Clear();
-            VisitsChart.Plot.Add.Signal(VisitsData);
-            VisitsChart.Plot.XAxis.Label("Month");
-            VisitsChart.Plot.YAxis.Label("Visits");
-            VisitsChart.Plot.Title.Label($"Monthly Visits - {SelectedYear}");
+            VisitsChart.Plot.Add.Bars(VisitsData);
+            VisitsChart.Plot.XLabel("Month");
+            VisitsChart.Plot.YLabel("Visits");
+            VisitsChart.Plot.Title($"Monthly Visits - {SelectedYear}");
             VisitsChart.Refresh();
 
             HoursChart.Plot.Clear();
-            HoursChart.Plot.Add.Signal(HoursData);
-            HoursChart.Plot.XAxis.Label("Month");
-            HoursChart.Plot.YAxis.Label("Hours");
-            HoursChart.Plot.Title.Label($"Monthly Tattoo Hours - {SelectedYear}");
+            HoursChart.Plot.Add.Bars(HoursData);
+            HoursChart.Plot.XLabel("Month");
+            HoursChart.Plot.YLabel("Hours");
+            HoursChart.Plot.Title($"Monthly Tattoo Hours - {SelectedYear}");
             HoursChart.Refresh();
         }
 
