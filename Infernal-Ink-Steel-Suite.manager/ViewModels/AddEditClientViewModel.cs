@@ -54,7 +54,7 @@ namespace InfernalInkSteelSuite.ViewModels
         }
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

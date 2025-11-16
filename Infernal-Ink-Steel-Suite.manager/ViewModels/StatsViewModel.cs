@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using InfernalInkSteelSuite.Domain;
 using System.Collections.ObjectModel;
+using ScottPlot.WPF;
+using ScottPlot;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
@@ -16,7 +18,21 @@ namespace InfernalInkSteelSuite.ViewModels
         private IShopSettingsRepository _shopSettingsRepository;
 
         public ObservableCollection<int> Years { get; set; }
-        public int SelectedYear { get; set; }
+
+        private int _selectedYear;
+        public int SelectedYear
+        {
+            get => _selectedYear;
+            set
+            {
+                if (_selectedYear != value)
+                {
+                    _selectedYear = value;
+                    OnPropertyChanged(nameof(SelectedYear));
+                    LoadData(_selectedYear);
+                }
+            }
+        }
 
         public double TotalIncome { get; set; }
         public int TotalVisits { get; set; }
@@ -26,10 +42,18 @@ namespace InfernalInkSteelSuite.ViewModels
         public double[] VisitsData { get; set; }
         public double[] HoursData { get; set; }
 
+        public WpfPlot IncomeChart { get; set; }
+        public WpfPlot VisitsChart { get; set; }
+        public WpfPlot HoursChart { get; set; }
+
         public StatsViewModel(IAppointmentRepository appointmentRepository, IShopSettingsRepository shopSettingsRepository)
         {
             _appointmentRepository = appointmentRepository;
             _shopSettingsRepository = shopSettingsRepository;
+
+            IncomeChart = new WpfPlot();
+            VisitsChart = new WpfPlot();
+            HoursChart = new WpfPlot();
 
             Years = new ObservableCollection<int>();
             PopulateYearSelector();
@@ -93,13 +117,37 @@ namespace InfernalInkSteelSuite.ViewModels
             TotalVisits = visitsData.Sum();
             TotalHours = HoursData.Sum();
 
-            OnPropertyChanged(nameof(IncomeData));
-            OnPropertyChanged(nameof(VisitsData));
-            OnPropertyChanged(nameof(HoursData));
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalVisits));
             OnPropertyChanged(nameof(TotalHours));
+
+            UpdateCharts();
         }
+
+        private void UpdateCharts()
+        {
+            IncomeChart.Plot.Clear();
+            IncomeChart.Plot.Add.Bars(IncomeData);
+            IncomeChart.Plot.XAxis.Label("Month");
+            IncomeChart.Plot.YAxis.Label("Income");
+            IncomeChart.Plot.Title.Label($"Monthly Income - {SelectedYear}");
+            IncomeChart.Refresh();
+
+            VisitsChart.Plot.Clear();
+            VisitsChart.Plot.Add.Signal(VisitsData);
+            VisitsChart.Plot.XAxis.Label("Month");
+            VisitsChart.Plot.YAxis.Label("Visits");
+            VisitsChart.Plot.Title.Label($"Monthly Visits - {SelectedYear}");
+            VisitsChart.Refresh();
+
+            HoursChart.Plot.Clear();
+            HoursChart.Plot.Add.Signal(HoursData);
+            HoursChart.Plot.XAxis.Label("Month");
+            HoursChart.Plot.YAxis.Label("Hours");
+            HoursChart.Plot.Title.Label($"Monthly Tattoo Hours - {SelectedYear}");
+            HoursChart.Refresh();
+        }
+
 
         private bool ShouldCountAppointment(string status)
         {
