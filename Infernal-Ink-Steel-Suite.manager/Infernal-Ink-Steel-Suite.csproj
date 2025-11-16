@@ -99,6 +99,7 @@
     <Compile Include="Controls\AvatarLabel.cs" />
     <Compile Include="Controls\GlowAvatar.cs" />
     <Compile Include="Controls\NeonButton.cs" />
+    <Compile Include="AttachedProperties\PasswordBoxHelper.cs" />
     <Compile Include="Views\AppointmentsView.xaml.cs">
       <DependentUpon>AppointmentsView.xaml</DependentUpon>
     </Compile>
@@ -113,6 +114,19 @@
     </Compile>
     <Compile Include="ViewModels\ClientViewModel.cs" />
     <Compile Include="ViewModels\AddEditClientViewModel.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\RelayCommand.cs" />
+    <Compile Include="Services\ThemeManager.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\Settings\AdminTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ManagerTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\UserProfileTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ShopSettingsTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\LinkedAccountsTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ThemingTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\SettingsTabViewModel.cs" />
+    <Compile Include="ViewModels\Settings\AddUserDialogViewModel.cs" />
+    <Compile Include="ViewModels\Settings\ResetPasswordDialogViewModel.cs" />
     <Compile Include="Views\DashboardWindow.xaml.cs">
       <DependentUpon>DashboardWindow.xaml</DependentUpon>
     </Compile>
@@ -127,6 +141,30 @@
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\AdminTabView.xaml.cs">
+      <DependentUpon>AdminTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\ManagerTabView.xaml.cs">
+      <DependentUpon>ManagerTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\UserProfileTabView.xaml.cs">
+      <DependentUpon>UserProfileTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\ShopSettingsTabView.xaml.cs">
+      <DependentUpon>ShopSettingsTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\LinkedAccountsTabView.xaml.cs">
+      <DependentUpon>LinkedAccountsTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\ThemingTabView.xaml.cs">
+      <DependentUpon>ThemingTabView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\AddUserDialog.xaml.cs">
+      <DependentUpon>AddUserDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Settings\ResetPasswordDialog.xaml.cs">
+      <DependentUpon>ResetPasswordDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AppointmentDialog.xaml.cs">
       <DependentUpon>AppointmentDialog.xaml</DependentUpon>
@@ -160,6 +198,38 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AppointmentsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\ResetPasswordDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\AddUserDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\AdminTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\ManagerTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\UserProfileTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\ShopSettingsTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\LinkedAccountsTabView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Settings\ThemingTabView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

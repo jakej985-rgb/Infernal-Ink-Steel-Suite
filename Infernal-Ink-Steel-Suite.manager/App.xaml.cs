@@ -2,6 +2,8 @@ using System.Windows;
 using InfernalInkSteelSuite.Data;
 using SQLitePCL;
 using System;
+using System.Windows.Media;
+using Infernal_Ink_Steel_Suite.manager.Services;
 
 namespace InfernalInkSteelSuite
 {
@@ -21,6 +23,9 @@ namespace InfernalInkSteelSuite
                 var databaseManager = new DatabaseManager(connectionString);
                 databaseManager.InitializeDatabase();
 
+                ThemeManager.Instance.ThemeChanged += OnThemeChanged;
+                ApplyTheme(ThemeManager.Instance.CurrentTheme);
+
                 var login = new Login(connectionString);
                 login.Show();
             }
@@ -29,6 +34,17 @@ namespace InfernalInkSteelSuite
                 MessageBox.Show($"An error occurred during application startup: {ex.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
+        }
+
+        private void OnThemeChanged(Theme theme)
+        {
+            ApplyTheme(theme);
+        }
+
+        private void ApplyTheme(Theme theme)
+        {
+            Resources["PrimaryColor"] = theme.PrimaryColor;
+            Resources["SecondaryColor"] = theme.SecondaryColor;
         }
     }
 }

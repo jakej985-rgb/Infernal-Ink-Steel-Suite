@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
 using System.Windows;
+using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -10,9 +11,12 @@ namespace InfernalInkSteelSuite.Views
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
 
-        public DashboardWindow(string connectionString)
+        private readonly User _currentUser;
+
+        public DashboardWindow(string connectionString, User currentUser)
         {
             _connectionString = connectionString;
+            _currentUser = currentUser;
             _appointmentRepository = new AppointmentRepository(_connectionString);
             _clientRepository = new ClientRepository(_connectionString);
 
@@ -50,7 +54,10 @@ namespace InfernalInkSteelSuite.Views
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new SettingsView();
+            var settingsViewModel = new SettingsViewModel(_connectionString, _currentUser);
+            var settingsView = new SettingsView();
+            settingsView.DataContext = settingsViewModel;
+            MainContent.Content = settingsView;
         }
     }
 }

@@ -117,21 +117,13 @@ namespace InfernalInkSteelSuite
                 return;
             }
 
-            var user = _userRepository.GetUserByUsername(_currentUser.Username);
-            if (user == null)
-            {
-                MessageBox.Show("User not found!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var hashedInput = GetSha256Hash(password);
-            if (user.PasswordHash != hashedInput)
+            if (!_userRepository.CheckPassword(_currentUser.Username, password))
             {
                 MessageBox.Show("Incorrect password.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var dashboard = new DashboardWindow(_connectionString);
+            var dashboard = new DashboardWindow(_connectionString, _currentUser);
             dashboard.Show();
             Close();
         }
