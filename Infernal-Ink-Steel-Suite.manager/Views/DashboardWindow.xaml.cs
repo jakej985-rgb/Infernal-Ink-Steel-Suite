@@ -1,4 +1,5 @@
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.ViewModels;
 using System.Windows;
 
 namespace InfernalInkSteelSuite.Views
@@ -26,7 +27,10 @@ namespace InfernalInkSteelSuite.Views
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ClientsView(_connectionString);
+            var clientViewModel = new ClientViewModel(_clientRepository);
+            var clientView = new ClientView();
+            clientView.DataContext = clientViewModel;
+            MainContent.Content = clientView;
         }
 
         private void Appointments_Click(object sender, RoutedEventArgs e)

@@ -69,7 +69,6 @@
     <Compile Include="IClientRepository.cs" />
     <Compile Include="IDocumentRepository.cs" />
     <Compile Include="IAppointmentRepository.cs" />
-    <Compile Include="IAppointmentRepository.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IShopSettingsRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
