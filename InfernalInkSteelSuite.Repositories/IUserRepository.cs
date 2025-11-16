@@ -16,5 +16,6 @@ namespace InfernalInkSteelSuite.Repositories
         bool DeleteUser(string username);
         bool CheckPassword(string username, string plainPassword);
         List<User> GetAllUsers();
+        string HashPassword(string plain);
     }
 }

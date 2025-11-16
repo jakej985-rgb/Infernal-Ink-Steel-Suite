@@ -1,12 +1,10 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
-using Infernal_Ink_Steel_Suite.manager.Views.Settings;
+using InfernalInkSteelSuite.Views.Settings;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class AdminTabViewModel : SettingsTabViewModel
     {
@@ -27,8 +25,8 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
             }
         }
 
-        private User _selectedUser;
-        public User SelectedUser
+        private User? _selectedUser;
+        public User? SelectedUser
         {
             get => _selectedUser;
             set
@@ -100,7 +98,7 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
             Users = new ObservableCollection<User>(_userRepository.GetAllUsers());
         }
 
-        private void AddUser(object obj)
+        private void AddUser(object? obj)
         {
             var addUserDialog = new AddUserDialog();
             var addUserViewModel = new AddUserDialogViewModel();
@@ -111,7 +109,7 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
                 var newUser = new User
                 {
                     Username = addUserViewModel.Username,
-                    PasswordHash = HashPassword(addUserViewModel.Password),
+                    PasswordHash = _userRepository.HashPassword(addUserViewModel.Password),
                     Role = addUserViewModel.SelectedRole
                 };
                 _userRepository.AddUser(newUser);
@@ -119,7 +117,7 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
             }
         }
 
-        private void UpdateRole(object obj)
+        private void UpdateRole(object? obj)
         {
             if (SelectedUser != null)
             {
@@ -127,7 +125,7 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
             }
         }
 
-        private void ResetPassword(object obj)
+        private void ResetPassword(object? obj)
         {
             if (SelectedUser != null)
             {
@@ -142,28 +140,14 @@ namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
             }
         }
 
-        private bool CanUpdateOrReset(object obj)
+        private bool CanUpdateOrReset(object? obj)
         {
             return SelectedUser != null;
         }
 
-        private void SaveBranding(object obj)
+        private void SaveBranding(object? obj)
         {
             _shopSettingsRepository.SaveSettings(_shopSettings);
-        }
-
-        private string HashPassword(string plain)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(plain));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
         }
     }
 }

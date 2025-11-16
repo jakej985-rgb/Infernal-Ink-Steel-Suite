@@ -38,7 +38,7 @@ namespace InfernalInkSteelSuite.Repositories
             return true;
         }
 
-        private string HashPassword(string plain)
+        public string HashPassword(string plain)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -52,7 +52,7 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
-        public string GetUsernameById(int userId)
+        public string? GetUsernameById(int userId)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -141,7 +141,7 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
-        public User GetUserByUsername(string username)
+        public User? GetUserByUsername(string username)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -172,7 +172,7 @@ namespace InfernalInkSteelSuite.Repositories
 
         public bool CheckPassword(string username, string plainPassword)
         {
-            User u = GetUserByUsername(username);
+            User? u = GetUserByUsername(username);
             if (u == null) return false;
             return u.PasswordHash == HashPassword(plainPassword);
         }
@@ -249,7 +249,7 @@ namespace InfernalInkSteelSuite.Repositories
             return users;
         }
 
-        public User GetUserById(int userId)
+        public User? GetUserById(int userId)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class AddUserDialogViewModel : BaseViewModel
     {

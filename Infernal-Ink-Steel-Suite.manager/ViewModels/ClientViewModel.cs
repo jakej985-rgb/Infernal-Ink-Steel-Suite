@@ -2,16 +2,15 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Views;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
-    public class ClientViewModel : INotifyPropertyChanged
+    public class ClientViewModel : BaseViewModel
     {
         private readonly IClientRepository _clientRepository;
-        private string _searchText;
+        private string? _searchText;
         private List<Client> _allClients;
         private List<Client> _clients;
 
@@ -34,7 +33,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set
@@ -66,7 +65,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        private void AddClient(object parameter)
+        private void AddClient(object? parameter)
         {
             var newClient = new Client();
             var viewModel = new AddEditClientViewModel(_clientRepository, newClient);
@@ -75,7 +74,7 @@ namespace InfernalInkSteelSuite.ViewModels
             LoadClients(); // Refresh the list
         }
 
-        private void EditClient(object parameter)
+        private void EditClient(object? parameter)
         {
             if (parameter is Client clientToEdit)
             {
@@ -84,13 +83,6 @@ namespace InfernalInkSteelSuite.ViewModels
                 view.ShowDialog();
                 LoadClients(); // Refresh the list
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
