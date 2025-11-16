@@ -5,12 +5,13 @@ using System.ComponentModel;
 using System.Linq;
 using InfernalInkSteelSuite.Domain;
 using System.Collections.ObjectModel;
+using ScottPlot.WPF;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
     public class StatsViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private IAppointmentRepository _appointmentRepository;
         private IShopSettingsRepository _shopSettingsRepository;
@@ -25,6 +26,10 @@ namespace InfernalInkSteelSuite.ViewModels
         public double[] IncomeData { get; set; }
         public double[] VisitsData { get; set; }
         public double[] HoursData { get; set; }
+
+        public WpfPlot IncomeChart { get; } = new WpfPlot();
+        public WpfPlot VisitsChart { get; } = new WpfPlot();
+        public WpfPlot HoursChart { get; } = new WpfPlot();
 
         public StatsViewModel(IAppointmentRepository appointmentRepository, IShopSettingsRepository shopSettingsRepository)
         {
@@ -93,12 +98,32 @@ namespace InfernalInkSteelSuite.ViewModels
             TotalVisits = visitsData.Sum();
             TotalHours = HoursData.Sum();
 
+            UpdatePlots();
+
             OnPropertyChanged(nameof(IncomeData));
             OnPropertyChanged(nameof(VisitsData));
             OnPropertyChanged(nameof(HoursData));
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalVisits));
             OnPropertyChanged(nameof(TotalHours));
+        }
+
+        private void UpdatePlots()
+        {
+            IncomeChart.Plot.Clear();
+            IncomeChart.Plot.Add.Bars(IncomeData);
+            IncomeChart.Plot.Title("Monthly Income");
+            IncomeChart.Refresh();
+
+            VisitsChart.Plot.Clear();
+            VisitsChart.Plot.Add.Bars(VisitsData);
+            VisitsChart.Plot.Title("Monthly Visits");
+            VisitsChart.Refresh();
+
+            HoursChart.Plot.Clear();
+            HoursChart.Plot.Add.Bars(HoursData);
+            HoursChart.Plot.Title("Monthly Hours");
+            HoursChart.Refresh();
         }
 
         private bool ShouldCountAppointment(string status)
