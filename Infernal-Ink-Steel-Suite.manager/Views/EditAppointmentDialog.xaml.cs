@@ -41,12 +41,12 @@ namespace InfernalInkSteelSuite.Views
                 MessageBox.Show("Please enter a valid time.");
                 return;
             }
-            if (!int.TryParse(DurationTextBox.Text, out _))
+            if (!int.TryParse(Appointment.DurationMinutes.ToString(), out _))
             {
                 MessageBox.Show("Please enter a valid duration.");
                 return;
             }
-            if (!decimal.TryParse(PriceChargedTextBox.Text, out _))
+            if (!decimal.TryParse(Appointment.PriceCharged.ToString(), out _))
             {
                 MessageBox.Show("Please enter a valid price.");
                 return;
