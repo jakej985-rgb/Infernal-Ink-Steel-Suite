@@ -171,7 +171,7 @@ namespace InfernalInkSteelSuite.Repositories
 
         public int GetClientIdByName(string name)
         {
-            var normalizedName = name.Trim().ToLower();
+            var normalizedName = name.Trim();
             using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
@@ -182,14 +182,17 @@ namespace InfernalInkSteelSuite.Repositories
                 {
                     while (reader.Read())
                     {
-                        var parts = new List<string>();
-                        if (!reader.IsDBNull(1)) parts.Add(reader.GetString(1));
-                        if (!reader.IsDBNull(2)) parts.Add(reader.GetString(2));
-                        if (!reader.IsDBNull(3)) parts.Add(reader.GetString(3));
-                        var clientName = string.Join(" ", parts).Trim().ToLower();
-                        if (clientName == normalizedName)
+                        var client = new Client
                         {
-                            return reader.GetInt32(0);
+                            Id = reader.GetInt32(0),
+                            FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                            MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                            LastName = reader.IsDBNull(3) ? "" : reader.GetString(3)
+                        };
+
+                        if (client.FullName.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return client.Id;
                         }
                     }
                 }
