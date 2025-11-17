@@ -108,16 +108,16 @@ namespace InfernalInkSteelSuite.Repositories
                 {
                     if (reader.Read())
                     {
-                        settings.ShopName = reader["shopName"].ToString();
-                        settings.LogoPath = reader["logoPath"].ToString();
-                        settings.AccentColor = reader["accentColor"].ToString();
-                        settings.SidebarArtworkPath = reader["sidebarArtworkPath"].ToString();
-                        settings.LoginHeadline = reader["loginHeadline"].ToString();
-                        settings.LoginTagline = reader["loginTagline"].ToString();
-                        settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString();
-                        settings.LoginHeadlineFontFamily = reader["loginHeadlineFont"].ToString();
-                        settings.LoginTaglineFontFamily = reader["loginTaglineFont"].ToString();
-                        settings.LoginTextColor = reader["loginTextColor"].ToString();
+                        settings.ShopName = reader["shopName"].ToString() ?? string.Empty;
+                        settings.LogoPath = reader["logoPath"].ToString() ?? string.Empty;
+                        settings.AccentColor = reader["accentColor"].ToString() ?? string.Empty;
+                        settings.SidebarArtworkPath = reader["sidebarArtworkPath"].ToString() ?? string.Empty;
+                        settings.LoginHeadline = reader["loginHeadline"].ToString() ?? string.Empty;
+                        settings.LoginTagline = reader["loginTagline"].ToString() ?? string.Empty;
+                        settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString() ?? string.Empty;
+                        settings.LoginHeadlineFontFamily = reader["loginHeadlineFont"].ToString() ?? string.Empty;
+                        settings.LoginTaglineFontFamily = reader["loginTaglineFont"].ToString() ?? string.Empty;
+                        settings.LoginTextColor = reader["loginTextColor"].ToString() ?? string.Empty;
                         settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
                         settings.PiercingSingle = Convert.ToDouble(reader["piercingSingle"]);
                         settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);

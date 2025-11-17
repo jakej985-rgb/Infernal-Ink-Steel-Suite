@@ -39,7 +39,7 @@ namespace InfernalInkSteelSuite.Repositories
             };
         }
 
-        public Appointment Get(int id)
+        public Appointment? Get(int id)
         {
             using (var conn = GetConnection())
             {

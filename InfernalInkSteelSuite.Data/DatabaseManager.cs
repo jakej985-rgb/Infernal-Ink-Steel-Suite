@@ -173,7 +173,7 @@ namespace InfernalInkSteelSuite.Data
         {
             var command = connection.CreateCommand();
             command.CommandText = "SELECT COUNT(*) FROM users";
-            var userCount = (long)command.ExecuteScalar();
+            var userCount = (long?)command.ExecuteScalar() ?? 0L;
 
             if (userCount == 0)
             {
@@ -213,7 +213,7 @@ namespace InfernalInkSteelSuite.Data
             var command = connection.CreateCommand();
             command.CommandText = "SELECT id, createdAt, updatedAt FROM users";
 
-            var usersToUpdate = new System.Collections.Generic.List<(int id, string createdAt, string updatedAt)>();
+            var usersToUpdate = new System.Collections.Generic.List<(int id, string? createdAt, string? updatedAt)>();
 
             using (var reader = command.ExecuteReader())
             {
@@ -223,8 +223,8 @@ namespace InfernalInkSteelSuite.Data
                     var createdAt = reader.IsDBNull(1) ? null : reader.GetString(1);
                     var updatedAt = reader.IsDBNull(2) ? null : reader.GetString(2);
 
-                    string newCreatedAt = null;
-                    string newUpdatedAt = null;
+                    string? newCreatedAt = null;
+                    string? newUpdatedAt = null;
 
                     if (createdAt != null && !DateTime.TryParse(createdAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _))
                     {

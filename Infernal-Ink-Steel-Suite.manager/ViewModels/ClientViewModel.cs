@@ -65,7 +65,6 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        private void AddClient(object? parameter)
         private void AddClient()
         {
             var newClient = new Client();
