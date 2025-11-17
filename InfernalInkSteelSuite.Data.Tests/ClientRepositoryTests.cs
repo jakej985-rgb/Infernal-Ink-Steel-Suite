@@ -40,5 +40,70 @@ namespace InfernalInkSteelSuite.Data.Tests
                 Assert.Equal(client.Id, clientId);
             }
         }
+
+        [Fact]
+        public void GetClientIdByName_WithNameAndMiddleName_ReturnsCorrectId()
+        {
+            CreateTable();
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                var repository = new ClientRepository(ConnectionString);
+                var client = new Client
+                {
+                    FirstName = "John",
+                    MiddleName = "Michael",
+                    LastName = "Smith",
+                    Email = "john.smith@example.com"
+                };
+                repository.Insert(client);
+
+                var clientId = repository.GetClientIdByName("John Michael Smith");
+
+                Assert.Equal(client.Id, clientId);
+            }
+        }
+
+        [Fact]
+        public void GetClientIdByName_WithNameAndMiddleName_WhenSearchingWithoutMiddleName_ReturnsCorrectId()
+        {
+            CreateTable();
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                var repository = new ClientRepository(ConnectionString);
+                var client = new Client
+                {
+                    FirstName = "John",
+                    MiddleName = "Michael",
+                    LastName = "Smith",
+                    Email = "john.smith@example.com"
+                };
+                repository.Insert(client);
+
+                var clientId = repository.GetClientIdByName("John Smith");
+
+                Assert.Equal(client.Id, clientId);
+            }
+        }
+
+        [Fact]
+        public void GetClientIdByName_WhenSearchingCaseInsensitive_ReturnsCorrectId()
+        {
+            CreateTable();
+            using (var connection = new SqliteConnection(ConnectionString))
+            {
+                var repository = new ClientRepository(ConnectionString);
+                var client = new Client
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com"
+                };
+                repository.Insert(client);
+
+                var clientId = repository.GetClientIdByName("jane doe");
+
+                Assert.Equal(client.Id, clientId);
+            }
+        }
     }
 }

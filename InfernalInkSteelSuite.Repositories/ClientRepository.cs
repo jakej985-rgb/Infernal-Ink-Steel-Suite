@@ -176,25 +176,13 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT id, firstName, middleName, lastName FROM clients";
+                command.CommandText = "SELECT id FROM clients WHERE LOWER(firstName || ' ' || middleName || ' ' || lastName) = LOWER($name) OR LOWER(firstName || ' ' || lastName) = LOWER($name)";
+                command.Parameters.AddWithValue("$name", normalizedName);
 
-                using (var reader = command.ExecuteReader())
+                var result = command.ExecuteScalar();
+                if (result != null && result != DBNull.Value)
                 {
-                    while (reader.Read())
-                    {
-                        var client = new Client
-                        {
-                            Id = reader.GetInt32(0),
-                            FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
-                            MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
-                            LastName = reader.IsDBNull(3) ? "" : reader.GetString(3)
-                        };
-
-                        if (client.FullName.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return client.Id;
-                        }
-                    }
+                    return Convert.ToInt32(result);
                 }
             }
             return 0;
