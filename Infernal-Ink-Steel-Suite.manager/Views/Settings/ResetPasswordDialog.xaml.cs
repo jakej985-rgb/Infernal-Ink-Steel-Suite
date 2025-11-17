@@ -1,6 +1,6 @@
 using System.Windows;
 
-namespace Infernal_Ink_Steel_Suite.manager.Views.Settings
+namespace InfernalInkSteelSuite.Views.Settings
 {
     public partial class ResetPasswordDialog : Window
     {

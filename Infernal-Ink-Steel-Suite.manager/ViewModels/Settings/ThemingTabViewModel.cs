@@ -1,7 +1,8 @@
 using Infernal_Ink_Steel_Suite.manager.Services;
 using System.Collections.ObjectModel;
+using InfernalInkSteelSuite.ViewModels;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class ThemingTabViewModel : SettingsTabViewModel
     {

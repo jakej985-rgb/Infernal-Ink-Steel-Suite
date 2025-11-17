@@ -1,4 +1,6 @@
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+using InfernalInkSteelSuite.ViewModels;
+
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class ResetPasswordDialogViewModel : BaseViewModel
     {

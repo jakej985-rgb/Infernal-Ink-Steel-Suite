@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.ViewModels;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class UserProfileTabViewModel : SettingsTabViewModel
     {
