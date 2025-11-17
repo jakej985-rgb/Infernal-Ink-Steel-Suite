@@ -12,6 +12,7 @@ namespace InfernalInkSteelSuite.Views
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IDocumentRepository _documentRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
 
         private readonly User _currentUser;
 
@@ -22,9 +23,29 @@ namespace InfernalInkSteelSuite.Views
             _appointmentRepository = new AppointmentRepository(_connectionString);
             _clientRepository = new ClientRepository(_connectionString);
             _documentRepository = new DocumentRepository(_connectionString);
+            _shopSettingsRepository = new ShopSettingsRepository(_connectionString);
 
             InitializeComponent();
+            LoadShopSettings();
             MainContent.Content = new HomeView();
+        }
+
+        private void LoadShopSettings()
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            TattooRateLabel.Text = $"{settings.TattooPerHour:C}/hr";
+            PiercingRateLabel.Text = $"{settings.PiercingSingle:C}";
+            if (!string.IsNullOrEmpty(settings.SidebarArtworkPath))
+            {
+                SidebarArtwork.Source = new System.Windows.Media.Imaging.BitmapImage(new System.Uri(settings.SidebarArtworkPath));
+            }
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            var login = new Login();
+            login.Show();
+            this.Close();
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
