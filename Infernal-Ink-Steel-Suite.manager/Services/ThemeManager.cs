@@ -14,7 +14,7 @@ namespace InfernalInkSteelSuite.Services
         Forest,
         Vampire,
         EightiesSunset,
-        Monochrome
+        Monochrome,
         Christmas,
         Halloween,
         July4th,
