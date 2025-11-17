@@ -1,4 +1,4 @@
-using Infernal_Ink_Steel_Suite.manager.Services;
+using InfernalInkSteelSuite.Services;
 using System.Collections.ObjectModel;
 using InfernalInkSteelSuite.ViewModels;
 
@@ -37,13 +37,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public ThemingTabViewModel()
         {
             _themeManager = ThemeManager.Instance;
-            Themes = new ObservableCollection<Theme>(_themeManager.Themes);
-            SelectedTheme = _themeManager.CurrentTheme;
-
+            _themes = new ObservableCollection<Theme>(_themeManager.Themes);
+            _selectedTheme = _themeManager.CurrentTheme ?? new Theme();
             SetThemeCommand = new RelayCommand(SetTheme);
         }
 
-        private void SetTheme(object obj)
+        private void SetTheme(object? obj)
         {
             if (SelectedTheme != null)
             {

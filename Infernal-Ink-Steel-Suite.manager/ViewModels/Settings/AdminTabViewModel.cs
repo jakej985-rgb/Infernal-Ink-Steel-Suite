@@ -84,6 +84,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             _userRepository = userRepository;
             _shopSettingsRepository = shopSettingsRepository;
+            _users = new ObservableCollection<User>();
             LoadUsers();
             _shopSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
 

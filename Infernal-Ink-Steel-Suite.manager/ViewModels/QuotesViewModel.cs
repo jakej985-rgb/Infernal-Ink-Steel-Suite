@@ -85,7 +85,7 @@ namespace InfernalInkSteelSuite.ViewModels
 
     public class QuoteDto
     {
-        public string Service { get; set; }
+        public string Service { get; set; } = string.Empty;
         public decimal PriceCharged { get; set; }
         public int DurationMinutes { get; set; }
         public decimal PricePerHour { get; set; }

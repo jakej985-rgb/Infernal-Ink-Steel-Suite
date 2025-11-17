@@ -72,7 +72,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             SaveCommand = new RelayCommand(SaveSettings);
         }
 
-        private void SaveSettings(object obj)
+        private void SaveSettings(object? obj)
         {
             _shopSettingsRepository.SaveSettings(_shopSettings);
         }

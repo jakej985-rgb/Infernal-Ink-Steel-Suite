@@ -50,7 +50,10 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         public AddUserDialogViewModel()
         {
-            Roles = new ObservableCollection<string> { "Admin", "Manager", "User" };
+            _username = string.Empty;
+            _password = string.Empty;
+            _roles = new ObservableCollection<string> { "Admin", "Manager", "User" };
+            _selectedRole = _roles[0];
         }
     }
 }

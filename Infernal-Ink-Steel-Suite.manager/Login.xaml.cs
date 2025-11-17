@@ -25,6 +25,7 @@ namespace InfernalInkSteelSuite
         {
             InitializeComponent();
             _connectionString = connectionString;
+            _currentUser = null!;
             _userRepository = new UserRepository(connectionString);
             _settingsRepository = new ShopSettingsRepository(connectionString);
             BuildUserGrid();

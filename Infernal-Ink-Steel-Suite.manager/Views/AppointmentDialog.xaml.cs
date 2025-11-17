@@ -10,7 +10,7 @@ namespace InfernalInkSteelSuite.Views
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
         public Appointment Appointment { get; set; }
-        public string Time { get; set; }
+        public string Time { get; set; } = string.Empty;
 
         public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
         {

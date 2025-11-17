@@ -10,6 +10,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public DocumentViewModel(Document document)
         {
             _document = document;
+            _clientName = string.Empty;
         }
 
         public int Id => _document.Id;
