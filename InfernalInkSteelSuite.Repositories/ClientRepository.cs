@@ -176,7 +176,13 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT id FROM clients WHERE LOWER(firstName || ' ' || middleName || ' ' || lastName) = LOWER($name) OR LOWER(firstName || ' ' || lastName) = LOWER($name)";
+                command.CommandText = @"
+                    SELECT id FROM clients
+                    WHERE
+                        (middleName IS NULL OR middleName = '') AND LOWER(firstName || ' ' || lastName) = LOWER($name)
+                        OR
+                        (middleName IS NOT NULL AND middleName != '') AND LOWER(firstName || ' ' || middleName || ' ' || lastName) = LOWER($name);
+                ";
                 command.Parameters.AddWithValue("$name", normalizedName);
 
                 var result = command.ExecuteScalar();
