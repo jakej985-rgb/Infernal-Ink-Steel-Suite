@@ -79,10 +79,6 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Add(Appointment appointment)
         {
-            if (appointment.DateTime.Date < DateTime.Now.Date)
-            {
-                throw new ArgumentException("Cannot add appointment in the past.");
-            }
             using (var conn = GetConnection())
             {
                 conn.Open();
@@ -106,10 +102,6 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Update(Appointment appointment)
         {
-            if (appointment.DateTime.Date < DateTime.Now.Date)
-            {
-                throw new ArgumentException("Cannot update appointment to a date in the past.");
-            }
             using (var conn = GetConnection())
             {
                 conn.Open();

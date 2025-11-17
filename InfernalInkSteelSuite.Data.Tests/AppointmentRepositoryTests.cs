@@ -46,5 +46,37 @@ namespace InfernalInkSteelSuite.Data.Tests
 
             Assert.Null(exception);
         }
+
+        [Fact]
+        public void Update_AppointmentOnSameDayButPastTime_ShouldNotThrowException()
+        {
+            CreateTable();
+            var repository = new AppointmentRepository(ConnectionString);
+            var appointment = new Appointment
+            {
+                ClientId = 1,
+                UserId = 1,
+                ClientName = "Test Client",
+                DateTime = DateTime.Now.AddDays(1),
+                DurationMinutes = 60,
+                ServiceType = "Test Service",
+                ServiceCategory = "Test Category",
+                PriceType = "Fixed",
+                PriceCharged = 100,
+                Notes = "",
+                Color = "Blue",
+                Status = "Scheduled"
+            };
+
+            repository.Add(appointment);
+
+            var savedAppointment = repository.GetAppointmentsByClientId(1)[0];
+
+            savedAppointment.DateTime = DateTime.Now.AddHours(-1);
+
+            var exception = Record.Exception(() => repository.Update(savedAppointment));
+
+            Assert.Null(exception);
+        }
     }
 }
