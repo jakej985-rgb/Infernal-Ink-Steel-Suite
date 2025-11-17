@@ -7,7 +7,7 @@ namespace InfernalInkSteelSuite.Views.Appointments
 {
     public partial class CompletedAppointmentsTab : UserControl, IAppointmentTabView
     {
-        public Appointment SelectedAppointment => CompletedAppointmentsGrid.SelectedItem as Appointment;
+        public Appointment? SelectedAppointment => CompletedAppointmentsGrid.SelectedItem as Appointment;
 
         private readonly IAppointmentRepository _appointmentRepository;
 
