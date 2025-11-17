@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public AddEditClientViewModel(IClientRepository clientRepository, Client client)
         {
             _clientRepository = clientRepository;
-            Client = client;
+            _client = client;
 
             SaveCommand = new RelayCommand(p => Save(p));
             CancelCommand = new RelayCommand(p => Cancel(p));

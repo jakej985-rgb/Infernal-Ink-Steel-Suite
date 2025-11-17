@@ -14,5 +14,10 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 OnPropertyChanged();
             }
         }
+
+        public ResetPasswordDialogViewModel()
+        {
+            _password = string.Empty;
+        }
     }
 }

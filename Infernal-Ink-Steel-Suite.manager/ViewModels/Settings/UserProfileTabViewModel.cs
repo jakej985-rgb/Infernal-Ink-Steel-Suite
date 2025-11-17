@@ -38,10 +38,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             _userRepository = userRepository;
             _username = username;
+            _newPassword = string.Empty;
+            _confirmPassword = string.Empty;
             ChangePasswordCommand = new RelayCommand(ChangePassword);
         }
 
-        private void ChangePassword(object parameter)
+        private void ChangePassword(object? parameter)
         {
             if (NewPassword == ConfirmPassword)
             {

@@ -18,6 +18,8 @@ namespace InfernalInkSteelSuite.ViewModels
         public ClientViewModel(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
+            _allClients = new List<Client>();
+            _clients = new List<Client>();
             LoadClients();
 
             AddClientCommand = new RelayCommand(() => AddClient());

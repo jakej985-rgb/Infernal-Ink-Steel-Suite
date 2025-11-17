@@ -55,6 +55,10 @@ namespace InfernalInkSteelSuite.ViewModels
             VisitsChart = new WpfPlot();
             HoursChart = new WpfPlot();
 
+            IncomeData = Array.Empty<double>();
+            VisitsData = Array.Empty<double>();
+            HoursData = Array.Empty<double>();
+
             Years = new ObservableCollection<int>();
             PopulateYearSelector();
             SelectedYear = Years.FirstOrDefault();

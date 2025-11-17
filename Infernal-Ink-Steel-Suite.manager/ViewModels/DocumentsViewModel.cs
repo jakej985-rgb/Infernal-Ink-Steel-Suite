@@ -45,6 +45,8 @@ namespace InfernalInkSteelSuite.ViewModels
         {
             _documentRepository = documentRepository;
             _clientRepository = clientRepository;
+            _selectedDocument = null!;
+            _filterText = string.Empty;
 
             Documents = new ObservableCollection<DocumentViewModel>();
 
