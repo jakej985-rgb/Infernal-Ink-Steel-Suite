@@ -4,7 +4,6 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public interface IShopSettingsRepository
     {
-        void CreateTable();
         void SaveSettings(ShopSettings settings);
         ShopSettings LoadSettings();
     }
