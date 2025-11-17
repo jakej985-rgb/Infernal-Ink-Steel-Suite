@@ -15,14 +15,20 @@ namespace InfernalInkSteelSuite.Domain
         {
             get
             {
-                if (string.IsNullOrEmpty(MiddleName))
+                var nameParts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(FirstName))
                 {
-                    return $"{FirstName} {LastName}";
+                    nameParts.Add(FirstName);
                 }
-                else
+                if (!string.IsNullOrWhiteSpace(MiddleName))
                 {
-                    return $"{FirstName} {MiddleName} {LastName}";
+                    nameParts.Add(MiddleName);
                 }
+                if (!string.IsNullOrWhiteSpace(LastName))
+                {
+                    nameParts.Add(LastName);
+                }
+                return string.Join(" ", nameParts);
             }
         }
     }
