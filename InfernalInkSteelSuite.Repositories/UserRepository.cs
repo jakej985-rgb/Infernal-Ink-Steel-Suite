@@ -103,35 +103,15 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
 
-                string currentPasswordHash = "";
-                var selectCommand = connection.CreateCommand();
-                selectCommand.CommandText = "SELECT passwordHash FROM users WHERE id = @id";
-                selectCommand.Parameters.AddWithValue("@id", user.Id);
-                using (var reader = selectCommand.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        currentPasswordHash = reader.GetString(0);
-                    }
-                }
-
-                string newPasswordHash = currentPasswordHash;
-                if (!string.IsNullOrEmpty(user.PasswordHash) && currentPasswordHash != user.PasswordHash)
-                {
-                    newPasswordHash = HashPassword(user.PasswordHash);
-                }
-
                 var command = connection.CreateCommand();
                 command.CommandText = @"
                     UPDATE users
                     SET username = @username,
-                        passwordHash = @passwordHash,
                         role = @role,
                         avatarPath = @avatarPath,
                         updatedAt = @updatedAt
                     WHERE id = @id";
                 command.Parameters.AddWithValue("@username", user.Username);
-                command.Parameters.AddWithValue("@passwordHash", newPasswordHash);
                 command.Parameters.AddWithValue("@role", user.Role);
                 command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
                 command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
