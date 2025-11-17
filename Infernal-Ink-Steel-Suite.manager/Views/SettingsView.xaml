@@ -55,7 +55,7 @@
         <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}" TabStripPlacement="Left">
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Header}" Foreground="White" FontSize="16"/>
+                    <TextBlock Text="{Binding Header}" Foreground="{DynamicResource TextColor}" FontSize="16"/>
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>

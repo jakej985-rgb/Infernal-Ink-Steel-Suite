@@ -8,13 +8,13 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel Margin="20">
-            <Label Content="Shop Name" Foreground="White"/>
+            <Label Content="Shop Name" Foreground="{DynamicResource TextColor}"/>
             <TextBox Text="{Binding ShopName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
-            <Label Content="Tattoo Rate (per hour)" Foreground="White"/>
+            <Label Content="Tattoo Rate (per hour)" Foreground="{DynamicResource TextColor}"/>
             <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
-            <Label Content="Piercing Rate (single)" Foreground="White"/>
+            <Label Content="Piercing Rate (single)" Foreground="{DynamicResource TextColor}"/>
             <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
-            <Label Content="Piercing Rate (multiple)" Foreground="White"/>
+            <Label Content="Piercing Rate (multiple)" Foreground="{DynamicResource TextColor}"/>
             <TextBox Text="{Binding PiercingMulti, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
             <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
         </StackPanel>

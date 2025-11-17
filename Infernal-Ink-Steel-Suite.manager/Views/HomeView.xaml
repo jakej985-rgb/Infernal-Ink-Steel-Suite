@@ -4,7 +4,7 @@
              Background="#111111">
     <Grid>
         <TextBlock Text="Welcome to Infernal Ink &amp; Steel Suite"
-                   Foreground="White"
+                   Foreground="{DynamicResource TextColor}"
                    FontSize="24"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>

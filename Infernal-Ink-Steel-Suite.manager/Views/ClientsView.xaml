@@ -25,7 +25,7 @@
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
                   Background="#181818"
-                  Foreground="White"
+                  Foreground="{DynamicResource TextColor}"
                   GridLinesVisibility="None">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>

@@ -15,7 +15,7 @@
 
             <!-- Branding Panel -->
             <StackPanel x:Name="BrandingPanel" Margin="8,0,8,12">
-                <TextBlock x:Name="HeadlineLabel" Text="Welcome Back" FontSize="28" FontWeight="Bold" Foreground="White" TextWrapping="Wrap"/>
+                <TextBlock x:Name="HeadlineLabel" Text="Welcome Back" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextColor}" TextWrapping="Wrap"/>
                 <TextBlock x:Name="TaglineLabel" Text="Sign in to manage your day." FontSize="16" Foreground="#CCFFFFFF" TextWrapping="Wrap" Margin="0,4,0,0"/>
             </StackPanel>
 
@@ -30,10 +30,10 @@
                     <!-- Replace GlowAvatar with a simple Ellipse and TextBlock for initials -->
                     <Grid HorizontalAlignment="Center" Width="140" Height="140">
                         <Ellipse Fill="#444" Stroke="#888" StrokeThickness="4"/>
-                        <TextBlock x:Name="AvatarInitials" Text="U" FontSize="64" FontWeight="Bold" Foreground="White"
+                        <TextBlock x:Name="AvatarInitials" Text="U" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource TextColor}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
-                    <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Center" Margin="0,12,0,0"
+                    <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,12,0,0"
                                Padding="14,6"
                                >
                         <TextBlock.Style>
@@ -49,7 +49,7 @@
                     </TextBlock>
                     <PasswordBox x:Name="PasswordEdit" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0"
                                  Style="{StaticResource PasswordBoxStyle}"/>
-                    <CheckBox x:Name="ShowPasswordCheck" Content="Show Password" HorizontalAlignment="Center" Margin="0,12,0,0" Foreground="White"
+                    <CheckBox x:Name="ShowPasswordCheck" Content="Show Password" HorizontalAlignment="Center" Margin="0,12,0,0" Foreground="{DynamicResource TextColor}"
                               Checked="ShowPasswordCheck_Checked" Unchecked="ShowPasswordCheck_Unchecked"/>
                     <TextBox x:Name="PasswordTextBox" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0" Visibility="Collapsed"
                              Style="{StaticResource TextBoxStyle}"/>

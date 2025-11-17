@@ -8,6 +8,7 @@ namespace InfernalInkSteelSuite.Services
         public string Name { get; set; } = string.Empty;
         public Color PrimaryColor { get; set; }
         public Color SecondaryColor { get; set; }
+        public Color TextColor { get; set; }
     }
 
     public class ThemeManager
@@ -22,9 +23,9 @@ namespace InfernalInkSteelSuite.Services
         {
             Themes = new List<Theme>
             {
-                new Theme { Name = "Default", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF00FFFF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#333333") },
-                new Theme { Name = "Dark", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFFF0000"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#000000") },
-                new Theme { Name = "Light", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF0000FF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#FFFFFF") }
+                new Theme { Name = "Default", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF00FFFF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#333333"), TextColor = Colors.White },
+                new Theme { Name = "Dark", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFFF0000"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#000000"), TextColor = Colors.White },
+                new Theme { Name = "Light", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF0000FF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#FFFFFF"), TextColor = Colors.Black }
             };
             CurrentTheme = Themes[0];
         }
