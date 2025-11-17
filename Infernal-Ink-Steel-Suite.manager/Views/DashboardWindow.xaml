@@ -10,15 +10,30 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Background="{DynamicResource SurfaceBrush}">
-            <Button Content="Home" Click="Home_Click"/>
-            <Button Content="Clients" Click="Clients_Click"/>
-            <Button Content="Appointments" Click="Appointments_Click"/>
-            <Button Content="Quotes" Click="Quotes_Click"/>
-            <Button Content="Documents" Click="Documents_Click"/>
-            <Button Content="Statistics" Click="Statistics_Click"/>
-            <Button Content="Settings" Click="Settings_Click"/>
-        </StackPanel>
+        <Grid Grid.Column="0" Background="{DynamicResource SurfaceBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Button Content="Home" Click="Home_Click"/>
+                <Button Content="Clients" Click="Clients_Click"/>
+                <Button Content="Appointments" Click="Appointments_Click"/>
+                <Button Content="Quotes" Click="Quotes_Click"/>
+                <Button Content="Documents" Click="Documents_Click"/>
+                <Button Content="Statistics" Click="Statistics_Click"/>
+                <Button Content="Settings" Click="Settings_Click"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" VerticalAlignment="Bottom" Margin="10">
+                <Image x:Name="SidebarArtwork" Stretch="Uniform" Height="150"/>
+                <TextBlock Text="Tattoo Rate:" FontWeight="Bold" Foreground="{DynamicResource TextColor}"/>
+                <TextBlock x:Name="TattooRateLabel" Foreground="{DynamicResource TextColor}"/>
+                <TextBlock Text="Piercing Rate:" FontWeight="Bold" Margin="0,10,0,0" Foreground="{DynamicResource TextColor}"/>
+                <TextBlock x:Name="PiercingRateLabel" Foreground="{DynamicResource TextColor}"/>
+                <Button Content="Logout" Click="Logout_Click" Margin="0,20,0,0"/>
+            </StackPanel>
+        </Grid>
 
         <ContentControl Grid.Column="1" x:Name="MainContent"/>
     </Grid>
