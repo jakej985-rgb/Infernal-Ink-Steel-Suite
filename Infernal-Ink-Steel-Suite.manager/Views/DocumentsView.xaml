@@ -7,6 +7,31 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button Content="Add Document" Command="{Binding AddDocumentCommand}" Margin="5" />
+            <Button Content="Refresh" Command="{Binding RefreshDocumentsCommand}" Margin="5" />
+            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" />
+            <Button Content="Filter" Command="{Binding FilterDocumentsCommand}" Margin="5" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Documents}" AutoGenerateColumns="False" CanUserAddRows="False" SelectedItem="{Binding SelectedDocument}">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open" Command="{Binding OpenDocumentCommand}" />
+                    <MenuItem Header="Rename" Command="{Binding RenameDocumentCommand}" />
+                    <MenuItem Header="Delete" Command="{Binding DeleteDocumentCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="File Name" Binding="{Binding Title}" Width="*" />
+                <DataGridTextColumn Header="Client Name" Binding="{Binding ClientName}" Width="*" />
+                <DataGridTextColumn Header="Date Added" Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd}}" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

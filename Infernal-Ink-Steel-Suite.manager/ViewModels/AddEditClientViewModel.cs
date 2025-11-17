@@ -17,8 +17,8 @@ namespace InfernalInkSteelSuite.ViewModels
             _clientRepository = clientRepository;
             Client = client;
 
-            SaveCommand = new RelayCommand(Save);
-            CancelCommand = new RelayCommand(Cancel);
+            SaveCommand = new RelayCommand(p => Save(p));
+            CancelCommand = new RelayCommand(p => Cancel(p));
         }
 
         public Client Client
@@ -50,6 +50,14 @@ namespace InfernalInkSteelSuite.ViewModels
         private void Cancel(object? parameter)
         {
             OnRequestClose();
+        }
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected virtual void OnRequestClose()

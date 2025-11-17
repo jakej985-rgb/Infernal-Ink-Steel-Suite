@@ -16,8 +16,33 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.8" />
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>InfernalInkSteelSuite</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Infernal-Ink-Steel-Suite</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj" />
+    <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj" />
+    <ProjectReference Include="..\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <None Remove="shop_manager.db" />
   </ItemGroup>
+</Project>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
+    <PackageReference Include="OpenTK.Audio.OpenAL" Version="4.9.4" />
+    <PackageReference Include="ScottPlot.WPF" Version="5.1.57" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
+    <PackageReference Include="SkiaSharp.Views.WPF" Version="3.119.1" />
+  </ItemGroup>
+
 </Project>

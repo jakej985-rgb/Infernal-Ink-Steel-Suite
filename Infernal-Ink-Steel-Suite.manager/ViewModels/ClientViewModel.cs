@@ -19,8 +19,8 @@ namespace InfernalInkSteelSuite.ViewModels
             _clientRepository = clientRepository;
             LoadClients();
 
-            AddClientCommand = new RelayCommand(AddClient);
-            EditClientCommand = new RelayCommand(EditClient);
+            AddClientCommand = new RelayCommand(() => AddClient());
+            EditClientCommand = new RelayCommand(p => EditClient(p));
         }
 
         public List<Client> Clients
@@ -66,6 +66,7 @@ namespace InfernalInkSteelSuite.ViewModels
         }
 
         private void AddClient(object? parameter)
+        private void AddClient()
         {
             var newClient = new Client();
             var viewModel = new AddEditClientViewModel(_clientRepository, newClient);
@@ -83,6 +84,13 @@ namespace InfernalInkSteelSuite.ViewModels
                 view.ShowDialog();
                 LoadClients(); // Refresh the list
             }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

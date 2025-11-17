@@ -1,5 +1,6 @@
-using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
+using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Repositories;
 using System.Windows;
 using InfernalInkSteelSuite.Domain;
 
@@ -10,6 +11,7 @@ namespace InfernalInkSteelSuite.Views
         private readonly string _connectionString;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IDocumentRepository _documentRepository;
 
         private readonly User _currentUser;
 
@@ -19,6 +21,7 @@ namespace InfernalInkSteelSuite.Views
             _currentUser = currentUser;
             _appointmentRepository = new AppointmentRepository(_connectionString);
             _clientRepository = new ClientRepository(_connectionString);
+            _documentRepository = new DocumentRepository(_connectionString);
 
             InitializeComponent();
             MainContent.Content = new HomeView();
@@ -44,12 +47,15 @@ namespace InfernalInkSteelSuite.Views
 
         private void Quotes_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new QuotesView();
+            MainContent.Content = new QuotesView(_appointmentRepository);
         }
 
         private void Documents_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new DocumentsView();
+            var documentsViewModel = new DocumentsViewModel(_documentRepository, _clientRepository);
+            var documentsView = new DocumentsView();
+            documentsView.DataContext = documentsViewModel;
+            MainContent.Content = documentsView;
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
@@ -58,6 +64,11 @@ namespace InfernalInkSteelSuite.Views
             var settingsView = new SettingsView();
             settingsView.DataContext = settingsViewModel;
             MainContent.Content = settingsView;
+        }
+
+        private void Statistics_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new StatsView();
         }
     }
 }
