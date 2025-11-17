@@ -39,7 +39,7 @@ namespace InfernalInkSteelSuite
             var users = _userRepository.GetAllUsers();
             foreach (var user in users)
             {
-                var userWidget = new StackPanel { Margin = new Thickness(10) };
+                var userWidget = new StackPanel { Margin = new Thickness(30) };
                 var avatar = new GlowAvatar
                 {
                     Size = 100,
