@@ -3,6 +3,7 @@ using InfernalInkSteelSuite.Data;
 using SQLitePCL;
 using System;
 using InfernalInkSteelSuite.Services;
+using InfernalInkSteelSuite.Repositories;
 
 namespace InfernalInkSteelSuite
 {
@@ -24,8 +25,20 @@ namespace InfernalInkSteelSuite
                 var databaseManager = new DatabaseManager(ConnectionString);
                 databaseManager.InitializeDatabase();
 
+                var shopSettingsRepository = new ShopSettingsRepository(ConnectionString);
+                var settings = shopSettingsRepository.LoadSettings();
+
                 // Default theme before login (e.g. Infernal Neon)
                 ThemeManager.ApplyTheme(ThemeId.InfernalNeon);
+
+                if (settings.EnableAutomaticHolidayThemes)
+                {
+                    var holidayTheme = HolidayThemeService.GetCurrentHolidayTheme();
+                    if (holidayTheme != null)
+                    {
+                        ThemeManager.ApplyTheme(holidayTheme.Id);
+                    }
+                }
             }
             catch (Exception ex)
             {

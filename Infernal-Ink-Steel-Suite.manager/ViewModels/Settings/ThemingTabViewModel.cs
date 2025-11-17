@@ -1,28 +1,20 @@
 using InfernalInkSteelSuite.Services;
-using System.Collections.ObjectModel;
-using InfernalInkSteelSuite.ViewModels;
+using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Domain;
+using System.Collections.Generic;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class ThemingTabViewModel : SettingsTabViewModel
     {
-        private readonly ThemeManager _themeManager;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
 
         public override string Header => "Theming";
 
-        private ObservableCollection<Theme> _themes;
-        public ObservableCollection<Theme> Themes
-        {
-            get => _themes;
-            set
-            {
-                _themes = value;
-                OnPropertyChanged();
-            }
-        }
+        public IEnumerable<ThemeDefinition> Themes => ThemeManager.AvailableThemes;
 
-        private Theme _selectedTheme;
-        public Theme SelectedTheme
+        private ThemeDefinition _selectedTheme;
+        public ThemeDefinition SelectedTheme
         {
             get => _selectedTheme;
             set
@@ -31,27 +23,47 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 {
                     _selectedTheme = value;
                     OnPropertyChanged();
-                    SetThemeCommand.Execute(null);
+                    if (value != null)
+                    {
+                        ThemeManager.ApplyTheme(value.Id);
+                    }
                 }
             }
         }
 
-        public RelayCommand SetThemeCommand { get; }
-
-        public ThemingTabViewModel()
+        private bool _enableAutomaticHolidayThemes;
+        public bool EnableAutomaticHolidayThemes
         {
-            _themeManager = ThemeManager.Instance;
-            _themes = new ObservableCollection<Theme>(_themeManager.Themes);
-            _selectedTheme = _themeManager.CurrentTheme ?? new Theme();
-            SetThemeCommand = new RelayCommand(SetTheme);
+            get => _enableAutomaticHolidayThemes;
+            set
+            {
+                if (_enableAutomaticHolidayThemes != value)
+                {
+                    _enableAutomaticHolidayThemes = value;
+                    OnPropertyChanged();
+                    SaveSettings();
+                }
+            }
         }
 
-        private void SetTheme(object? obj)
+        public ThemingTabViewModel(IShopSettingsRepository shopSettingsRepository)
         {
-            if (SelectedTheme != null)
-            {
-                _themeManager.SetTheme(SelectedTheme);
-            }
+            _shopSettingsRepository = shopSettingsRepository;
+            _selectedTheme = ThemeManager.CurrentTheme;
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            EnableAutomaticHolidayThemes = settings.EnableAutomaticHolidayThemes;
+        }
+
+        private void SaveSettings()
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            settings.EnableAutomaticHolidayThemes = EnableAutomaticHolidayThemes;
+            _shopSettingsRepository.SaveSettings(settings);
         }
     }
 }

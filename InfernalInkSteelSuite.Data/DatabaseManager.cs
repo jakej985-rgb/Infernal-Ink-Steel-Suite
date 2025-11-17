@@ -143,6 +143,7 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "users", "createdAt", "TEXT");
             EnsureColumnExists(connection, "users", "updatedAt", "TEXT");
             EnsureColumnExists(connection, "users", "ThemeKey", "TEXT NOT NULL DEFAULT 'InfernalNeon'");
+            EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
         }
 
         private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)

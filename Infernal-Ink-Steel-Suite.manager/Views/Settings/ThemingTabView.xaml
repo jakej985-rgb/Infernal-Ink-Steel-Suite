@@ -9,7 +9,8 @@
     <Grid>
         <StackPanel Margin="20">
             <Label Content="Select Theme" Foreground="{DynamicResource TextColor}"/>
-            <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" DisplayMemberPath="Name"/>
+            <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" DisplayMemberPath="DisplayName"/>
+            <CheckBox Content="Enable Automatic Holiday Themes" IsChecked="{Binding EnableAutomaticHolidayThemes}" Margin="0,10,0,0"/>
         </StackPanel>
     </Grid>
 </UserControl>
