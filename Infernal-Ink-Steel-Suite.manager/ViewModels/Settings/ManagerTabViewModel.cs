@@ -2,8 +2,9 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System.Collections.ObjectModel;
 using System.Linq;
+using InfernalInkSteelSuite.ViewModels;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public class ManagerTabViewModel : SettingsTabViewModel
     {

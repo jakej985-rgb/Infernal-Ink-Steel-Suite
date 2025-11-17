@@ -6,8 +6,8 @@ namespace InfernalInkSteelSuite.Repositories
     public interface IUserRepository
     {
         bool CreateTable();
-        User GetUserById(int userId);
-        string GetUsernameById(int userId);
+        User? GetUserById(int userId);
+        string? GetUsernameById(int userId);
         bool AddUser(User user);
         bool AddUser(string username, string password, string role);
         bool UpdateUser(User user);
