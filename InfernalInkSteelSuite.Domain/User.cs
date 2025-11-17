@@ -15,7 +15,7 @@ namespace InfernalInkSteelSuite.Domain
 
         public bool IsAdmin()
         {
-            return Role.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+            return string.Equals(Role, "Admin", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
