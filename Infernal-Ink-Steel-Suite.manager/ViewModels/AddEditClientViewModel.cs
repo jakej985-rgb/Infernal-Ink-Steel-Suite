@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace InfernalInkSteelSuite.ViewModels
@@ -50,14 +51,6 @@ namespace InfernalInkSteelSuite.ViewModels
         private void Cancel(object? parameter)
         {
             OnRequestClose();
-        }
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected virtual void OnRequestClose()
