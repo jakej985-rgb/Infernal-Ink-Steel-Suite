@@ -1,41 +1,99 @@
+using System;
 using System.Collections.Generic;
-using System.Windows.Media;
+using System.Linq;
+using System.Windows;
 
 namespace InfernalInkSteelSuite.Services
 {
-    public class Theme
+    public enum ThemeId
     {
-        public string Name { get; set; } = string.Empty;
-        public Color PrimaryColor { get; set; }
-        public Color SecondaryColor { get; set; }
-        public Color TextColor { get; set; }
+        Dark,
+        Light,
+        InfernalNeon
     }
 
-    public class ThemeManager
+    public sealed class ThemeDefinition
     {
-        private static ThemeManager? _instance;
-        public static ThemeManager Instance => _instance ??= new ThemeManager();
+        public ThemeId Id { get; }
+        public string Key { get; }
+        public string DisplayName { get; }
+        public Uri ResourceUri { get; }
 
-        public List<Theme> Themes { get; }
-        public Theme CurrentTheme { get; private set; }
-
-        private ThemeManager()
+        public ThemeDefinition(ThemeId id, string key, string displayName, string resourcePath)
         {
-            Themes = new List<Theme>
+            Id = id;
+            Key = key;
+            DisplayName = displayName;
+            ResourceUri = new Uri($"pack://application:,,,/{resourcePath}", UriKind.Absolute);
+        }
+    }
+
+    public static class ThemeManager
+    {
+        public static IReadOnlyList<ThemeDefinition> AvailableThemes { get; } =
+            new List<ThemeDefinition>
             {
-                new Theme { Name = "Default", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF00FFFF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#333333"), TextColor = Colors.White },
-                new Theme { Name = "Dark", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FFFF0000"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#000000"), TextColor = Colors.White },
-                new Theme { Name = "Light", PrimaryColor = (Color)ColorConverter.ConvertFromString("#FF0000FF"), SecondaryColor = (Color)ColorConverter.ConvertFromString("#FFFFFF"), TextColor = Colors.Black }
+                new ThemeDefinition(
+                    ThemeId.Dark,
+                    key: "Dark",
+                    displayName: "Dark",
+                    resourcePath: "Themes/Dark.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.Light,
+                    key: "Light",
+                    displayName: "Light",
+                    resourcePath: "Themes/Light.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.InfernalNeon,
+                    key: "InfernalNeon",
+                    displayName: "Infernal Neon",
+                    resourcePath: "Themes/InfernalNeon.xaml"),
             };
-            CurrentTheme = Themes[0];
+
+        public static ThemeDefinition CurrentTheme { get; private set; } =
+            AvailableThemes.First(t => t.Id == ThemeId.InfernalNeon);
+
+        public static void ApplyTheme(ThemeId id)
+        {
+            var theme = AvailableThemes.First(t => t.Id == id);
+            ApplyTheme(theme);
         }
 
-        public event System.Action<Theme>? ThemeChanged;
-
-        public void SetTheme(Theme theme)
+        public static void ApplyTheme(string themeKey)
         {
+            var theme = AvailableThemes.FirstOrDefault(
+                t => string.Equals(t.Key, themeKey, StringComparison.OrdinalIgnoreCase))
+                ?? AvailableThemes.First(t => t.Id == ThemeId.InfernalNeon);
+
+            ApplyTheme(theme);
+        }
+
+        private static void ApplyTheme(ThemeDefinition theme)
+        {
+            var app = Application.Current;
+            if (app is null)
+                return;
+
+            var dictionaries = app.Resources.MergedDictionaries;
+
+            var toRemove = dictionaries
+                .Where(d => d.Source != null &&
+                            !d.Source.OriginalString.EndsWith("Base.xaml",
+                                StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var dict in toRemove)
+                dictionaries.Remove(dict);
+
+            var themeDict = new ResourceDictionary
+            {
+                Source = theme.ResourceUri
+            };
+            dictionaries.Add(themeDict);
+
             CurrentTheme = theme;
-            ThemeChanged?.Invoke(CurrentTheme);
         }
     }
 }

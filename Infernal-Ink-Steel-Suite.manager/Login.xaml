@@ -4,7 +4,7 @@
         xmlns:controls="clr-namespace:InfernalInkSteelSuite.Controls"
         Title="Login" Height="620" Width="900"
         WindowStartupLocation="CenterScreen"
-        Background="#1E1E1E">
+        Background="{DynamicResource AppBackgroundBrush}">
     <Grid>
         <Image x:Name="BackgroundImage" Stretch="UniformToFill" HorizontalAlignment="Right" VerticalAlignment="Top" Width="420"/>
         <Grid Margin="24">
@@ -15,8 +15,8 @@
 
             <!-- Branding Panel -->
             <StackPanel x:Name="BrandingPanel" Margin="8,0,8,12">
-                <TextBlock x:Name="HeadlineLabel" Text="Welcome Back" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextColor}" TextWrapping="Wrap"/>
-                <TextBlock x:Name="TaglineLabel" Text="Sign in to manage your day." FontSize="16" Foreground="#CCFFFFFF" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                <TextBlock x:Name="HeadlineLabel" Text="Welcome Back" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap"/>
+                <TextBlock x:Name="TaglineLabel" Text="Sign in to manage your day." FontSize="16" Foreground="{DynamicResource SecondaryTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
             </StackPanel>
 
             <!-- User Grid -->
@@ -29,11 +29,11 @@
                 <StackPanel>
                     <!-- Replace GlowAvatar with a simple Ellipse and TextBlock for initials -->
                     <Grid HorizontalAlignment="Center" Width="140" Height="140">
-                        <Ellipse Fill="#444" Stroke="#888" StrokeThickness="4"/>
-                        <TextBlock x:Name="AvatarInitials" Text="U" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource TextColor}"
+                        <Ellipse Fill="{DynamicResource SurfaceBrush}" Stroke="{DynamicResource PrimaryBorderBrush}" StrokeThickness="4"/>
+                        <TextBlock x:Name="AvatarInitials" Text="U" FontSize="64" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"
                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
-                    <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,12,0,0"
+                    <TextBlock x:Name="SelectedUserLabel" Text="Select User" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Center" Margin="0,12,0,0"
                                Padding="14,6"
                                >
                         <TextBlock.Style>
@@ -47,14 +47,11 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
-                    <PasswordBox x:Name="PasswordEdit" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0"
-                                 Style="{StaticResource PasswordBoxStyle}"/>
-                    <CheckBox x:Name="ShowPasswordCheck" Content="Show Password" HorizontalAlignment="Center" Margin="0,12,0,0" Foreground="{DynamicResource TextColor}"
+                    <PasswordBox x:Name="PasswordEdit" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                    <CheckBox x:Name="ShowPasswordCheck" Content="Show Password" HorizontalAlignment="Center" Margin="0,12,0,0" Foreground="{DynamicResource PrimaryTextBrush}"
                               Checked="ShowPasswordCheck_Checked" Unchecked="ShowPasswordCheck_Unchecked"/>
-                    <TextBox x:Name="PasswordTextBox" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0" Visibility="Collapsed"
-                             Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox x:Name="PasswordTextBox" Width="300" HorizontalAlignment="Center" Margin="0,18,0,0" Visibility="Collapsed"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
-                        <!-- Replace NeonButton with standard Button if custom control is missing -->
                         <Button x:Name="BackButton" Content="Back" Width="140" Height="44" Margin="0,0,10,0" Click="Back_Click"/>
                         <Button x:Name="SignInButton" Content="Sign In" Width="140" Height="44" Click="SignIn_Click"/>
                     </StackPanel>

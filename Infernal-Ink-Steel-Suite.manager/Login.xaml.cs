@@ -11,6 +11,7 @@ using System.Text;
 using System.Security.Cryptography;
 using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Services;
 
 namespace InfernalInkSteelSuite
 {
@@ -21,13 +22,13 @@ namespace InfernalInkSteelSuite
         private User _currentUser;
         private readonly string _connectionString;
 
-        public Login(string connectionString)
+        public Login()
         {
             InitializeComponent();
-            _connectionString = connectionString;
+            _connectionString = App.ConnectionString;
             _currentUser = null!;
-            _userRepository = new UserRepository(connectionString);
-            _settingsRepository = new ShopSettingsRepository(connectionString);
+            _userRepository = new UserRepository(_connectionString);
+            _settingsRepository = new ShopSettingsRepository(_connectionString);
             BuildUserGrid();
             ApplyBranding();
         }
@@ -123,6 +124,9 @@ namespace InfernalInkSteelSuite
                 MessageBox.Show("Incorrect password.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            // Apply the user's theme BEFORE showing main window
+            ThemeManager.ApplyTheme(_currentUser.ThemeKey);
 
             var dashboard = new DashboardWindow(_connectionString, _currentUser);
             dashboard.Show();
