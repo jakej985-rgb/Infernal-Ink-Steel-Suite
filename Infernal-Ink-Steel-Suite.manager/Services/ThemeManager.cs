@@ -9,7 +9,18 @@ namespace InfernalInkSteelSuite.Services
     {
         Dark,
         Light,
-        InfernalNeon
+        InfernalNeon,
+        Christmas,
+        Halloween,
+        July4th,
+        Thanksgiving,
+        Easter,
+        MothersDay,
+        FathersDay,
+        Spring,
+        Summer,
+        Winter,
+        Fall
     }
 
     public sealed class ThemeDefinition
@@ -50,6 +61,61 @@ namespace InfernalInkSteelSuite.Services
                     key: "InfernalNeon",
                     displayName: "Infernal Neon",
                     resourcePath: "Themes/InfernalNeon.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Christmas,
+                    key: "Christmas",
+                    displayName: "Christmas",
+                    resourcePath: "Themes/Christmas.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Halloween,
+                    key: "Halloween",
+                    displayName: "Halloween",
+                    resourcePath: "Themes/Halloween.xaml"),
+                new ThemeDefinition(
+                    ThemeId.July4th,
+                    key: "July4th",
+                    displayName: "4th of July",
+                    resourcePath: "Themes/July4th.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Thanksgiving,
+                    key: "Thanksgiving",
+                    displayName: "Thanksgiving",
+                    resourcePath: "Themes/Thanksgiving.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Easter,
+                    key: "Easter",
+                    displayName: "Easter",
+                    resourcePath: "Themes/Easter.xaml"),
+                new ThemeDefinition(
+                    ThemeId.MothersDay,
+                    key: "MothersDay",
+                    displayName: "Mother's Day",
+                    resourcePath: "Themes/MothersDay.xaml"),
+                new ThemeDefinition(
+                    ThemeId.FathersDay,
+                    key: "FathersDay",
+                    displayName: "Father's Day",
+                    resourcePath: "Themes/FathersDay.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Spring,
+                    key: "Spring",
+                    displayName: "Spring",
+                    resourcePath: "Themes/Spring.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Summer,
+                    key: "Summer",
+                    displayName: "Summer",
+                    resourcePath: "Themes/Summer.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Winter,
+                    key: "Winter",
+                    displayName: "Winter",
+                    resourcePath: "Themes/Winter.xaml"),
+                new ThemeDefinition(
+                    ThemeId.Fall,
+                    key: "Fall",
+                    displayName: "Fall",
+                    resourcePath: "Themes/Fall.xaml"),
             };
 
         public static ThemeDefinition CurrentTheme { get; private set; } =

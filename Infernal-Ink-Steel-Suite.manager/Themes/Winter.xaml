@@ -1,0 +1,44 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Subtle Winter Palette -->
+    <Color x:Key="AppBackgroundColor">#FFf4f6f7</Color>   <!-- Very Light Blue -->
+    <Color x:Key="SurfaceColor">#FFeaf2f8</Color>       <!-- Pale Blue -->
+    <Color x:Key="SurfaceAltColor">#FFd4e6f1</Color>      <!-- Light Blue -->
+
+    <Color x:Key="PrimaryColor">#FF85c1e9</Color>        <!-- Light Steel Blue -->
+    <Color x:Key="PrimaryHoverColor">#FFa9cce3</Color>   <!-- Lighter Steel Blue -->
+    <Color x:Key="PrimaryPressedColor">#FF5dade2</Color>  <!-- Darker Steel Blue -->
+
+    <Color x:Key="AccentColor">#FFabb2b9</Color>         <!-- Silver -->
+    <Color x:Key="DangerColor">#FFe74c3c</Color>
+
+    <Color x:Key="PrimaryTextColor">#FF212f3d</Color>     <!-- Dark Slate Gray -->
+    <Color x:Key="SecondaryTextColor">#FF566573</Color>   <!-- Slate Gray -->
+    <Color x:Key="MutedTextColor">#FF808b96</Color>      <!-- Gray -->
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+    <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHoverColor}" />
+    <SolidColorBrush x:Key="PrimaryPressedBrush" Color="{StaticResource PrimaryPressedColor}" />
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
+
+    <SolidColorBrush x:Key="PrimaryBorderBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}" />
+
+    <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
+    <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
+    <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
+
+    <!-- Holiday Asset -->
+    <ImageBrush x:Key="HolidayImageBrush" ImageSource="/Assets/Images/winter.png" Stretch="Uniform" />
+
+    <!-- Window background -->
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"
+                     Color="{StaticResource AppBackgroundColor}" />
+
+</ResourceDictionary>
