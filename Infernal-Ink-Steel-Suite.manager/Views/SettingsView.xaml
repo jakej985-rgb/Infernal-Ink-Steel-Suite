@@ -52,7 +52,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}" TabStripPlacement="Left">
+        <TabControl ItemsSource="{Binding Tabs}" SelectedItem="{Binding SelectedTab}" TabStripPlacement="Left" Background="{DynamicResource AppBackgroundBrush}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Header}" Foreground="{DynamicResource TextColor}" FontSize="16"/>
