@@ -20,5 +20,12 @@ namespace InfernalInkSteelSuite.Data.Tests
             var client = new Client { FirstName = firstName, MiddleName = middleName, LastName = lastName };
             Assert.AreEqual(expected, client.FullName);
         }
+
+        [TestMethod]
+        public void FullName_ShouldTrimWhitespaceFromAllNameParts()
+        {
+            var client = new Client { FirstName = "  John  ", MiddleName = "  Michael  ", LastName = "  Doe  " };
+            Assert.AreEqual("John Michael Doe", client.FullName);
+        }
     }
 }

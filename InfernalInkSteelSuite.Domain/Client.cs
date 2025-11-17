@@ -18,7 +18,7 @@ namespace InfernalInkSteelSuite.Domain
                 var nameParts = new List<string>();
                 if (!string.IsNullOrWhiteSpace(FirstName))
                 {
-                    nameParts.Add(FirstName);
+                    nameParts.Add(FirstName.Trim());
                 }
                 if (!string.IsNullOrWhiteSpace(MiddleName))
                 {
@@ -26,7 +26,7 @@ namespace InfernalInkSteelSuite.Domain
                 }
                 if (!string.IsNullOrWhiteSpace(LastName))
                 {
-                    nameParts.Add(LastName);
+                    nameParts.Add(LastName.Trim());
                 }
                 return string.Join(" ", nameParts);
             }
