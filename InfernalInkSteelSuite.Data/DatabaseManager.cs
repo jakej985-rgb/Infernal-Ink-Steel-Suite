@@ -231,12 +231,18 @@ namespace InfernalInkSteelSuite.Data
 
                     if (createdAt != null && !DateTime.TryParse(createdAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _))
                     {
-                        newCreatedAt = DateTime.Parse(createdAt).ToString("o");
+                        if (DateTime.TryParse(createdAt, out DateTime parsedDate))
+                        {
+                            newCreatedAt = parsedDate.ToString("o");
+                        }
                     }
 
                     if (updatedAt != null && !DateTime.TryParse(updatedAt, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out _))
                     {
-                        newUpdatedAt = DateTime.Parse(updatedAt).ToString("o");
+                        if (DateTime.TryParse(updatedAt, out DateTime parsedDate))
+                        {
+                            newUpdatedAt = parsedDate.ToString("o");
+                        }
                     }
 
                     if (newCreatedAt != null || newUpdatedAt != null)
