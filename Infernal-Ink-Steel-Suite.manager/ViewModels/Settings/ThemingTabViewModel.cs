@@ -1,0 +1,53 @@
+using Infernal_Ink_Steel_Suite.manager.Services;
+using System.Collections.ObjectModel;
+
+namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+{
+    public class ThemingTabViewModel : SettingsTabViewModel
+    {
+        private readonly ThemeManager _themeManager;
+
+        public override string Header => "Theming";
+
+        private ObservableCollection<Theme> _themes;
+        public ObservableCollection<Theme> Themes
+        {
+            get => _themes;
+            set
+            {
+                _themes = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Theme _selectedTheme;
+        public Theme SelectedTheme
+        {
+            get => _selectedTheme;
+            set
+            {
+                _selectedTheme = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RelayCommand SetThemeCommand { get; }
+
+        public ThemingTabViewModel()
+        {
+            _themeManager = ThemeManager.Instance;
+            Themes = new ObservableCollection<Theme>(_themeManager.Themes);
+            SelectedTheme = _themeManager.CurrentTheme;
+
+            SetThemeCommand = new RelayCommand(SetTheme);
+        }
+
+        private void SetTheme(object obj)
+        {
+            if (SelectedTheme != null)
+            {
+                _themeManager.SetTheme(SelectedTheme);
+            }
+        }
+    }
+}

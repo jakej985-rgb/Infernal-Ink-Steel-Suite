@@ -1,17 +1,16 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System;
-using System.ComponentModel;
 using System.Windows.Input;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
-    public class AddEditClientViewModel : INotifyPropertyChanged
+    public class AddEditClientViewModel : BaseViewModel
     {
         private readonly IClientRepository _clientRepository;
         private Client _client;
 
-        public event EventHandler RequestClose;
+        public event EventHandler? RequestClose;
 
         public AddEditClientViewModel(IClientRepository clientRepository, Client client)
         {

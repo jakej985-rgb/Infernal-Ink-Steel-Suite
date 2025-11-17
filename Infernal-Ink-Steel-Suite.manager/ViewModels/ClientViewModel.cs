@@ -2,16 +2,15 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Views;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
-    public class ClientViewModel : INotifyPropertyChanged
+    public class ClientViewModel : BaseViewModel
     {
         private readonly IClientRepository _clientRepository;
-        private string _searchText;
+        private string? _searchText;
         private List<Client> _allClients;
         private List<Client> _clients;
 
@@ -34,7 +33,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public string SearchText
+        public string? SearchText
         {
             get => _searchText;
             set
@@ -66,6 +65,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
+        private void AddClient(object? parameter)
         private void AddClient()
         {
             var newClient = new Client();

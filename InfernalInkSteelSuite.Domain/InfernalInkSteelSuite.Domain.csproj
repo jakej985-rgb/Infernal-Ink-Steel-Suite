@@ -1,10 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>InfernalInkSteelSuite.Domain</RootNamespace>
+    <AssemblyName>InfernalInkSteelSuite.Domain</AssemblyName>
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+</Project>
 
   <ItemGroup>
     <PackageReference Include="SQLitePCLRaw.core" Version="3.0.2" />

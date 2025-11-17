@@ -2,6 +2,7 @@ using InfernalInkSteelSuite.ViewModels;
 using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Repositories;
 using System.Windows;
+using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -12,9 +13,12 @@ namespace InfernalInkSteelSuite.Views
         private readonly IClientRepository _clientRepository;
         private readonly IDocumentRepository _documentRepository;
 
-        public DashboardWindow(string connectionString)
+        private readonly User _currentUser;
+
+        public DashboardWindow(string connectionString, User currentUser)
         {
             _connectionString = connectionString;
+            _currentUser = currentUser;
             _appointmentRepository = new AppointmentRepository(_connectionString);
             _clientRepository = new ClientRepository(_connectionString);
             _documentRepository = new DocumentRepository(_connectionString);
@@ -56,7 +60,10 @@ namespace InfernalInkSteelSuite.Views
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new SettingsView();
+            var settingsViewModel = new SettingsViewModel(_connectionString, _currentUser);
+            var settingsView = new SettingsView();
+            settingsView.DataContext = settingsViewModel;
+            MainContent.Content = settingsView;
         }
 
         private void Statistics_Click(object sender, RoutedEventArgs e)
