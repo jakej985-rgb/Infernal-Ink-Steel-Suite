@@ -13,54 +13,6 @@ namespace InfernalInkSteelSuite.Repositories
             _connectionString = connectionString;
         }
 
-        public void CreateTable()
-        {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText =
-                    @"CREATE TABLE IF NOT EXISTS shopsettings (
-                        shopName TEXT,
-                        logoPath TEXT,
-                        accentColor TEXT,
-                        sidebarArtworkPath TEXT,
-                        loginHeadline TEXT,
-                        loginTagline TEXT,
-                        loginBackgroundPath TEXT,
-                        loginHeadlineFont TEXT,
-                        loginTaglineFont TEXT,
-                        loginTextColor TEXT,
-                        tattooPerHour REAL,
-                        piercingSingle REAL,
-                        piercingMulti REAL)";
-                command.ExecuteNonQuery();
-
-                var migrations = new[]
-                {
-                    "ALTER TABLE shopsettings ADD COLUMN loginHeadline TEXT",
-                    "ALTER TABLE shopsettings ADD COLUMN loginTagline TEXT",
-                    "ALTER TABLE shopsettings ADD COLUMN loginBackgroundPath TEXT",
-                    "ALTER TABLE shopsettings ADD COLUMN loginHeadlineFont TEXT",
-                    "ALTER TABLE shopsettings ADD COLUMN loginTaglineFont TEXT",
-                    "ALTER TABLE shopsettings ADD COLUMN loginTextColor TEXT"
-                };
-
-                foreach (var migration in migrations)
-                {
-                    try
-                    {
-                        command.CommandText = migration;
-                        command.ExecuteNonQuery();
-                    }
-                    catch (SqliteException ex) when (ex.Message.Contains("duplicate column"))
-                    {
-                        // Ignore duplicate column errors during migration
-                    }
-                }
-            }
-        }
-
         public void SaveSettings(ShopSettings settings)
         {
             using (var connection = new SqliteConnection(_connectionString))
@@ -73,8 +25,8 @@ namespace InfernalInkSteelSuite.Repositories
                     command.ExecuteNonQuery();
 
                     command.CommandText =
-                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFont, loginTaglineFont, loginTextColor, tattooPerHour, piercingSingle, piercingMulti)
-                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginHeadline, $loginTagline, $loginBackgroundPath, $loginHeadlineFont, $loginTaglineFont, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti)";
+                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes)
+                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginHeadline, $loginTagline, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes)";
 
                     command.Parameters.AddWithValue("$shopName", settings.ShopName);
                     command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
@@ -83,12 +35,13 @@ namespace InfernalInkSteelSuite.Repositories
                     command.Parameters.AddWithValue("$loginHeadline", settings.LoginHeadline);
                     command.Parameters.AddWithValue("$loginTagline", settings.LoginTagline);
                     command.Parameters.AddWithValue("$loginBackgroundPath", settings.LoginBackgroundPath);
-                    command.Parameters.AddWithValue("$loginHeadlineFont", settings.LoginHeadlineFontFamily);
-                    command.Parameters.AddWithValue("$loginTaglineFont", settings.LoginTaglineFontFamily);
+                    command.Parameters.AddWithValue("$loginHeadlineFontFamily", settings.LoginHeadlineFontFamily);
+                    command.Parameters.AddWithValue("$loginTaglineFontFamily", settings.LoginTaglineFontFamily);
                     command.Parameters.AddWithValue("$loginTextColor", settings.LoginTextColor);
                     command.Parameters.AddWithValue("$tattooPerHour", settings.TattooPerHour);
                     command.Parameters.AddWithValue("$piercingSingle", settings.PiercingSingle);
                     command.Parameters.AddWithValue("$piercingMulti", settings.PiercingMulti);
+                    command.Parameters.AddWithValue("$EnableAutomaticHolidayThemes", settings.EnableAutomaticHolidayThemes ? 1 : 0);
 
                     command.ExecuteNonQuery();
                     transaction.Commit();
@@ -115,12 +68,13 @@ namespace InfernalInkSteelSuite.Repositories
                         settings.LoginHeadline = reader["loginHeadline"].ToString() ?? string.Empty;
                         settings.LoginTagline = reader["loginTagline"].ToString() ?? string.Empty;
                         settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString() ?? string.Empty;
-                        settings.LoginHeadlineFontFamily = reader["loginHeadlineFont"].ToString() ?? string.Empty;
-                        settings.LoginTaglineFontFamily = reader["loginTaglineFont"].ToString() ?? string.Empty;
+                        settings.LoginHeadlineFontFamily = reader["loginHeadlineFontFamily"].ToString() ?? string.Empty;
+                        settings.LoginTaglineFontFamily = reader["loginTaglineFontFamily"].ToString() ?? string.Empty;
                         settings.LoginTextColor = reader["loginTextColor"].ToString() ?? string.Empty;
                         settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
                         settings.PiercingSingle = Convert.ToDouble(reader["piercingSingle"]);
                         settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);
+                        settings.EnableAutomaticHolidayThemes = Convert.ToInt32(reader["EnableAutomaticHolidayThemes"]) == 1;
                     }
                 }
             }
