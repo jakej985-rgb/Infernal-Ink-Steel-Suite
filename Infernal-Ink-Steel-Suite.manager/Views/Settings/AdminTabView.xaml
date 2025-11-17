@@ -30,11 +30,11 @@
             <TabItem Header="Login Screen Branding">
                 <StackPanel Margin="20">
                     <Label Content="Headline" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginHeadline, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox Text="{Binding LoginHeadline, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
                     <Label Content="Tagline" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginTagline, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox Text="{Binding LoginTagline, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
                     <Label Content="Background Image Path" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+                    <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
                     <Button Content="Save Branding" Command="{Binding SaveBrandingCommand}" Margin="0,20,0,0"/>
                 </StackPanel>
             </TabItem>

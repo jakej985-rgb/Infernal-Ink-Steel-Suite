@@ -9,13 +9,13 @@
     <Grid>
         <StackPanel Margin="20">
             <Label Content="Shop Name" Foreground="{DynamicResource TextColor}"/>
-            <TextBox Text="{Binding ShopName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+            <TextBox Text="{Binding ShopName, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
             <Label Content="Tattoo Rate (per hour)" Foreground="{DynamicResource TextColor}"/>
-            <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+            <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
             <Label Content="Piercing Rate (single)" Foreground="{DynamicResource TextColor}"/>
-            <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+            <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
             <Label Content="Piercing Rate (multiple)" Foreground="{DynamicResource TextColor}"/>
-            <TextBox Text="{Binding PiercingMulti, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource TextBoxStyle}"/>
+            <TextBox Text="{Binding PiercingMulti, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
             <Button Content="Save" Command="{Binding SaveCommand}" Margin="0,20,0,0"/>
         </StackPanel>
     </Grid>
