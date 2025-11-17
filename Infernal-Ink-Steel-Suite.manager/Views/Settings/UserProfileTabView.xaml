@@ -9,9 +9,9 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <StackPanel Margin="20">
-            <Label Content="New Password" Foreground="White"/>
+            <Label Content="New Password" Foreground="{DynamicResource TextColor}"/>
             <PasswordBox attachedProperties:PasswordBoxHelper.BoundPassword="{Binding NewPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PasswordBoxStyle}"/>
-            <Label Content="Confirm New Password" Foreground="White"/>
+            <Label Content="Confirm New Password" Foreground="{DynamicResource TextColor}"/>
             <PasswordBox attachedProperties:PasswordBoxHelper.BoundPassword="{Binding ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource PasswordBoxStyle}"/>
             <Button Content="Change Password" Command="{Binding ChangePasswordCommand}" Margin="0,20,0,0"/>
         </StackPanel>

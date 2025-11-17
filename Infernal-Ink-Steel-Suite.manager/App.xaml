@@ -4,6 +4,7 @@
     <Application.Resources>
         <SolidColorBrush x:Key="PrimaryColor" Color="#FF00FFFF"/>
         <SolidColorBrush x:Key="SecondaryColor" Color="#333333"/>
+        <SolidColorBrush x:Key="TextColor" Color="White"/>
 
         <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="Background" Value="{DynamicResource SecondaryColor}"/>

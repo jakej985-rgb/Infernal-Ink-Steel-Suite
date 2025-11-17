@@ -45,6 +45,7 @@ namespace InfernalInkSteelSuite
         {
             Resources["PrimaryColor"] = new SolidColorBrush(theme.PrimaryColor);
             Resources["SecondaryColor"] = new SolidColorBrush(theme.SecondaryColor);
+            Resources["TextColor"] = new SolidColorBrush(theme.TextColor);
         }
     }
 }
