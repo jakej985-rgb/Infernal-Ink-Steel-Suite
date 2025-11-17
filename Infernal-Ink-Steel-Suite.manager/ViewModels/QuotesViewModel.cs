@@ -41,7 +41,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public QuotesViewModel(IAppointmentRepository appointmentRepository)
         {
             _appointmentRepository = appointmentRepository;
-            LoadQuotesCommand = new RelayCommand(LoadQuotes);
+            LoadQuotesCommand = new RelayCommand(_ => LoadQuotes());
             LoadQuotes();
         }
 

@@ -22,7 +22,7 @@ namespace InfernalInkSteelSuite.ViewModels
             _clients = new List<Client>();
             LoadClients();
 
-            AddClientCommand = new RelayCommand(() => AddClient());
+            AddClientCommand = new RelayCommand(_ => AddClient());
             EditClientCommand = new RelayCommand(p => EditClient(p));
         }
 

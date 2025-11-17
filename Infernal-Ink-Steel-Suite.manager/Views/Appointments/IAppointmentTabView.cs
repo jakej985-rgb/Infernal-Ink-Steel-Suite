@@ -4,6 +4,6 @@ namespace InfernalInkSteelSuite.Views.Appointments
 {
     public interface IAppointmentTabView
     {
-        Appointment SelectedAppointment { get; }
+        Appointment? SelectedAppointment { get; }
     }
 }

@@ -50,12 +50,12 @@ namespace InfernalInkSteelSuite.ViewModels
 
             Documents = new ObservableCollection<DocumentViewModel>();
 
-            AddDocumentCommand = new RelayCommand(() => AddDocument());
-            RefreshDocumentsCommand = new RelayCommand(() => LoadDocuments());
-            FilterDocumentsCommand = new RelayCommand(() => FilterDocuments());
-            OpenDocumentCommand = new RelayCommand(() => OpenDocument(), () => SelectedDocument != null);
-            RenameDocumentCommand = new RelayCommand(() => RenameDocument(), () => SelectedDocument != null);
-            DeleteDocumentCommand = new RelayCommand(() => DeleteDocument(), () => SelectedDocument != null);
+            AddDocumentCommand = new RelayCommand(_ => AddDocument());
+            RefreshDocumentsCommand = new RelayCommand(_ => LoadDocuments());
+            FilterDocumentsCommand = new RelayCommand(_ => FilterDocuments());
+            OpenDocumentCommand = new RelayCommand(_ => OpenDocument(), _ => SelectedDocument != null);
+            RenameDocumentCommand = new RelayCommand(_ => RenameDocument(), _ => SelectedDocument != null);
+            DeleteDocumentCommand = new RelayCommand(_ => DeleteDocument(), _ => SelectedDocument != null);
 
             LoadDocuments();
         }
