@@ -1,4 +1,4 @@
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels.Settings
+namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public abstract class SettingsTabViewModel : BaseViewModel
     {

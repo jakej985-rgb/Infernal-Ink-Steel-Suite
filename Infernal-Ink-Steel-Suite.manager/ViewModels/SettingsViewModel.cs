@@ -1,9 +1,9 @@
-using Infernal_Ink_Steel_Suite.manager.ViewModels.Settings;
+using InfernalInkSteelSuite.ViewModels.Settings;
 using InfernalInkSteelSuite.Repositories;
 using System.Collections.ObjectModel;
 using InfernalInkSteelSuite.Domain;
 
-namespace Infernal_Ink_Steel_Suite.manager.ViewModels
+namespace InfernalInkSteelSuite.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
