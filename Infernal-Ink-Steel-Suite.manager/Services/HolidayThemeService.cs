@@ -96,5 +96,4 @@ namespace InfernalInkSteelSuite.Services
             return jun1.AddDays(daysUntilSunday + 14); // 3rd Sunday
         }
     }
-    }
 }
