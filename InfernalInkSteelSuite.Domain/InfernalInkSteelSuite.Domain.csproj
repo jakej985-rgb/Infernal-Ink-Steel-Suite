@@ -3,14 +3,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>InfernalInkSteelSuite.Domain</RootNamespace>
     <AssemblyName>InfernalInkSteelSuite.Domain</AssemblyName>
-
-  <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-</Project>
-
   <ItemGroup>
     <PackageReference Include="SQLitePCLRaw.core" Version="3.0.2" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.11" />
@@ -20,5 +16,4 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
   </ItemGroup>
-
 </Project>
