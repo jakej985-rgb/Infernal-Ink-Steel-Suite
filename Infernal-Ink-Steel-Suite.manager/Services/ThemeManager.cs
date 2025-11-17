@@ -9,7 +9,12 @@ namespace InfernalInkSteelSuite.Services
     {
         Dark,
         Light,
-        InfernalNeon
+        InfernalNeon,
+        Oceanic,
+        Forest,
+        Vampire,
+        EightiesSunset,
+        Monochrome
     }
 
     public sealed class ThemeDefinition
@@ -50,6 +55,36 @@ namespace InfernalInkSteelSuite.Services
                     key: "InfernalNeon",
                     displayName: "Infernal Neon",
                     resourcePath: "Themes/InfernalNeon.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.Oceanic,
+                    key: "Oceanic",
+                    displayName: "Oceanic",
+                    resourcePath: "Themes/Oceanic.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.Forest,
+                    key: "Forest",
+                    displayName: "Forest",
+                    resourcePath: "Themes/Forest.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.Vampire,
+                    key: "Vampire",
+                    displayName: "Vampire",
+                    resourcePath: "Themes/Vampire.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.EightiesSunset,
+                    key: "80sSunset",
+                    displayName: "80s Sunset",
+                    resourcePath: "Themes/80sSunset.xaml"),
+
+                new ThemeDefinition(
+                    ThemeId.Monochrome,
+                    key: "Monochrome",
+                    displayName: "Monochrome",
+                    resourcePath: "Themes/Monochrome.xaml"),
             };
 
         public static ThemeDefinition CurrentTheme { get; private set; } =
