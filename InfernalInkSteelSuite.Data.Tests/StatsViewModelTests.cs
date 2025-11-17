@@ -73,5 +73,27 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
             Assert.AreEqual(2, viewModel.TotalVisits, "Total visits should only include completed appointments.");
             Assert.AreEqual(1.5, viewModel.TotalHours, "Total hours should only include completed appointments.");
         }
+
+        [Test]
+        public void LoadData_WithPaidAppointments_CalculatesStatsCorrectly()
+        {
+            // Arrange
+            var appointments = new List<Appointment>
+            {
+                new() { Status = "Completed", PriceCharged = 100, DurationMinutes = 60, DateTime = new DateTime(2024, 1, 1) },
+                new() { Status = "Paid", PriceCharged = 200, DurationMinutes = 120, DateTime = new DateTime(2024, 1, 1) },
+            };
+            var appointmentRepository = new MockAppointmentRepository(appointments);
+            var shopSettingsRepository = new MockShopSettingsRepository(new ShopSettings { TattooPerHour = 100 });
+            var viewModel = new StatsViewModel(appointmentRepository, shopSettingsRepository);
+
+            // Act
+            viewModel.LoadData(2024);
+
+            // Assert
+            Assert.AreEqual(300, viewModel.TotalIncome, "Total income should include completed and paid appointments.");
+            Assert.AreEqual(2, viewModel.TotalVisits, "Total visits should include completed and paid appointments.");
+            Assert.AreEqual(3.0, viewModel.TotalHours, "Total hours should include completed and paid appointments.");
+        }
     }
 }

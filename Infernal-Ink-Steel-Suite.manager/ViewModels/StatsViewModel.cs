@@ -155,7 +155,9 @@ namespace InfernalInkSteelSuite.ViewModels
 
         private bool ShouldCountAppointment(string status)
         {
-            return status.Trim().Equals("Completed", StringComparison.OrdinalIgnoreCase);
+            var trimmedStatus = status.Trim();
+            return trimmedStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase) ||
+                   trimmedStatus.Equals("Paid", StringComparison.OrdinalIgnoreCase);
         }
 
         protected void OnPropertyChanged(string propertyName)
