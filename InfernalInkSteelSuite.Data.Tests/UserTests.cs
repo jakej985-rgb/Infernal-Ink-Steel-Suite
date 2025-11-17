@@ -13,6 +13,7 @@ namespace InfernalInkSteelSuite.Data.Tests
         [InlineData("Admin", true)]
         [InlineData("admin", true)]
         [InlineData("ADMIN", true)]
+        [InlineData(" Admin ", true)]
         public void IsAdmin_ShouldReturnCorrectValueForRole(string role, bool expected)
         {
             // Arrange
