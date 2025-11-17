@@ -21,7 +21,7 @@
 
             <!-- User Grid -->
             <ScrollViewer x:Name="UserScrollArea" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0">
-                <WrapPanel x:Name="UserGrid" Margin="8" HorizontalAlignment="Center"/>
+                <UniformGrid x:Name="UserGrid" Columns="5" Margin="8" HorizontalAlignment="Center"/>
             </ScrollViewer>
 
             <!-- Login View -->
