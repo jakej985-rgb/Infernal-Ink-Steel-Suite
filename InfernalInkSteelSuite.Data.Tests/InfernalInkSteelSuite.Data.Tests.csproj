@@ -21,5 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj" />
     <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj" />
+    <ProjectReference Include="..\Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.csproj" />
   </ItemGroup>
 </Project>

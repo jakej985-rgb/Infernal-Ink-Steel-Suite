@@ -155,11 +155,7 @@ namespace InfernalInkSteelSuite.ViewModels
 
         private bool ShouldCountAppointment(string status)
         {
-            var normalized = status.Trim().ToLower();
-            return !(normalized == "canceled" ||
-                     normalized == "cancelled" ||
-                     normalized == "no show" ||
-                     normalized == "noshow");
+            return status.Trim().Equals("Completed", StringComparison.OrdinalIgnoreCase);
         }
 
         protected void OnPropertyChanged(string propertyName)
