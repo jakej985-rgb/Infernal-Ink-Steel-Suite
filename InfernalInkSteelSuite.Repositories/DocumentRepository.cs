@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.Repositories
         }
 
 
-        public Document Get(int id)
+        public Document? Get(int id)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {

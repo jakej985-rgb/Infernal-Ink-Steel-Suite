@@ -6,7 +6,7 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public interface IDocumentRepository
     {
-        Document Get(int id);
+        Document? Get(int id);
         List<Document> GetAll();
         List<Document> GetDocuments(int userId, string role, int maxDocuments, out bool truncated);
         void Insert(Document document);

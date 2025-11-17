@@ -9,7 +9,7 @@ namespace InfernalInkSteelSuite.Repositories
         void Add(Appointment appointment);
         void Update(Appointment appointment);
         void Delete(int id);
-        Appointment Get(int id);
+        Appointment? Get(int id);
         List<Appointment> GetAll();
         List<Appointment> GetAppointmentsByDate(DateTime date);
         List<Appointment> GetAppointmentsByUserId(int userId);

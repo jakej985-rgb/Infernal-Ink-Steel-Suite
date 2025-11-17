@@ -15,7 +15,7 @@ namespace InfernalInkSteelSuite.Repositories
             _connectionString = connectionString;
         }
 
-        public Client Get(int id)
+        public Client? Get(int id)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
@@ -145,7 +145,7 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
-        public string GetClientNameById(int clientId)
+        public string? GetClientNameById(int clientId)
         {
             using (var connection = new SqliteConnection(_connectionString))
             {
