@@ -10,7 +10,6 @@
         <StackPanel Margin="20">
             <Label Content="Select Theme" Foreground="White"/>
             <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" DisplayMemberPath="Name"/>
-            <Button Content="Set Theme" Command="{Binding SetThemeCommand}" Margin="0,20,0,0"/>
         </StackPanel>
     </Grid>
 </UserControl>

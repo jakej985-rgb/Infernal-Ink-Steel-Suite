@@ -27,8 +27,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             get => _selectedTheme;
             set
             {
-                _selectedTheme = value;
-                OnPropertyChanged();
+                if (_selectedTheme != value)
+                {
+                    _selectedTheme = value;
+                    OnPropertyChanged();
+                    SetThemeCommand.Execute(null);
+                }
             }
         }
 
