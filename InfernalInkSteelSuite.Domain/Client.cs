@@ -22,7 +22,7 @@ namespace InfernalInkSteelSuite.Domain
                 }
                 if (!string.IsNullOrWhiteSpace(MiddleName))
                 {
-                    nameParts.Add(MiddleName);
+                    nameParts.Add(MiddleName.Trim());
                 }
                 if (!string.IsNullOrWhiteSpace(LastName))
                 {

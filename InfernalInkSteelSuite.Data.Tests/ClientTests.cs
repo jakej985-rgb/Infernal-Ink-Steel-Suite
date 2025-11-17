@@ -14,6 +14,7 @@ namespace InfernalInkSteelSuite.Data.Tests
         [DataRow("John", " ", "Smith", "John Smith")]
         [DataRow(null, " ", "Smith", "Smith")]
         [DataRow(null, null, "Smith", "Smith")]
+        [DataRow("John", "  Michael  ", "Doe", "John Michael Doe")]
         public void FullName_ShouldFormatCorrectly(string firstName, string middleName, string lastName, string expected)
         {
             var client = new Client { FirstName = firstName, MiddleName = middleName, LastName = lastName };
