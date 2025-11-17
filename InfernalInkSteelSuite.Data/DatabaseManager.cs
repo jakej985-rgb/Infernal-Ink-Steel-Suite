@@ -109,6 +109,7 @@ namespace InfernalInkSteelSuite.Data
                     username TEXT UNIQUE NOT NULL,
                     passwordHash TEXT NOT NULL,
                     role TEXT NOT NULL,
+                    ThemeKey TEXT NOT NULL DEFAULT 'InfernalNeon',
                     avatarPath TEXT,
                     createdAt TEXT,
                     updatedAt TEXT
@@ -141,6 +142,7 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "users", "avatarPath", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "users", "createdAt", "TEXT");
             EnsureColumnExists(connection, "users", "updatedAt", "TEXT");
+            EnsureColumnExists(connection, "users", "ThemeKey", "TEXT NOT NULL DEFAULT 'InfernalNeon'");
         }
 
         private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)
