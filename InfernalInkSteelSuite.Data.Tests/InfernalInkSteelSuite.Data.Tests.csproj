@@ -4,25 +4,26 @@
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
-    <!-- Ensure all referenced assemblies (like Microsoft.Data.Sqlite) are copied to bin -->
+    <!-- Ensure all referenced assemblies (Sqlite, Newtonsoft, etc.) are copied into bin -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <!-- xUnit test framework -->
+  <!-- Test framework + tooling -->
   <ItemGroup>
+    <!-- xUnit only -->
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <!-- Code coverage (optional, harmless in CI) -->
+    <!-- Coverage (optional, safe in CI) -->
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
 
-    <!-- Explicit SQLite dependency so the testhost can load it -->
+    <!-- Explicit DB + JSON dependencies so testhost can load them -->
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
-    <!-- (Optional but safe) meta package; helps pull everything together -->
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <!-- Projects under test -->
@@ -34,9 +35,9 @@
 
   <!-- Exclude WPF + NUnit + MSTest tests from this CI project -->
   <ItemGroup>
-    <!-- Uses NUnit + ViewModels from WPF -->
+    <!-- Uses NUnit + WPF ViewModels -->
     <Compile Remove="StatsViewModelTests.cs" />
-    <!-- Uses MSTest attributes -->
+    <!-- Uses MSTest -->
     <Compile Remove="ClientTests.cs" />
   </ItemGroup>
 
