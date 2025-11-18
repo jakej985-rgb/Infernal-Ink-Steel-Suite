@@ -3,27 +3,36 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
     <Nullable>enable</Nullable>
-    <!-- Ensure all referenced assemblies (Sqlite, Newtonsoft, etc.) are copied into bin -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Make sure dependencies are copied into bin -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <!-- Test framework + tooling -->
+  <!-- 🔹 Standard .NET test stack -->
   <ItemGroup>
-    <!-- xUnit only -->
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    <!-- Core test SDK: brings in testhost, vstest, etc. -->
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+
+    <!-- xUnit test framework -->
+    <PackageReference Include="xunit" Version="2.8.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <!-- Coverage (optional, safe in CI) -->
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <!-- Coverage collector (optional but fine) -->
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
 
-    <!-- Explicit DB + JSON dependencies so testhost can load them -->
+    <!-- Runtime deps that have caused trouble before -->
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
   </ItemGroup>
 
   <!-- Projects under test -->
@@ -33,11 +42,11 @@
     <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj" />
   </ItemGroup>
 
-  <!-- Exclude WPF + NUnit + MSTest tests from this CI project -->
+  <!-- Exclude non-xUnit tests that drag in MSTest / NUnit / WPF stuff -->
   <ItemGroup>
-    <!-- Uses NUnit + WPF ViewModels -->
+    <!-- NUnit + ViewModel/WPF tests -->
     <Compile Remove="StatsViewModelTests.cs" />
-    <!-- Uses MSTest -->
+    <!-- Old MSTest-style tests -->
     <Compile Remove="ClientTests.cs" />
   </ItemGroup>
 
