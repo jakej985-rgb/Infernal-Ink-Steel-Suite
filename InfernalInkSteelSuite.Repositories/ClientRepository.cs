@@ -197,9 +197,9 @@ namespace InfernalInkSteelSuite.Repositories
                     cmd.CommandText = @"
                         SELECT id
                         FROM clients
-                        WHERE lower(first_name) = lower($first)
-                          AND lower(last_name)  = lower($last)
-                          AND lower(COALESCE(middle_name, '')) = lower($middle)
+                        WHERE lower(firstName) = lower($first)
+                          AND lower(lastName)  = lower($last)
+                          AND lower(COALESCE(middleName, '')) = lower($middle)
                         ORDER BY id DESC       -- prefer latest
                         LIMIT 1;
                     ";
@@ -219,10 +219,10 @@ namespace InfernalInkSteelSuite.Repositories
                     cmd.CommandText = @"
                         SELECT id
                         FROM clients
-                        WHERE lower(first_name) = lower($first)
-                          AND lower(last_name)  = lower($last)
+                        WHERE lower(firstName) = lower($first)
+                          AND lower(lastName)  = lower($last)
                         ORDER BY
-                            CASE WHEN middle_name IS NULL OR trim(middle_name) = '' THEN 0 ELSE 1 END,
+                            CASE WHEN middleName IS NULL OR trim(middleName) = '' THEN 0 ELSE 1 END,
                             id DESC
                         LIMIT 1;
                     ";
