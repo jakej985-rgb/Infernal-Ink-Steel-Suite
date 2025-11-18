@@ -1,14 +1,14 @@
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
+using System;
+using System.Windows;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
-    public class UserProfileTabViewModel : SettingsTabViewModel
+    public class ChangePasswordDialogViewModel : BaseViewModel
     {
         private readonly IUserRepository _userRepository;
         private readonly string _username;
-
-        public override string Header => "User Profile";
 
         private string _newPassword;
         public string NewPassword
@@ -32,23 +32,33 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public RelayCommand ChangePasswordCommand { get; }
+        public Action? CloseAction { get; set; }
 
-        public UserProfileTabViewModel(IUserRepository userRepository, string username)
+        public RelayCommand SaveCommand { get; }
+        public RelayCommand CancelCommand { get; }
+
+        public ChangePasswordDialogViewModel(IUserRepository userRepository, string username)
         {
             _userRepository = userRepository;
             _username = username;
             _newPassword = string.Empty;
             _confirmPassword = string.Empty;
-            ChangePasswordCommand = new RelayCommand(ChangePassword);
+            SaveCommand = new RelayCommand(Save);
+            CancelCommand = new RelayCommand(Cancel);
         }
 
-        private void ChangePassword(object? parameter)
+        private void Save(object? parameter)
         {
             if (NewPassword == ConfirmPassword)
             {
                 _userRepository.UpdatePassword(_username, NewPassword);
+                CloseAction?.Invoke();
             }
+        }
+
+        private void Cancel(object? parameter)
+        {
+            CloseAction?.Invoke();
         }
     }
 }

@@ -14,14 +14,11 @@
         <DataTemplate DataType="{x:Type viewmodels:ManagerTabViewModel}">
             <views:ManagerTabView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:UserProfileTabViewModel}">
-            <views:UserProfileTabView/>
+        <DataTemplate DataType="{x:Type viewmodels:UserTabViewModel}">
+            <views:UserTabView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:LinkedAccountsTabViewModel}">
             <views:LinkedAccountsTabView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:ThemingTabViewModel}">
-            <views:ThemingTabView/>
         </DataTemplate>
         <Style TargetType="TabItem">
             <Setter Property="Template">
