@@ -6,36 +6,31 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- Test frameworks & tooling -->
+  <!-- xUnit test framework only -->
   <ItemGroup>
-    <!-- xUnit for repository/domain tests -->
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <!-- MSTest for ClientTests -->
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.0" />
-
-    <!-- Explicitly bring in Application Insights so the testhost finds it -->
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.22.0" />
-
-    <!-- Coverage (optional) -->
+    <!-- Optional: code coverage -->
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
-  <!-- Pure library dependencies -->
+  <!-- Core projects under test -->
   <ItemGroup>
     <ProjectReference Include="..\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj" />
     <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj" />
     <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj" />
   </ItemGroup>
 
-  <!-- Exclude WPF/NUnit-based tests from this project -->
+  <!-- Exclude tests that depend on WPF/NUnit or MSTest from this CI project -->
   <ItemGroup>
+    <!-- NUnit + ViewModel / WPF-related tests -->
     <Compile Remove="StatsViewModelTests.cs" />
+    <!-- MSTest-based tests -->
+    <Compile Remove="ClientTests.cs" />
   </ItemGroup>
 
 </Project>
