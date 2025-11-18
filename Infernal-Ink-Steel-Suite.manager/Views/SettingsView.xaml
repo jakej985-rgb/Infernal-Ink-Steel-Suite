@@ -17,9 +17,6 @@
         <DataTemplate DataType="{x:Type viewmodels:UserProfileTabViewModel}">
             <views:UserProfileTabView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:ShopSettingsTabViewModel}">
-            <views:ShopSettingsTabView/>
-        </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:LinkedAccountsTabViewModel}">
             <views:LinkedAccountsTabView/>
         </DataTemplate>
