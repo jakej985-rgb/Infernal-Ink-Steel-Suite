@@ -1,5 +1,7 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Services;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
 using InfernalInkSteelSuite.Views.Settings;
@@ -75,10 +77,50 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        public double TattooRate
+        {
+            get => _shopSettings.TattooPerHour;
+            set
+            {
+                if (_shopSettings.TattooPerHour != value)
+                {
+                    _shopSettings.TattooPerHour = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public double PiercingSingle
+        {
+            get => _shopSettings.PiercingSingle;
+            set
+            {
+                if (_shopSettings.PiercingSingle != value)
+                {
+                    _shopSettings.PiercingSingle = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string SidebarArtworkPath
+        {
+            get => _shopSettings.SidebarArtworkPath;
+            set
+            {
+                if (_shopSettings.SidebarArtworkPath != value)
+                {
+                    _shopSettings.SidebarArtworkPath = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public RelayCommand AddUserCommand { get; }
         public RelayCommand UpdateRoleCommand { get; }
         public RelayCommand ResetPasswordCommand { get; }
-        public RelayCommand SaveBrandingCommand { get; }
+        public RelayCommand SaveSettingsCommand { get; }
+        public RelayCommand BrowseCommand { get; }
 
         public AdminTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository)
         {
@@ -91,7 +133,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             AddUserCommand = new RelayCommand(AddUser);
             UpdateRoleCommand = new RelayCommand(UpdateRole, CanUpdateOrReset);
             ResetPasswordCommand = new RelayCommand(ResetPassword, CanUpdateOrReset);
-            SaveBrandingCommand = new RelayCommand(SaveBranding);
+            SaveSettingsCommand = new RelayCommand(SaveSettings);
+            BrowseCommand = new RelayCommand(Browse);
         }
 
         private void LoadUsers()
@@ -146,9 +189,22 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             return SelectedUser != null;
         }
 
-        private void SaveBranding(object? obj)
+        private void SaveSettings(object? obj)
         {
             _shopSettingsRepository.SaveSettings(_shopSettings);
+            SettingsUpdateService.NotifySettingsChanged();
+        }
+
+        private void Browse(object? obj)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                SidebarArtworkPath = openFileDialog.FileName;
+            }
         }
     }
 }
