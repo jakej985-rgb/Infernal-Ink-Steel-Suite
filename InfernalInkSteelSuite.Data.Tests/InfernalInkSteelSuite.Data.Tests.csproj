@@ -4,9 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <Nullable>enable</Nullable>
+    <!-- Ensure all referenced assemblies (like Microsoft.Data.Sqlite) are copied to bin -->
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <!-- xUnit test framework only -->
+  <!-- xUnit test framework -->
   <ItemGroup>
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
@@ -14,22 +16,27 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <!-- Optional: code coverage -->
+    <!-- Code coverage (optional, harmless in CI) -->
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
+
+    <!-- Explicit SQLite dependency so the testhost can load it -->
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.0" />
+    <!-- (Optional but safe) meta package; helps pull everything together -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
   </ItemGroup>
 
-  <!-- Core projects under test -->
+  <!-- Projects under test -->
   <ItemGroup>
     <ProjectReference Include="..\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj" />
     <ProjectReference Include="..\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj" />
     <ProjectReference Include="..\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj" />
   </ItemGroup>
 
-  <!-- Exclude tests that depend on WPF/NUnit or MSTest from this CI project -->
+  <!-- Exclude WPF + NUnit + MSTest tests from this CI project -->
   <ItemGroup>
-    <!-- NUnit + ViewModel / WPF-related tests -->
+    <!-- Uses NUnit + ViewModels from WPF -->
     <Compile Remove="StatsViewModelTests.cs" />
-    <!-- MSTest-based tests -->
+    <!-- Uses MSTest attributes -->
     <Compile Remove="ClientTests.cs" />
   </ItemGroup>
 
