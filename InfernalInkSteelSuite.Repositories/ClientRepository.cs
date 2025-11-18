@@ -169,29 +169,71 @@ namespace InfernalInkSteelSuite.Repositories
             return null;
         }
 
-        public int GetClientIdByName(string name)
+        public int? GetClientIdByName(string name)
         {
-            var normalizedName = name.Trim();
+            var nameParts = name.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (nameParts.Length < 2)
+            {
+                return null; // Not enough parts for a first and last name
+            }
+
+            string firstName = nameParts[0];
+            string lastName = nameParts[nameParts.Length - 1];
+            string? middleName = null;
+            if (nameParts.Length > 2)
+            {
+                middleName = string.Join(" ", nameParts, 1, nameParts.Length - 2);
+            }
+
+
             using (var connection = new SqliteConnection(_connectionString))
             {
                 connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = @"
-                    SELECT id FROM clients
-                    WHERE
-                        (middleName IS NULL OR middleName = '') AND LOWER(firstName || ' ' || lastName) = LOWER($name)
-                        OR
-                        (middleName IS NOT NULL AND middleName != '') AND LOWER(firstName || ' ' || middleName || ' ' || lastName) = LOWER($name);
-                ";
-                command.Parameters.AddWithValue("$name", normalizedName);
 
-                var result = command.ExecuteScalar();
-                if (result != null && result != DBNull.Value)
+                // 1) If we have a middle name, try an exact match and prefer the newest row
+                if (!string.IsNullOrWhiteSpace(middleName))
                 {
-                    return Convert.ToInt32(result);
+                    using var cmd = connection.CreateCommand();
+                    cmd.CommandText = @"
+                        SELECT id
+                        FROM clients
+                        WHERE lower(first_name) = lower($first)
+                          AND lower(last_name)  = lower($last)
+                          AND lower(COALESCE(middle_name, '')) = lower($middle)
+                        ORDER BY id DESC       -- prefer latest
+                        LIMIT 1;
+                    ";
+
+                    cmd.Parameters.AddWithValue("$first", firstName);
+                    cmd.Parameters.AddWithValue("$last", lastName);
+                    cmd.Parameters.AddWithValue("$middle", middleName);
+
+                    var result = cmd.ExecuteScalar();
+                    return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
+                }
+
+                // 2) No middle name: prefer clients that do NOT have a middle name,
+                //    and within that group, prefer the newest one.
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT id
+                        FROM clients
+                        WHERE lower(first_name) = lower($first)
+                          AND lower(last_name)  = lower($last)
+                        ORDER BY
+                            CASE WHEN middle_name IS NULL OR trim(middle_name) = '' THEN 0 ELSE 1 END,
+                            id DESC
+                        LIMIT 1;
+                    ";
+
+                    cmd.Parameters.AddWithValue("$first", firstName);
+                    cmd.Parameters.AddWithValue("$last", lastName);
+
+                    var result = cmd.ExecuteScalar();
+                    return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
                 }
             }
-            return 0;
         }
     }
 }
