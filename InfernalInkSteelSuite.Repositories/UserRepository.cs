@@ -10,11 +10,30 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public class UserRepository : IUserRepository
     {
+        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt";
         private readonly string _connectionString;
 
         public UserRepository(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        private User MapReaderToUser(SqliteDataReader reader)
+        {
+            var createdAtString = reader.IsDBNull(6) ? null : reader.GetString(6);
+            var updatedAtString = reader.IsDBNull(7) ? null : reader.GetString(7);
+
+            return new User
+            {
+                Id = reader.GetInt32(0),
+                Username = reader.GetString(1),
+                PasswordHash = reader.GetString(2),
+                Role = reader.GetString(3),
+                ThemeKey = reader.GetString(4),
+                AvatarPath = reader.GetString(5),
+                CreatedAt = string.IsNullOrEmpty(createdAtString) ? DateTime.MinValue : DateTime.Parse(createdAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                UpdatedAt = string.IsNullOrEmpty(updatedAtString) ? DateTime.MinValue : DateTime.Parse(updatedAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+            };
         }
 
         public bool CreateTable()
@@ -29,9 +48,10 @@ namespace InfernalInkSteelSuite.Repositories
                         username TEXT UNIQUE NOT NULL,
                         passwordHash TEXT NOT NULL,
                         role TEXT NOT NULL,
+                        ThemeKey TEXT NOT NULL DEFAULT 'InfernalNeon',
                         avatarPath TEXT DEFAULT '',
-                        createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-                        updatedAt TEXT DEFAULT CURRENT_TIMESTAMP
+                        createdAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+                        updatedAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
                     )";
                 command.ExecuteNonQuery();
             }
@@ -73,14 +93,13 @@ namespace InfernalInkSteelSuite.Repositories
                 connection.Open();
                 var command = connection.CreateCommand();
                 command.CommandText = @"
-                    INSERT INTO users (username, passwordHash, role, avatarPath, createdAt, updatedAt)
-                    VALUES (@username, @passwordHash, @role, @avatarPath, @createdAt, @updatedAt)";
+                    INSERT INTO users (username, passwordHash, role, avatarPath, ThemeKey)
+                    VALUES (@username, @passwordHash, @role, @avatarPath, @themeKey)";
                 command.Parameters.AddWithValue("@username", user.Username);
                 command.Parameters.AddWithValue("@passwordHash", HashPassword(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
                 command.Parameters.AddWithValue("@role", string.IsNullOrEmpty(user.Role) ? "User" : user.Role);
                 command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
-                command.Parameters.AddWithValue("@createdAt", (user.CreatedAt == DateTime.MinValue ? DateTime.UtcNow : user.CreatedAt).ToString("o"));
-                command.Parameters.AddWithValue("@updatedAt", (user.UpdatedAt == DateTime.MinValue ? DateTime.UtcNow : user.UpdatedAt).ToString("o"));
+                command.Parameters.AddWithValue("@themeKey", user.ThemeKey);
 
                 return command.ExecuteNonQuery() > 0;
             }
@@ -92,7 +111,8 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 Username = username,
                 PasswordHash = password,
-                Role = role
+                Role = role,
+                ThemeKey = "InfernalNeon"
             };
             return AddUser(u);
         }
@@ -109,11 +129,13 @@ namespace InfernalInkSteelSuite.Repositories
                     SET username = @username,
                         role = @role,
                         avatarPath = @avatarPath,
+                        ThemeKey = @themeKey,
                         updatedAt = @updatedAt
                     WHERE id = @id";
                 command.Parameters.AddWithValue("@username", user.Username);
                 command.Parameters.AddWithValue("@role", user.Role);
                 command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
+                command.Parameters.AddWithValue("@themeKey", user.ThemeKey);
                 command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
                 command.Parameters.AddWithValue("@id", user.Id);
 
@@ -127,23 +149,14 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM users WHERE username = @username";
+                command.CommandText = $"SELECT {UserColumns} FROM users WHERE username = @username";
                 command.Parameters.AddWithValue("@username", username);
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        return new User
-                        {
-                            Id = reader.GetInt32(0),
-                            Username = reader.GetString(1),
-                            PasswordHash = reader.GetString(2),
-                            Role = reader.GetString(3),
-                            AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
-                        };
+                        return MapReaderToUser(reader);
                     }
                 }
             }
@@ -207,22 +220,13 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM users";
+                command.CommandText = $"SELECT {UserColumns} FROM users";
 
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        users.Add(new User
-                        {
-                            Id = reader.GetInt32(0),
-                            Username = reader.GetString(1),
-                            PasswordHash = reader.GetString(2),
-                            Role = reader.GetString(3),
-                            AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
-                        });
+                        users.Add(MapReaderToUser(reader));
                     }
                 }
             }
@@ -235,23 +239,14 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM users WHERE id = @id";
+                command.CommandText = $"SELECT {UserColumns} FROM users WHERE id = @id";
                 command.Parameters.AddWithValue("@id", userId);
 
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
                     {
-                        return new User
-                        {
-                            Id = reader.GetInt32(0),
-                            Username = reader.GetString(1),
-                            PasswordHash = reader.GetString(2),
-                            Role = reader.GetString(3),
-                            AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
-                        };
+                        return MapReaderToUser(reader);
                     }
                 }
             }

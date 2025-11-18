@@ -110,9 +110,9 @@ namespace InfernalInkSteelSuite.Data
                     passwordHash TEXT NOT NULL,
                     role TEXT NOT NULL,
                     ThemeKey TEXT NOT NULL DEFAULT 'InfernalNeon',
-                    avatarPath TEXT,
-                    createdAt TEXT,
-                    updatedAt TEXT
+                    avatarPath TEXT DEFAULT '',
+                    createdAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+                    updatedAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
                 )";
             command.ExecuteNonQuery();
         }
@@ -139,10 +139,6 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "serviceCategory", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
-            EnsureColumnExists(connection, "users", "avatarPath", "TEXT DEFAULT ''");
-            EnsureColumnExists(connection, "users", "createdAt", "TEXT");
-            EnsureColumnExists(connection, "users", "updatedAt", "TEXT");
-            EnsureColumnExists(connection, "users", "ThemeKey", "TEXT NOT NULL DEFAULT 'InfernalNeon'");
             EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
         }
 
