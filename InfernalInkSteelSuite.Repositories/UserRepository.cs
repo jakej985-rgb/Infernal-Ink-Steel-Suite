@@ -265,5 +265,20 @@ namespace InfernalInkSteelSuite.Repositories
                 return command.ExecuteNonQuery() > 0;
             }
         }
+
+        private DateTime ParseDateTime(object? readerValue)
+        {
+            if (readerValue == null || readerValue == DBNull.Value)
+            {
+                return DateTime.MinValue;
+            }
+
+            var dateStr = readerValue.ToString();
+            if (string.IsNullOrWhiteSpace(dateStr) || !DateTime.TryParse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsedDate))
+            {
+                return DateTime.MinValue;
+            }
+            return parsedDate;
+        }
     }
 }
