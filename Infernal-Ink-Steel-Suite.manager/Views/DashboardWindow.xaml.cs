@@ -3,6 +3,7 @@ using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Repositories;
 using System.Windows;
 using InfernalInkSteelSuite.Domain;
+using InfernalInkSteelSuite.Services;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -28,6 +29,8 @@ namespace InfernalInkSteelSuite.Views
             InitializeComponent();
             LoadShopSettings();
             MainContent.Content = new HomeView();
+            SettingsUpdateService.OnSettingsChanged += LoadShopSettings;
+            Closed += (s, e) => SettingsUpdateService.OnSettingsChanged -= LoadShopSettings;
         }
 
         private void LoadShopSettings()
