@@ -141,8 +141,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+                            CreatedAt = ParseDateTime(reader.GetValue(5)),
+                            UpdatedAt = ParseDateTime(reader.GetValue(6))
                         };
                     }
                 }
@@ -220,8 +220,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+                            CreatedAt = ParseDateTime(reader.GetValue(5)),
+                            UpdatedAt = ParseDateTime(reader.GetValue(6))
                         });
                     }
                 }
@@ -249,8 +249,8 @@ namespace InfernalInkSteelSuite.Repositories
                             PasswordHash = reader.GetString(2),
                             Role = reader.GetString(3),
                             AvatarPath = reader.GetString(4),
-                            CreatedAt = reader.IsDBNull(5) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(5), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                            UpdatedAt = reader.IsDBNull(6) ? DateTime.UtcNow : DateTime.Parse(reader.GetString(6), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+                            CreatedAt = ParseDateTime(reader.GetValue(5)),
+                            UpdatedAt = ParseDateTime(reader.GetValue(6))
                         };
                     }
                 }
@@ -269,6 +269,21 @@ namespace InfernalInkSteelSuite.Repositories
 
                 return command.ExecuteNonQuery() > 0;
             }
+        }
+
+        private DateTime ParseDateTime(object? readerValue)
+        {
+            if (readerValue == null || readerValue == DBNull.Value)
+            {
+                return DateTime.MinValue;
+            }
+
+            var dateStr = readerValue.ToString();
+            if (string.IsNullOrWhiteSpace(dateStr) || !DateTime.TryParse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsedDate))
+            {
+                return DateTime.MinValue;
+            }
+            return parsedDate;
         }
     }
 }
