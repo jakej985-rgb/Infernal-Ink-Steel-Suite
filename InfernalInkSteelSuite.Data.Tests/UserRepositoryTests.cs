@@ -1,18 +1,30 @@
 using Xunit;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Data;
+using Microsoft.Data.Sqlite;
+using System.Data.Common;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
-    [Collection("Database collection")]
-    public class UserRepositoryTests
+    public class UserRepositoryTests : IDisposable
     {
-        private readonly DatabaseFixture _fixture;
         private readonly UserRepository _repository;
+        private readonly DbConnection _connection;
 
-        public UserRepositoryTests(DatabaseFixture fixture)
+        public UserRepositoryTests()
         {
-            _fixture = fixture;
-            _repository = new UserRepository(_fixture.ConnectionString);
+            var connectionString = "Data Source=UserTestDb;Mode=Memory;Cache=Shared";
+            _connection = new SqliteConnection(connectionString);
+            _connection.Open();
+
+            var databaseManager = new DatabaseManager(connectionString);
+            databaseManager.InitializeDatabase();
+            _repository = new UserRepository(connectionString);
+        }
+
+        public void Dispose()
+        {
+            _connection.Dispose();
         }
 
         [Fact]
@@ -20,7 +32,6 @@ namespace InfernalInkSteelSuite.Data.Tests
         {
             // Arrange
             _repository.AddUser("testuser", "oldpassword", "User");
-
             var userToUpdate = _repository.GetUserByUsername("testuser");
             Assert.NotNull(userToUpdate);
 
