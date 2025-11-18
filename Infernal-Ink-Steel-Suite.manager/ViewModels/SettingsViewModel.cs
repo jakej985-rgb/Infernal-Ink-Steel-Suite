@@ -42,12 +42,11 @@ namespace InfernalInkSteelSuite.ViewModels
 
             if (currentUser.Role.Contains("Manager") || currentUser.Role.Contains("Admin"))
             {
-                Tabs.Insert(1, new ShopSettingsTabViewModel(shopSettingsRepository));
                 Tabs.Insert(2, new ManagerTabViewModel(userRepository));
             }
             if (currentUser.Role.Contains("Admin"))
             {
-                Tabs.Insert(3, new AdminTabViewModel(userRepository, shopSettingsRepository));
+                Tabs.Insert(1, new AdminTabViewModel(userRepository, shopSettingsRepository));
             }
 
             SelectedTab = Tabs[0];
