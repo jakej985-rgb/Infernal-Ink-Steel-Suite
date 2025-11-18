@@ -1,31 +1,25 @@
 using Xunit;
-using Microsoft.Data.Sqlite;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
-using InfernalInkSteelSuite.Data;
 using System;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
+    [Collection("Database collection")]
     public class AppointmentRepositoryTests
     {
-        private const string ConnectionString = "DataSource=:memory:";
+        private readonly DatabaseFixture _fixture;
+        private readonly AppointmentRepository _repository;
 
-        private void CreateTable()
+        public AppointmentRepositoryTests(DatabaseFixture fixture)
         {
-            using (var connection = new SqliteConnection(ConnectionString))
-            {
-                connection.Open();
-                var databaseManager = new DatabaseManager(ConnectionString);
-                databaseManager.InitializeDatabase();
-            }
+            _fixture = fixture;
+            _repository = new AppointmentRepository(_fixture.ConnectionString);
         }
 
         [Fact]
         public void Add_AppointmentOnSameDayButPastTime_ShouldNotThrowException()
         {
-            CreateTable();
-            var repository = new AppointmentRepository(ConnectionString);
             var appointment = new Appointment
             {
                 ClientId = 1,
@@ -42,7 +36,7 @@ namespace InfernalInkSteelSuite.Data.Tests
                 Status = "Scheduled"
             };
 
-            var exception = Record.Exception(() => repository.Add(appointment));
+            var exception = Record.Exception(() => _repository.Add(appointment));
 
             Assert.Null(exception);
         }
@@ -50,8 +44,6 @@ namespace InfernalInkSteelSuite.Data.Tests
         [Fact]
         public void Update_AppointmentOnSameDayButPastTime_ShouldNotThrowException()
         {
-            CreateTable();
-            var repository = new AppointmentRepository(ConnectionString);
             var appointment = new Appointment
             {
                 ClientId = 1,
@@ -68,13 +60,13 @@ namespace InfernalInkSteelSuite.Data.Tests
                 Status = "Scheduled"
             };
 
-            repository.Add(appointment);
+            _repository.Add(appointment);
 
-            var savedAppointment = repository.GetAppointmentsByClientId(1)[0];
+            var savedAppointment = _repository.GetAppointmentsByClientId(1)[0];
 
             savedAppointment.DateTime = DateTime.Now.AddHours(-1);
 
-            var exception = Record.Exception(() => repository.Update(savedAppointment));
+            var exception = Record.Exception(() => _repository.Update(savedAppointment));
 
             Assert.Null(exception);
         }

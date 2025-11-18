@@ -1,139 +1,110 @@
 using Xunit;
-using Microsoft.Data.Sqlite;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
-using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
+    [Collection("Database collection")]
     public class ClientRepositoryTests
     {
-        private const string ConnectionString = "DataSource=:memory:";
+        private readonly DatabaseFixture _fixture;
+        private readonly ClientRepository _repository;
 
-        private void CreateTable()
+        public ClientRepositoryTests(DatabaseFixture fixture)
         {
-            using (var connection = new SqliteConnection(ConnectionString))
-            {
-                connection.Open();
-                var databaseManager = new DatabaseManager(ConnectionString);
-                databaseManager.InitializeDatabase();
-            }
+            _fixture = fixture;
+            _repository = new ClientRepository(_fixture.ConnectionString);
         }
 
         [Fact]
         public void GetClientIdByName_WithNameAndWithoutMiddleName_ReturnsCorrectId()
         {
-            CreateTable();
-            using (var connection = new SqliteConnection(ConnectionString))
+            var client = new Client
             {
-                var repository = new ClientRepository(ConnectionString);
-                var client = new Client
-                {
-                    FirstName = "Jane",
-                    LastName = "Doe",
-                    Email = "jane.doe@example.com"
-                };
-                repository.Insert(client);
+                FirstName = "Jane",
+                LastName = "Doe",
+                Email = "jane.doe@example.com"
+            };
+            _repository.Insert(client);
 
-                var clientId = repository.GetClientIdByName("Jane Doe");
+            var clientId = _repository.GetClientIdByName("Jane Doe");
 
-                Assert.Equal(client.Id, clientId);
-            }
+            Assert.Equal(client.Id, clientId);
         }
 
         [Fact]
         public void GetClientIdByName_WithNameAndMiddleName_ReturnsCorrectId()
         {
-            CreateTable();
-            using (var connection = new SqliteConnection(ConnectionString))
+            var client = new Client
             {
-                var repository = new ClientRepository(ConnectionString);
-                var client = new Client
-                {
-                    FirstName = "John",
-                    MiddleName = "Michael",
-                    LastName = "Smith",
-                    Email = "john.smith@example.com"
-                };
-                repository.Insert(client);
+                FirstName = "John",
+                MiddleName = "Michael",
+                LastName = "Smith",
+                Email = "john.smith@example.com"
+            };
+            _repository.Insert(client);
 
-                var clientId = repository.GetClientIdByName("John Michael Smith");
+            var clientId = _repository.GetClientIdByName("John Michael Smith");
 
-                Assert.Equal(client.Id, clientId);
-            }
+            Assert.Equal(client.Id, clientId);
         }
 
         [Fact]
         public void GetClientIdByName_WithNameAndMiddleName_WhenSearchingWithoutMiddleName_ReturnsCorrectId()
         {
-            CreateTable();
-            using (var connection = new SqliteConnection(ConnectionString))
+            var client = new Client
             {
-                var repository = new ClientRepository(ConnectionString);
-                var client = new Client
-                {
-                    FirstName = "John",
-                    MiddleName = "Michael",
-                    LastName = "Smith",
-                    Email = "john.smith@example.com"
-                };
-                repository.Insert(client);
+                FirstName = "John",
+                MiddleName = "Michael",
+                LastName = "Smith",
+                Email = "john.smith@example.com"
+            };
+            _repository.Insert(client);
 
-                var clientId = repository.GetClientIdByName("John Smith");
+            var clientId = _repository.GetClientIdByName("John Smith");
 
-                Assert.Equal(client.Id, clientId);
-            }
+            Assert.Equal(client.Id, clientId);
         }
 
         [Fact]
         public void GetClientIdByName_WhenSearchingCaseInsensitive_ReturnsCorrectId()
         {
-            CreateTable();
-            using (var connection = new SqliteConnection(ConnectionString))
+            var client = new Client
             {
-                var repository = new ClientRepository(ConnectionString);
-                var client = new Client
-                {
-                    FirstName = "Jane",
-                    LastName = "Doe",
-                    Email = "jane.doe@example.com"
-                };
-                repository.Insert(client);
+                FirstName = "Jane",
+                LastName = "Doe",
+                Email = "jane.doe@example.com"
+            };
+            _repository.Insert(client);
 
-                var clientId = repository.GetClientIdByName("jane doe");
+            var clientId = _repository.GetClientIdByName("jane doe");
 
-                Assert.Equal(client.Id, clientId);
-            }
+            Assert.Equal(client.Id, clientId);
         }
 
         [Fact]
         public void GetClientIdByName_WithAmbiguousNames_ReturnsCorrectId()
         {
-            CreateTable();
-            using (var connection = new SqliteConnection(ConnectionString))
+            var client1 = new Client
             {
-                var repository = new ClientRepository(ConnectionString);
-                var client1 = new Client
-                {
-                    FirstName = "John",
-                    LastName = "Smith",
-                    Email = "john.smith@example.com"
-                };
-                repository.Insert(client1);
+                FirstName = "John",
+                LastName = "Smith",
+                Email = "john.smith@example.com"
+            };
+            _repository.Insert(client1);
 
-                var client2 = new Client
-                {
-                    FirstName = "John",
-                    MiddleName = "Michael",
-                    LastName = "Smith",
-                    Email = "john.michael.smith@example.com"
-                };
-                repository.Insert(client2);
+            var client2 = new Client
+            {
+                FirstName = "John",
+                MiddleName = "Michael",
+                LastName = "Smith",
+                Email = "john.michael.smith@example.com"
+            };
+            _repository.Insert(client2);
 
-                var clientId = repository.GetClientIdByName("John Smith");
+            var clientId = _repository.GetClientIdByName("John Smith");
 
-                Assert.Equal(client1.Id, clientId);
-            }
+            Assert.Equal(client1.Id, clientId);
         }
     }
 }
