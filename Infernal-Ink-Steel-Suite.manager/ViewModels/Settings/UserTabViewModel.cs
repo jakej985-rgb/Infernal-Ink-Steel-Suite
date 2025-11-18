@@ -1,15 +1,18 @@
-using InfernalInkSteelSuite.Services;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Services;
 using InfernalInkSteelSuite.Domain;
+using InfernalInkSteelSuite.Views.Settings;
 using System.Collections.Generic;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
-    public class ThemingTabViewModel : SettingsTabViewModel
+    public class UserTabViewModel : SettingsTabViewModel
     {
+        private readonly IUserRepository _userRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
+        private readonly string _username;
 
-        public override string Header => "Theming";
+        public override string Header => "User";
 
         public IEnumerable<ThemeDefinition> Themes => ThemeManager.AvailableThemes;
 
@@ -46,11 +49,16 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public ThemingTabViewModel(IShopSettingsRepository shopSettingsRepository)
+        public RelayCommand OpenChangePasswordDialogCommand { get; }
+
+        public UserTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository, string username)
         {
+            _userRepository = userRepository;
             _shopSettingsRepository = shopSettingsRepository;
+            _username = username;
             _selectedTheme = ThemeManager.CurrentTheme;
             LoadSettings();
+            OpenChangePasswordDialogCommand = new RelayCommand(OpenChangePasswordDialog);
         }
 
         private void LoadSettings()
@@ -64,6 +72,15 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             var settings = _shopSettingsRepository.LoadSettings();
             settings.EnableAutomaticHolidayThemes = EnableAutomaticHolidayThemes;
             _shopSettingsRepository.SaveSettings(settings);
+        }
+
+        private void OpenChangePasswordDialog(object? parameter)
+        {
+            var dialog = new ChangePasswordDialog
+            {
+                DataContext = new ChangePasswordDialogViewModel(_userRepository, _username)
+            };
+            dialog.ShowDialog();
         }
     }
 }
