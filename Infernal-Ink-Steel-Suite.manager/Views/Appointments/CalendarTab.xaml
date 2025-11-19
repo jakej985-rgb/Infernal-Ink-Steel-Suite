@@ -3,23 +3,89 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:InfernalInkSteelSuite.ViewModels.Appointments"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DataContext="{d:DesignInstance viewModels:CalendarTabViewModel}"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style TargetType="Button" x:Key="DayButtonStyle">
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="80"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="GlowBorder"
+                                CornerRadius="6"
+                                BorderThickness="1"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding HasAppointments}" Value="True">
+                                <Setter TargetName="GlowBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                <Setter TargetName="GlowBorder" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="{DynamicResource AccentColor}"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Calendar x:Name="AppointmentCalendar" Grid.Column="0" SelectionMode="SingleDate" SelectedDatesChanged="AppointmentCalendar_SelectedDatesChanged"/>
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <Button Content="&lt;" Command="{Binding PreviousMonthCommand}" Margin="5"/>
+            <TextBlock Text="{Binding CurrentMonthYear}" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="10,0"/>
+            <Button Content="&gt;" Command="{Binding NextMonthCommand}" Margin="5"/>
+        </StackPanel>
 
-        <DataGrid x:Name="AppointmentsGrid" Grid.Column="1" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Client" Binding="{Binding ClientName}" />
-                <DataGridTextColumn Header="Time" Binding="{Binding DateTime, StringFormat='{}{0:hh:mm tt}'}" />
-                <DataGridTextColumn Header="Service" Binding="{Binding ServiceType}" />
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <!-- Days of the Week -->
+        <UniformGrid Grid.Row="1" Rows="1" Columns="7" Margin="5,0">
+            <TextBlock Text="Sunday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Monday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Tuesday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Wednesday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Thursday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Friday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Saturday" HorizontalAlignment="Center"/>
+        </UniformGrid>
+
+        <!-- Calendar Grid -->
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding Days}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="7"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding DataContext.DayClickedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource DayButtonStyle}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding DayNumber}" FontWeight="Bold"/>
+                            <ItemsControl ItemsSource="{Binding AppointmentTimesSummary}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" FontSize="10"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>
