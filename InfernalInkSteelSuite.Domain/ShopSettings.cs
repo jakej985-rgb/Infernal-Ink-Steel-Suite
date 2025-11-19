@@ -18,6 +18,7 @@ namespace InfernalInkSteelSuite.Domain
         public double TattooPerHour { get; set; } = 0.0;
         public double PiercingSingle { get; set; } = 0.0;
         public double PiercingMulti { get; set; } = 0.0;
+        public double ShopMinimumRate { get; set; } = 0.0;
         public bool EnableAutomaticHolidayThemes { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

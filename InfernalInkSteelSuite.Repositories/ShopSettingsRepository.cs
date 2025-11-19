@@ -25,8 +25,8 @@ namespace InfernalInkSteelSuite.Repositories
                     command.ExecuteNonQuery();
 
                     command.CommandText =
-                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes)
-                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginHeadline, $loginTagline, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes)";
+                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes)
+                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginHeadline, $loginTagline, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $shopMinimumRate, $EnableAutomaticHolidayThemes)";
 
                     command.Parameters.AddWithValue("$shopName", settings.ShopName);
                     command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
@@ -41,6 +41,7 @@ namespace InfernalInkSteelSuite.Repositories
                     command.Parameters.AddWithValue("$tattooPerHour", settings.TattooPerHour);
                     command.Parameters.AddWithValue("$piercingSingle", settings.PiercingSingle);
                     command.Parameters.AddWithValue("$piercingMulti", settings.PiercingMulti);
+                    command.Parameters.AddWithValue("$shopMinimumRate", settings.ShopMinimumRate);
                     command.Parameters.AddWithValue("$EnableAutomaticHolidayThemes", settings.EnableAutomaticHolidayThemes ? 1 : 0);
 
                     command.ExecuteNonQuery();
@@ -56,7 +57,7 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM shopsettings LIMIT 1";
+                command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes FROM shopsettings LIMIT 1";
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())
@@ -74,6 +75,7 @@ namespace InfernalInkSteelSuite.Repositories
                         settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
                         settings.PiercingSingle = Convert.ToDouble(reader["piercingSingle"]);
                         settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);
+                        settings.ShopMinimumRate = Convert.ToDouble(reader["shopMinimumRate"]);
                         settings.EnableAutomaticHolidayThemes = Convert.ToInt32(reader["EnableAutomaticHolidayThemes"]) == 1;
                     }
                 }
