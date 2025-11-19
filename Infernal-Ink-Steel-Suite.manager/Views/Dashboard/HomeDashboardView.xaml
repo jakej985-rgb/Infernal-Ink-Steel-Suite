@@ -57,7 +57,7 @@
                 <StackPanel Grid.Row="0" Margin="20">
                     <controls:GlowAvatar Width="60" Height="60" Initials="II" Margin="0,0,0,10"/>
                     <TextBlock Text="{Binding ShopName}" Foreground="{DynamicResource TextColor}" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="Tattoo & Piercing Studio Suite" Foreground="{DynamicResource TextColorSubtle}" FontSize="12"/>
+                    <TextBlock Text="Tattoo &amp; Piercing Studio Suite" Foreground="{DynamicResource TextColorSubtle}" FontSize="12"/>
                 </StackPanel>
 
                 <!-- Navigation -->
