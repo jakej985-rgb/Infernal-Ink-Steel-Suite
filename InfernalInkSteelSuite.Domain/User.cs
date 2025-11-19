@@ -10,6 +10,8 @@ namespace InfernalInkSteelSuite.Domain
         public string Role { get; set; } = "";
         public string ThemeKey { get; set; } = "InfernalNeon";
         public string AvatarPath { get; set; } = "";
+        public decimal HourlyRate { get; set; } = 150m;
+        public double SpeedFactor { get; set; } = 1.0;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 

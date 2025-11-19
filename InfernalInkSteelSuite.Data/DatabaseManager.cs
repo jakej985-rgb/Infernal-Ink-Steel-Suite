@@ -59,6 +59,38 @@ namespace InfernalInkSteelSuite.Data
             CreateDocumentsTable(connection);
             CreateUsersTable(connection);
             CreateShopSettingsTable(connection);
+            CreateQuotesTable(connection);
+        }
+
+        private void CreateQuotesTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS quotes (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    clientId INTEGER,
+                    artistId INTEGER,
+                    placement TEXT,
+                    style TEXT,
+                    isCoverUp INTEGER,
+                    width REAL,
+                    height REAL,
+                    coverageLevel INTEGER,
+                    lineComplexity INTEGER,
+                    shadingComplexity INTEGER,
+                    colorComplexity INTEGER,
+                    difficulty INTEGER,
+                    estimatedHoursLow REAL,
+                    estimatedHoursHigh REAL,
+                    priceLow REAL,
+                    priceHigh REAL,
+                    shopMinimum REAL,
+                    recommendedDeposit REAL,
+                    confidenceScore REAL,
+                    similarJobsCount INTEGER,
+                    createdAt TEXT
+                )";
+            command.ExecuteNonQuery();
         }
 
         private void CreateDocumentsTable(SqliteConnection connection)
@@ -142,6 +174,8 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
+            EnsureColumnExists(connection, "users", "HourlyRate", "DECIMAL NOT NULL DEFAULT 150");
+            EnsureColumnExists(connection, "users", "SpeedFactor", "DOUBLE NOT NULL DEFAULT 1.0");
         }
 
         private void MigrateShopSettings(SqliteConnection connection)

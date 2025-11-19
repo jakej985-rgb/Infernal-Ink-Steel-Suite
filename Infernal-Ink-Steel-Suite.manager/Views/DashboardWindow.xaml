@@ -19,7 +19,8 @@
                 <Button Content="Home" Click="Home_Click"/>
                 <Button Content="Clients" Click="Clients_Click"/>
                 <Button Content="Appointments" Click="Appointments_Click"/>
-                <Button Content="Quotes" Click="Quotes_Click"/>
+                <Button Content="Create Quote" Click="CreateQuote_Click"/>
+                <Button Content="Quote History" Click="Quotes_Click"/>
                 <Button Content="Documents" Click="Documents_Click"/>
                 <Button Content="Statistics" Click="Statistics_Click"/>
                 <Button Content="Settings" Click="Settings_Click"/>

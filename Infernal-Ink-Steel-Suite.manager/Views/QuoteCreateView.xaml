@@ -1,0 +1,96 @@
+<UserControl x:Class="InfernalInkSteelSuite.Views.QuoteCreateView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:InfernalInkSteelSuite.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1000"
+             d:DataContext="{d:DesignInstance viewModels:QuoteCreateViewModel}">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LEFT COLUMN -->
+        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+            <GroupBox Header="Client & Tattoo Basics">
+                <StackPanel>
+                    <Label Content="Client"/>
+                    <ComboBox ItemsSource="{Binding Clients}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding ClientId}"/>
+                    <Label Content="Placement"/>
+                    <ComboBox ItemsSource="{Binding Placements}" SelectedItem="{Binding Placement}"/>
+                    <Label Content="Style"/>
+                    <ComboBox ItemsSource="{Binding Styles}" SelectedItem="{Binding Style}"/>
+                    <CheckBox Content="Is Cover-Up" IsChecked="{Binding IsCoverUp}" Margin="0,5"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Size & Coverage" Margin="0,10,0,0">
+                <StackPanel>
+                    <Label Content="Width (cm)"/>
+                    <TextBox Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Height (cm)"/>
+                    <TextBox Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Skin Coverage (1-Minimal to 5-Heavy)"/>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding CoverageLevel}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Manual Complexity Sliders" Margin="0,10,0,0">
+                <StackPanel>
+                    <Label Content="Line Complexity"/>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding LineComplexity}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                    <Label Content="Shading Complexity"/>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding ShadingComplexity}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                    <Label Content="Color Complexity"/>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding ColorComplexity}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                    <Label Content="Difficulty / Subject Complexity"/>
+                    <Slider Minimum="1" Maximum="5" Value="{Binding Difficulty}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <!-- RIGHT COLUMN -->
+        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+            <GroupBox Header="Photo Assist (Optional)">
+                <TextBlock Text="Image uploader will go here." Height="80" TextAlignment="Center" VerticalAlignment="Center"/>
+            </GroupBox>
+
+            <GroupBox Header="Artist & Pricing Summary" Margin="0,10,0,0">
+                <StackPanel>
+                    <Label Content="Artist"/>
+                    <ComboBox ItemsSource="{Binding Artists}" DisplayMemberPath="Username" SelectedValuePath="Id" SelectedValue="{Binding ArtistId}"/>
+
+                    <Border Padding="10" Margin="0,10,0,0" Background="{DynamicResource SurfaceBrush}">
+                        <StackPanel>
+                            <TextBlock Text="ESTIMATED TIME" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding EstimatedHoursRange}"/>
+
+                            <TextBlock Text="ESTIMATED PRICE" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding EstimatedPriceRange}"/>
+
+                            <TextBlock Text="SHOP MINIMUM" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding QuoteEstimate.ShopMinimum, StringFormat='{}{0:C}'}"/>
+
+                            <TextBlock Text="SUGGESTED DEPOSIT" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding QuoteEstimate.RecommendedDeposit, StringFormat='{}{0:C}'}"/>
+
+                            <TextBlock Text="CONFIDENCE" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding QuoteEstimate.ConfidenceScore, StringFormat='{}{0:P0}'}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Actions" Margin="0,10,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Save Quote" Margin="5" Command="{Binding SaveQuoteCommand}"/>
+                    <Button Content="Save & Create Appointment" Margin="5"/>
+                    <Button Content="Print / Export PDF" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</UserControl>
