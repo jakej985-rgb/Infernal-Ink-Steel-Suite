@@ -21,7 +21,7 @@ namespace InfernalInkSteelSuite.Views
             UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository);
             PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository);
             CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository);
-            CalendarTab.Content = new CalendarTab(_appointmentRepository);
+            CalendarTab.Content = new CalendarTab();
 
             AddButton.Click += AddButton_Click;
             EditButton.Click += EditButton_Click;
@@ -90,7 +90,13 @@ namespace InfernalInkSteelSuite.Views
             (UpcomingTab.Content as UpcomingAppointmentsTab)?.Refresh();
             (PendingTab.Content as PendingAppointmentsTab)?.Refresh();
             (CompletedTab.Content as CompletedAppointmentsTab)?.Refresh();
-            (CalendarTab.Content as CalendarTab)?.Refresh();
+        }
+
+        private void MainTabWidget_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var isCalendarTab = MainTabWidget.SelectedItem == CalendarTab;
+            EditButton.IsEnabled = !isCalendarTab;
+            DeleteButton.IsEnabled = !isCalendarTab;
         }
     }
 }

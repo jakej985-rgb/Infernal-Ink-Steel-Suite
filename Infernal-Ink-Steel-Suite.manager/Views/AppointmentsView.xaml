@@ -11,7 +11,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl x:Name="MainTabWidget" Grid.Row="0">
+        <TabControl x:Name="MainTabWidget" Grid.Row="0" SelectionChanged="MainTabWidget_SelectionChanged">
             <TabItem Header="Upcoming" x:Name="UpcomingTab"/>
             <TabItem Header="Pending" x:Name="PendingTab"/>
             <TabItem Header="Completed" x:Name="CompletedTab"/>
