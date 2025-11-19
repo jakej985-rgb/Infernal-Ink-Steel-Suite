@@ -37,6 +37,7 @@ namespace InfernalInkSteelSuite.Views
         {
             var settings = _shopSettingsRepository.LoadSettings();
             TattooRateLabel.Text = $"{settings.TattooPerHour:C}/hr";
+            ShopMinimumRateLabel.Text = $"{settings.ShopMinimumRate:C}";
             PiercingRateLabel.Text = $"{settings.PiercingSingle:C}";
             if (!string.IsNullOrEmpty(settings.SidebarArtworkPath))
             {
