@@ -60,11 +60,6 @@ namespace InfernalInkSteelSuite
 
         private void ApplyBranding()
         {
-            ApplyBranding(BackButton);
-        }
-
-        private void ApplyBranding(Button backButton)
-        {
             var settings = _settingsRepository.LoadSettings();
             const string defaultImagePath = "default_art.png";
 
