@@ -1,17 +1,16 @@
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Controls;
-using System.IO;
-using System;
-using System.Text;
-using System.Security.Cryptography;
-using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Services;
+using InfernalInkSteelSuite.Views;
 
 namespace InfernalInkSteelSuite
 {
@@ -43,7 +42,7 @@ namespace InfernalInkSteelSuite
                 var avatar = new GlowAvatar
                 {
                     Size = 100,
-                    Initials = user.Username.Substring(0, 1).ToUpper()
+                    Initials = user.Username[..1].ToUpper()
                 };
                 var nameLabel = new TextBlock
                 {
@@ -60,11 +59,6 @@ namespace InfernalInkSteelSuite
         }
 
         private void ApplyBranding()
-        {
-            ApplyBranding(BackButton);
-        }
-
-        private void ApplyBranding(Button backButton)
         {
             var settings = _settingsRepository.LoadSettings();
             const string defaultImagePath = "default_art.png";
@@ -99,15 +93,12 @@ namespace InfernalInkSteelSuite
             if (!string.IsNullOrWhiteSpace(settings.AccentColor))
             {
                 var accentColor = (Color)ColorConverter.ConvertFromString(settings.AccentColor);
-                SignInButton.Background = new SolidColorBrush(accentColor);
-                backButton.Background = new SolidColorBrush(accentColor);
-
-                var lighterAccent = GetLighterColor(accentColor, 1.3f);
-
-                var gradient = new LinearGradientBrush();
-                gradient.StartPoint = new Point(0, 0);
-                gradient.EndPoint = new Point(0, 1);
-                gradient.GradientStops.Add(new GradientStop(lighterAccent, 0.0));
+                var gradient = new LinearGradientBrush
+                {
+                    StartPoint = new Point(0, 0),
+                    EndPoint = new Point(0, 1)
+                };
+                gradient.GradientStops.Add(new GradientStop(GetLighterColor(accentColor, 1.3f), 0.0));
                 gradient.GradientStops.Add(new GradientStop(accentColor, 1.0));
 
                 SignInButton.Background = gradient;
@@ -120,7 +111,7 @@ namespace InfernalInkSteelSuite
         private void ShowUserSelected(User user)
         {
             _currentUser = user;
-            AvatarInitials.Text = user.Username.Substring(0, 1).ToUpper();
+            AvatarInitials.Text = user.Username[..1].ToUpper();
             SelectedUserLabel.Text = user.Username;
             PasswordEdit.Clear();
             PasswordTextBox.Clear();
@@ -174,16 +165,13 @@ namespace InfernalInkSteelSuite
 
         private static string GetSha256Hash(string input)
         {
-            using (var sha256 = SHA256.Create())
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+            var builder = new StringBuilder();
+            foreach (var b in bytes)
             {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-                var builder = new StringBuilder();
-                foreach (var b in bytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
+                builder.Append(b.ToString("x2"));
             }
+            return builder.ToString();
         }
 
         private static Color GetLighterColor(Color color, float factor)

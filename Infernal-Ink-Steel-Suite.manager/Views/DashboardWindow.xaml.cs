@@ -16,6 +16,9 @@ namespace InfernalInkSteelSuite.Views
         private readonly IClientRepository _clientRepository;
         private readonly IDocumentRepository _documentRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IQuoteRepository _quoteRepository;
+        private readonly IImageComplexityService _imageComplexityService;
 
         private readonly User _currentUser;
 
@@ -27,6 +30,9 @@ namespace InfernalInkSteelSuite.Views
             _clientRepository = new ClientRepository(_connectionString);
             _documentRepository = new DocumentRepository(_connectionString);
             _shopSettingsRepository = new ShopSettingsRepository(_connectionString);
+            _userRepository = new UserRepository(_connectionString);
+            _quoteRepository = new QuoteRepository(_connectionString);
+            _imageComplexityService = new ImageComplexityService();
 
             InitializeComponent();
             LoadShopSettings();
@@ -80,7 +86,19 @@ namespace InfernalInkSteelSuite.Views
 
         private void Quotes_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new QuotesView(_appointmentRepository);
+            var quotesViewModel = new QuotesViewModel(_appointmentRepository);
+            var quotesView = new QuotesView(_appointmentRepository);
+            quotesView.DataContext = quotesViewModel;
+            MainContent.Content = quotesView;
+        }
+
+        private void CreateQuote_Click(object sender, RoutedEventArgs e)
+        {
+            var pricingService = new TattooPricingService(_shopSettingsRepository, _userRepository);
+            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
+            var quoteCreateView = new QuoteCreateView();
+            quoteCreateView.DataContext = quoteCreateViewModel;
+            MainContent.Content = quoteCreateView;
         }
 
         private void Documents_Click(object sender, RoutedEventArgs e)
