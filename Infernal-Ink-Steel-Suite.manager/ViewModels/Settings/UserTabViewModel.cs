@@ -10,9 +10,31 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
     {
         private readonly IUserRepository _userRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
-        private readonly string _username;
+        private readonly User _currentUser;
 
         public override string Header => "User";
+
+        private string _username;
+        public string Username
+        {
+            get => _username;
+            set
+            {
+                _username = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _avatarPath;
+        public string AvatarPath
+        {
+            get => _avatarPath;
+            set
+            {
+                _avatarPath = value;
+                OnPropertyChanged();
+            }
+        }
 
         public IEnumerable<ThemeDefinition> Themes => ThemeManager.AvailableThemes;
 
@@ -50,15 +72,21 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         }
 
         public RelayCommand OpenChangePasswordDialogCommand { get; }
+        public RelayCommand OpenChangeAvatarDialogCommand { get; }
 
-        public UserTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository, string username)
+        public UserTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository, User currentUser)
         {
             _userRepository = userRepository;
             _shopSettingsRepository = shopSettingsRepository;
-            _username = username;
+            _currentUser = currentUser;
+
+            _username = _currentUser.Username;
+            _avatarPath = _currentUser.AvatarPath;
+
             _selectedTheme = ThemeManager.CurrentTheme;
             LoadSettings();
             OpenChangePasswordDialogCommand = new RelayCommand(OpenChangePasswordDialog);
+            OpenChangeAvatarDialogCommand = new RelayCommand(OpenChangeAvatarDialog);
         }
 
         private void LoadSettings()
@@ -78,9 +106,24 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             var dialog = new ChangePasswordDialog
             {
-                DataContext = new ChangePasswordDialogViewModel(_userRepository, _username)
+                DataContext = new ChangePasswordDialogViewModel(_userRepository, _currentUser.Username)
             };
             dialog.ShowDialog();
+        }
+
+        private void OpenChangeAvatarDialog(object? parameter)
+        {
+            var dialog = new ChangeAvatarDialog
+            {
+                DataContext = new ChangeAvatarDialogViewModel(_userRepository, _currentUser.Username)
+            };
+            dialog.ShowDialog();
+            // Refresh the avatar path after the dialog closes
+            var user = _userRepository.GetUserById(_currentUser.Id);
+            if (user != null)
+            {
+                AvatarPath = user.AvatarPath;
+            }
         }
     }
 }

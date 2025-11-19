@@ -13,6 +13,7 @@ namespace InfernalInkSteelSuite.Repositories
         bool UpdateUser(User user);
         bool UpdateRole(string username, string role);
         bool UpdatePassword(string username, string password);
+        bool UpdateAvatarPath(string username, string avatarPath);
         bool DeleteUser(string username);
         bool CheckPassword(string username, string plainPassword);
         List<User> GetAllUsers();
