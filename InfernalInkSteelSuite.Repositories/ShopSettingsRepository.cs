@@ -57,7 +57,7 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes FROM shopsettings LIMIT 1";
+                command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled FROM shopsettings LIMIT 1";
                 using (var reader = command.ExecuteReader())
                 {
                     if (reader.Read())

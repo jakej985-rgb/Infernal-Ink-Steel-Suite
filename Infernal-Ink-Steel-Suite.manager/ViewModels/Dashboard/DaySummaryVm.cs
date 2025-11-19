@@ -17,5 +17,10 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
                 OnPropertyChanged();
             }
         }
+
+        public DaySummaryVm()
+        {
+            DayLabel = string.Empty;
+        }
     }
 }

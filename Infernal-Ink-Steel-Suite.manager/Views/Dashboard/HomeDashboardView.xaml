@@ -77,7 +77,7 @@
                     <StackPanel Margin="10,0,0,0">
                         <TextBlock Text="{Binding UserName}" Foreground="{DynamicResource TextColor}" FontWeight="Bold"/>
                         <TextBlock Text="{Binding UserRole}" Foreground="{DynamicResource TextColorSubtle}"/>
-                        <TextBlock Text="Logout" Foreground="{DynamicResource AccentColor}" Cursor="Hand">
+                        <TextBlock Text="Logout" Foreground="{DynamicResource AccentBrush}" Cursor="Hand">
                             <TextBlock.InputBindings>
                                 <MouseBinding MouseAction="LeftClick" Command="{Binding LogoutCommand}"/>
                             </TextBlock.InputBindings>
