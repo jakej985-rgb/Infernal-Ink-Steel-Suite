@@ -38,19 +38,20 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public string LoginHeadline
+        public bool IsSpecialMessageEnabled
         {
-            get => _shopSettings.LoginHeadline;
+            get => _shopSettings.IsSpecialMessageEnabled;
             set
             {
-                if (_shopSettings.LoginHeadline != value)
+                if (_shopSettings.IsSpecialMessageEnabled != value)
                 {
-                    _shopSettings.LoginHeadline = value;
+                    _shopSettings.IsSpecialMessageEnabled = value;
                     OnPropertyChanged();
                 }
             }
         }
 
+        public string SpecialMessageText
         public double ShopMinimumRate
         {
             get => _shopSettings.ShopMinimumRate;
@@ -66,12 +67,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         public string LoginTagline
         {
-            get => _shopSettings.LoginTagline;
+            get => _shopSettings.SpecialMessageText;
             set
             {
-                if (_shopSettings.LoginTagline != value)
+                if (_shopSettings.SpecialMessageText != value)
                 {
-                    _shopSettings.LoginTagline = value;
+                    _shopSettings.SpecialMessageText = value;
                     OnPropertyChanged();
                 }
             }
@@ -147,6 +148,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public RelayCommand ResetPasswordCommand { get; }
         public RelayCommand SaveSettingsCommand { get; }
         public RelayCommand BrowseCommand { get; }
+        public RelayCommand BrowseBackgroundCommand { get; }
 
         public AdminTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository)
         {
@@ -161,6 +163,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             ResetPasswordCommand = new RelayCommand(ResetPassword, CanUpdateOrReset);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
             BrowseCommand = new RelayCommand(Browse);
+            BrowseBackgroundCommand = new RelayCommand(BrowseBackground);
         }
 
         private void LoadUsers()
@@ -230,6 +233,18 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             if (openFileDialog.ShowDialog() == true)
             {
                 SidebarArtworkPath = openFileDialog.FileName;
+            }
+        }
+
+        private void BrowseBackground(object? obj)
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg;*.bmp)|*.png;*.jpeg;*.jpg;*.bmp|All files (*.*)|*.*"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                LoginBackgroundPath = openFileDialog.FileName;
             }
         }
     }
