@@ -116,6 +116,19 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        public bool EnableHolidayThemes
+        {
+            get => _shopSettings.EnableAutomaticHolidayThemes;
+            set
+            {
+                if (_shopSettings.EnableAutomaticHolidayThemes != value)
+                {
+                    _shopSettings.EnableAutomaticHolidayThemes = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public RelayCommand AddUserCommand { get; }
         public RelayCommand UpdateRoleCommand { get; }
         public RelayCommand ResetPasswordCommand { get; }

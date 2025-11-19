@@ -4,11 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:InfernalInkSteelSuite.Views.Settings"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TabControl>
-            <TabItem Header="User Management">
+             d:DesignHeight="600" d:DesignWidth="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <GroupBox Header="User Management" Margin="0,0,0,10">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -19,43 +20,59 @@
                         <Button Content="Update Role" Command="{Binding UpdateRoleCommand}" Margin="5"/>
                         <Button Content="Reset Password" Command="{Binding ResetPasswordCommand}" Margin="5"/>
                     </StackPanel>
-                    <DataGrid Grid.Row="1" ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" AutoGenerateColumns="False" CanUserAddRows="False">
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Users}" SelectedItem="{Binding SelectedUser}" AutoGenerateColumns="False" CanUserAddRows="False" MaxHeight="200">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Username" Binding="{Binding Username}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Role" Binding="{Binding Role}"/>
+                            <DataGridTextColumn Header="Username" Binding="{Binding Username}" IsReadOnly="True" Width="*"/>
+                            <DataGridComboBoxColumn Header="Role" SelectedItemBinding="{Binding Role}" Width="*">
+                                <DataGridComboBoxColumn.ItemsSource>
+                                    <x:Array Type="sys:String">
+                                        <sys:String>Admin</sys:String>
+                                        <sys:String>Manager</sys:String>
+                                        <sys:String>User</sys:String>
+                                    </x:Array>
+                                </DataGridComboBoxColumn.ItemsSource>
+                            </DataGridComboBoxColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-            </TabItem>
-            <TabItem Header="Login Screen Branding">
-                <StackPanel Margin="20">
+            </GroupBox>
+
+            <GroupBox Header="Login Screen Branding" Margin="0,0,0,10">
+                <StackPanel Margin="10">
                     <Label Content="Headline" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginHeadline, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
-                    <Label Content="Tagline" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginTagline, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
-                    <Label Content="Background Image Path" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
-                    <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,20,0,0"/>
+                    <TextBox Text="{Binding LoginHeadline, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Tagline" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding LoginTagline, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Background Image Path" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
-            </TabItem>
-            <TabItem Header="Shop Settings">
-                <StackPanel Margin="20">
+            </GroupBox>
+
+            <GroupBox Header="Shop Settings" Margin="0,0,0,10">
+                <StackPanel Margin="10">
                     <Label Content="Tattoo Rate Per Hour" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
-                    <Label Content="Piercing Rate" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}"/>
-                    <Label Content="Sidebar Artwork" Foreground="{DynamicResource TextColor}"/>
+                    <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Piercing Rate" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Sidebar Artwork" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0" Text="{Binding SidebarArtworkPath, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource TextBoxStyle}" IsReadOnly="True"/>
+                        <TextBox Grid.Column="0" Text="{Binding SidebarArtworkPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                         <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseCommand}" Margin="10,0,0,0"/>
                     </Grid>
-                    <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,20,0,0"/>
                 </StackPanel>
-            </TabItem>
-        </TabControl>
-    </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Application Settings" Margin="0,0,0,10">
+                <StackPanel Margin="10">
+                    <CheckBox IsChecked="{Binding EnableHolidayThemes}" Content="Enable automatic holiday themes"/>
+                </StackPanel>
+            </GroupBox>
+
+            <Button Content="Save Settings" Command="{Binding SaveSettingsCommand}" Margin="0,20,0,0" HorizontalAlignment="Right"/>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

@@ -25,19 +25,14 @@ namespace InfernalInkSteelSuite
                 var databaseManager = new DatabaseManager(ConnectionString);
                 databaseManager.InitializeDatabase();
 
-                var shopSettingsRepository = new ShopSettingsRepository(ConnectionString);
-                var settings = shopSettingsRepository.LoadSettings();
+                HolidayThemeService.Initialize(ConnectionString);
 
-                // Default theme before login (e.g. Infernal Neon)
                 ThemeManager.ApplyTheme(ThemeId.InfernalNeon);
 
-                if (settings.EnableAutomaticHolidayThemes)
+                var holidayTheme = HolidayThemeService.GetCurrentHolidayTheme();
+                if (holidayTheme != null)
                 {
-                    var holidayTheme = HolidayThemeService.GetCurrentHolidayTheme();
-                    if (holidayTheme != null)
-                    {
-                        ThemeManager.ApplyTheme(holidayTheme.Id);
-                    }
+                    ThemeManager.ApplyTheme(holidayTheme.Id);
                 }
             }
             catch (Exception ex)
