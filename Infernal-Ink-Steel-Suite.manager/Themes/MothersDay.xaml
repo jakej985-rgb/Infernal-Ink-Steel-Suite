@@ -34,6 +34,8 @@
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
 
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1A000000"/>
+
     <!-- Holiday Asset -->
     <ImageBrush x:Key="HolidayImageBrush" ImageSource="/Assets/Images/mothersday.png" Stretch="Uniform" />
 

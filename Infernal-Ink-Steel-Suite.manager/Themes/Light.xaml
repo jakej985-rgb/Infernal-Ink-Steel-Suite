@@ -34,6 +34,8 @@
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
 
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1A000000"/>
+
     <!-- Window background -->
     <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"
                      Color="{StaticResource AppBackgroundColor}" />
