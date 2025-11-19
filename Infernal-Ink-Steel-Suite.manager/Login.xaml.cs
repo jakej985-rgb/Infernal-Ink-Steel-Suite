@@ -67,14 +67,33 @@ namespace InfernalInkSteelSuite
         private void ApplyBranding(Button backButton)
         {
             var settings = _settingsRepository.LoadSettings();
+            const string defaultImagePath = "default_art.png";
 
             Title = string.IsNullOrWhiteSpace(settings.ShopName) ? "Login" : $"{settings.ShopName} Login";
-            HeadlineLabel.Text = string.IsNullOrWhiteSpace(settings.LoginHeadline) ? "Welcome Back" : settings.LoginHeadline;
-            TaglineLabel.Text = string.IsNullOrWhiteSpace(settings.LoginTagline) ? "Sign in to manage your day." : settings.LoginTagline;
 
+            // Headline
+            var shopName = string.IsNullOrWhiteSpace(settings.ShopName) ? "Infernal Ink & Steel" : settings.ShopName;
+            HeadlineLabel.Text = $"Welcome \"{shopName}\"";
+
+            // Special Message (Tagline)
+            if (settings.IsSpecialMessageEnabled)
+            {
+                TaglineLabel.Text = string.IsNullOrWhiteSpace(settings.SpecialMessageText) ? "Sign In To Continue" : settings.SpecialMessageText;
+                TaglineLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                TaglineLabel.Visibility = Visibility.Collapsed;
+            }
+
+            // Background Image
             if (!string.IsNullOrWhiteSpace(settings.LoginBackgroundPath) && File.Exists(settings.LoginBackgroundPath))
             {
                 BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(settings.LoginBackgroundPath)));
+            }
+            else if (File.Exists(defaultImagePath))
+            {
+                BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(defaultImagePath)));
             }
 
             if (!string.IsNullOrWhiteSpace(settings.AccentColor))
