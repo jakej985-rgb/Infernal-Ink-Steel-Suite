@@ -1,16 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using InfernalInkSteelSuite.Repositories;
 
 namespace InfernalInkSteelSuite.Services
 {
     public static class HolidayThemeService
     {
         private static readonly Dictionary<ThemeId, (DateTime Start, DateTime End)> HolidayRanges = new();
+        private static bool _holidayThemesEnabled;
 
         static HolidayThemeService()
         {
             InitializeHolidayRanges(DateTime.Now.Year);
+        }
+        public static void Initialize(string connectionString)
+        {
+            var shopSettingsRepository = new ShopSettingsRepository(connectionString);
+            var settings = shopSettingsRepository.LoadSettings();
+            _holidayThemesEnabled = settings.EnableAutomaticHolidayThemes;
         }
 
         private static void InitializeHolidayRanges(int year)
@@ -37,6 +45,11 @@ namespace InfernalInkSteelSuite.Services
 
         public static ThemeDefinition? GetCurrentHolidayTheme()
         {
+            if (!_holidayThemesEnabled)
+            {
+                return null;
+            }
+
             var today = DateTime.Now;
             if (today.Year != HolidayRanges.First().Value.Start.Year)
             {
