@@ -17,8 +17,15 @@
     <Color x:Key="SecondaryTextColor">#FF404040</Color>
     <Color x:Key="MutedTextColor">#FF808080</Color>
 
+    <!-- Dashboard specific colors -->
+    <Color x:Key="DashboardCardBackgroundColor">#FFFFFFFF</Color>
+
     <!-- Brushes -->
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="DashboardBackgroundBrush" Color="{StaticResource SurfaceColor}" />
+    <SolidColorBrush x:Key="DashboardCardBrush" Color="{StaticResource DashboardCardBackgroundColor}" />
+    <SolidColorBrush x:Key="DashboardAccentBrush" Color="{StaticResource AccentColor}" />
+
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
 
@@ -33,6 +40,10 @@
     <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
+
+    <!-- Legacy/Alias Text Colors -->
+    <SolidColorBrush x:Key="TextColor" Color="{StaticResource PrimaryTextColor}" />
+    <SolidColorBrush x:Key="TextColorSubtle" Color="{StaticResource SecondaryTextColor}" />
 
     <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1A000000"/>
 

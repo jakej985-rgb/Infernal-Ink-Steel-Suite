@@ -17,10 +17,17 @@
     <Color x:Key="SecondaryTextColor">#FFB0B0D0</Color>
     <Color x:Key="MutedTextColor">#FF7070A0</Color>
 
+    <!-- Dashboard specific colors -->
+    <Color x:Key="DashboardCardBackgroundColor">#1A1A2E</Color>
+
     <!-- Brushes -->
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+
+    <SolidColorBrush x:Key="DashboardBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="DashboardCardBrush" Color="{StaticResource DashboardCardBackgroundColor}" />
+    <SolidColorBrush x:Key="DashboardAccentBrush" Color="{StaticResource AccentColor}" />
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
     <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHoverColor}" />
@@ -33,6 +40,10 @@
     <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
+
+    <!-- Legacy/Alias Text Colors -->
+    <SolidColorBrush x:Key="TextColor" Color="{StaticResource PrimaryTextColor}" />
+    <SolidColorBrush x:Key="TextColorSubtle" Color="{StaticResource SecondaryTextColor}" />
 
     <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1AFFFFFF"/>
 

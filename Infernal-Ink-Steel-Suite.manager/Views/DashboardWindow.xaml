@@ -10,7 +10,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="0" Background="{DynamicResource SurfaceBrush}">
+        <Grid Grid.Column="0" Background="{DynamicResource SurfaceBrush}" Panel.ZIndex="1">
+            <Grid.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="0.5" Color="Black"/>
+            </Grid.Effect>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
