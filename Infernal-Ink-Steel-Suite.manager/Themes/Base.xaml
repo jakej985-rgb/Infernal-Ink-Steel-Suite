@@ -53,7 +53,7 @@
     <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
         <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
         <Setter Property="Padding" Value="{StaticResource ControlPadding}" />
-        <Setter Property="Background" Value="{DynamicResource SecondaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -92,7 +92,7 @@
     <Style x:Key="TextBoxStyle" TargetType="TextBox">
         <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
         <Setter Property="Padding" Value="{StaticResource ControlPadding}" />
-        <Setter Property="Background" Value="{DynamicResource SecondaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
         <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
