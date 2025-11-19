@@ -146,25 +146,6 @@ namespace InfernalInkSteelSuite.Data
 
         private void MigrateShopSettings(SqliteConnection connection)
         {
-            if (TableHasColumn(connection, "shopsettings", "LoginTagline"))
-            {
-                if (!TableHasColumn(connection, "shopsettings", "SpecialMessageText"))
-                {
-                    EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
-                }
-                var command = connection.CreateCommand();
-                command.CommandText = "UPDATE shopsettings SET SpecialMessageText = LoginTagline WHERE SpecialMessageText IS NULL";
-                command.ExecuteNonQuery();
-            }
-
-            if (!TableHasColumn(connection, "shopsettings", "IsSpecialMessageEnabled"))
-            {
-                EnsureColumnExists(connection, "shopsettings", "IsSpecialMessageEnabled", "INTEGER NOT NULL DEFAULT 1");
-            }
-        }
-
-        private void MigrateShopSettings(SqliteConnection connection)
-        {
             // First, ensure the new columns exist.
             EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
             EnsureColumnExists(connection, "shopsettings", "IsSpecialMessageEnabled", "INTEGER NOT NULL DEFAULT 1");
