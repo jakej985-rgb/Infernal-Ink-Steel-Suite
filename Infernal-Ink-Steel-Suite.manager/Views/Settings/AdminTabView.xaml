@@ -60,6 +60,8 @@
                     <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Piercing Rate" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
                     <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Shop minimum rate ($)" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding ShopMinimumRate, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Sidebar Artwork" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
                     <Grid>
                         <Grid.ColumnDefinitions>

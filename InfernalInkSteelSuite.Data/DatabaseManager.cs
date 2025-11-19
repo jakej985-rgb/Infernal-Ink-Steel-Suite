@@ -141,6 +141,26 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
+            EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
+        }
+
+        private void MigrateShopSettings(SqliteConnection connection)
+        {
+            if (TableHasColumn(connection, "shopsettings", "LoginTagline"))
+            {
+                if (!TableHasColumn(connection, "shopsettings", "SpecialMessageText"))
+                {
+                    EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
+                }
+                var command = connection.CreateCommand();
+                command.CommandText = "UPDATE shopsettings SET SpecialMessageText = LoginTagline WHERE SpecialMessageText IS NULL";
+                command.ExecuteNonQuery();
+            }
+
+            if (!TableHasColumn(connection, "shopsettings", "IsSpecialMessageEnabled"))
+            {
+                EnsureColumnExists(connection, "shopsettings", "IsSpecialMessageEnabled", "INTEGER NOT NULL DEFAULT 1");
+            }
         }
 
         private void MigrateShopSettings(SqliteConnection connection)
