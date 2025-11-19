@@ -4,9 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:InfernalInkSteelSuite.ViewModels"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1000"
              d:DataContext="{d:DesignInstance viewModels:QuoteCreateViewModel}">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -15,7 +20,7 @@
 
         <!-- LEFT COLUMN -->
         <StackPanel Grid.Column="0" Margin="0,0,10,0">
-            <GroupBox Header="Client & Tattoo Basics">
+            <GroupBox Header="Client &amp; Tattoo Basics">
                 <StackPanel>
                     <Label Content="Client"/>
                     <ComboBox ItemsSource="{Binding Clients}" DisplayMemberPath="FullName" SelectedValuePath="Id" SelectedValue="{Binding ClientId}"/>
@@ -33,6 +38,12 @@
                     <TextBox Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Height (cm)"/>
                     <TextBox Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Button Content="Script / small symbol" Command="{Binding SetSizePresetCommand}" CommandParameter="small" Margin="0,0,5,0}"/>
+                        <Button Content="Palm-sized" Command="{Binding SetSizePresetCommand}" CommandParameter="medium" Margin="0,0,5,0}"/>
+                        <Button Content="Half sleeve" Command="{Binding SetSizePresetCommand}" CommandParameter="large" Margin="0,0,5,0}"/>
+                        <Button Content="Full day piece" Command="{Binding SetSizePresetCommand}" CommandParameter="xlarge" Margin="0,0,5,0}"/>
+                    </StackPanel>
                     <Label Content="Skin Coverage (1-Minimal to 5-Heavy)"/>
                     <Slider Minimum="1" Maximum="5" Value="{Binding CoverageLevel}" TickFrequency="1" IsSnapToTickEnabled="True"/>
                 </StackPanel>
@@ -55,7 +66,23 @@
         <!-- RIGHT COLUMN -->
         <StackPanel Grid.Column="1" Margin="10,0,0,0">
             <GroupBox Header="Photo Assist (Optional)">
-                <TextBlock Text="Image uploader will go here." Height="80" TextAlignment="Center" VerticalAlignment="Center"/>
+                <Border AllowDrop="True" DragEnter="DropZone_DragEnter" DragLeave="DropZone_DragLeave" Drop="DropZone_Drop" BorderBrush="Gray" BorderThickness="2" CornerRadius="5" MinHeight="150" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Drop reference photo or stencil here, or click to browse." TextAlignment="Center" VerticalAlignment="Center" Visibility="{Binding ImagePath, Converter={StaticResource NullToVisibilityConverter}}"/>
+                        <Image Source="{Binding ImagePath}" MaxHeight="100" Margin="0,0,0,10" Visibility="{Binding ImagePath, Converter={StaticResource NotNullToVisibilityConverter}}"/>
+                        <Button Content="Analyze Complexity" Command="{Binding AnalyzeImageCommand}" Visibility="{Binding ImagePath, Converter={StaticResource NotNullToVisibilityConverter}}"/>
+                        <StackPanel Visibility="{Binding ImageComplexityResult, Converter={StaticResource NotNullToVisibilityConverter}}">
+                            <TextBlock Text="AI Complexity Suggestion" FontWeight="Bold" Margin="0,10,0,0"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.StyleHint, StringFormat='Style hint: {0}'}"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.LineComplexity, StringFormat='Line complexity: {0} / 5'}"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.ShadingComplexity, StringFormat='Shading complexity: {0} / 5'}"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.ColorComplexity, StringFormat='Color complexity: {0} / 5'}"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.SolidDarkFill, StringFormat='Solid dark fill: {0:P0}'}"/>
+                            <TextBlock Text="{Binding ImageComplexityResult.SuggestedDifficulty, StringFormat='Suggested difficulty: {0} / 5'}"/>
+                            <Button Content="Apply to Sliders" Command="{Binding ApplyComplexityCommand}" Margin="0,10,0,0}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </GroupBox>
 
             <GroupBox Header="Artist & Pricing Summary" Margin="0,10,0,0">
@@ -87,7 +114,7 @@
             <GroupBox Header="Actions" Margin="0,10,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Save Quote" Margin="5" Command="{Binding SaveQuoteCommand}"/>
-                    <Button Content="Save & Create Appointment" Margin="5"/>
+                    <Button Content="Save & Create Appointment" Margin="5" Command="{Binding SaveAndCreateAppointmentCommand}"/>
                     <Button Content="Print / Export PDF" Margin="5"/>
                 </StackPanel>
             </GroupBox>

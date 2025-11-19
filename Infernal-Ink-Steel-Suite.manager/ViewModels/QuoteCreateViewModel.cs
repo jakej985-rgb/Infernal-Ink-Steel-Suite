@@ -3,8 +3,11 @@ using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
+using InfernalInkSteelSuite.Views;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
@@ -12,12 +15,12 @@ namespace InfernalInkSteelSuite.ViewModels
     {
         private readonly ITattooPricingService _pricingService;
         private readonly IQuoteRepository _quoteRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IImageComplexityService _imageComplexityService;
         private QuoteInput _quoteInput;
         private QuoteEstimate _quoteEstimate;
-
-        // Repositories will be injected later
-        // private readonly IClientRepository _clientRepository;
-        // private readonly IUserRepository _userRepository;
 
         #region Input Properties
 
@@ -114,6 +117,32 @@ namespace InfernalInkSteelSuite.ViewModels
 
         #endregion
 
+        #region Photo Assist Properties
+
+        private string _imagePath;
+        public string ImagePath
+        {
+            get => _imagePath;
+            set
+            {
+                _imagePath = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ImageComplexityResult _imageComplexityResult;
+        public ImageComplexityResult ImageComplexityResult
+        {
+            get => _imageComplexityResult;
+            set
+            {
+                _imageComplexityResult = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
         #region UI Collections
 
         public ObservableCollection<Client> Clients { get; set; }
@@ -125,11 +154,20 @@ namespace InfernalInkSteelSuite.ViewModels
 
         public ICommand RecalculateCommand { get; }
         public ICommand SaveQuoteCommand { get; }
+        public ICommand SetSizePresetCommand { get; }
+        public ICommand SaveAndCreateAppointmentCommand { get; }
+        public ICommand AnalyzeImageCommand { get; }
+        public ICommand ApplyComplexityCommand { get; }
+        public ICommand DropImageCommand { get; }
 
-        public QuoteCreateViewModel(ITattooPricingService pricingService, IQuoteRepository quoteRepository)
+        public QuoteCreateViewModel(ITattooPricingService pricingService, IQuoteRepository quoteRepository, IClientRepository clientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository, IImageComplexityService imageComplexityService)
         {
             _pricingService = pricingService;
             _quoteRepository = quoteRepository;
+            _clientRepository = clientRepository;
+            _userRepository = userRepository;
+            _appointmentRepository = appointmentRepository;
+            _imageComplexityService = imageComplexityService;
 
             _quoteInput = new QuoteInput
             {
@@ -144,15 +182,42 @@ namespace InfernalInkSteelSuite.ViewModels
                 Style = "Fine line"
             };
 
-            // Initialize collections with placeholder data
-            Clients = new ObservableCollection<Client> { new Client { Id = 1, FirstName = "John", LastName = "Doe" } };
-            Artists = new ObservableCollection<User> { new User { Id = 1, Username = "Artist One" } };
+            Clients = new ObservableCollection<Client>(_clientRepository.GetAll());
+            Artists = new ObservableCollection<User>(_userRepository.GetAllUsers());
             Placements = new ObservableCollection<string> { "Forearm", "Calf", "Ribs", "Hand", "Neck" };
             Styles = new ObservableCollection<string> { "Fine line", "Traditional", "Neo-trad", "Realism", "Color realism", "Blackwork" };
 
             RecalculateCommand = new RelayCommand(_ => RecalculateEstimate());
             SaveQuoteCommand = new RelayCommand(_ => SaveQuote());
+            SetSizePresetCommand = new RelayCommand(SetSizePreset);
+            SaveAndCreateAppointmentCommand = new RelayCommand(_ => SaveAndCreateAppointment());
+            AnalyzeImageCommand = new RelayCommand(_ => AnalyzeImage());
+            ApplyComplexityCommand = new RelayCommand(_ => ApplyComplexity());
+            DropImageCommand = new RelayCommand(DropImage);
             RecalculateEstimate();
+        }
+
+        private void SetSizePreset(object? parameter)
+        {
+            switch (parameter as string)
+            {
+                case "small":
+                    Width = 5;
+                    Height = 5;
+                    break;
+                case "medium":
+                    Width = 10;
+                    Height = 10;
+                    break;
+                case "large":
+                    Width = 15;
+                    Height = 20;
+                    break;
+                case "xlarge":
+                    Width = 20;
+                    Height = 30;
+                    break;
+            }
         }
 
         private void RecalculateEstimate()
@@ -187,6 +252,67 @@ namespace InfernalInkSteelSuite.ViewModels
                 CreatedAt = System.DateTime.UtcNow
             };
             _quoteRepository.AddQuote(quote);
+        }
+
+        private void SaveAndCreateAppointment()
+        {
+            if (ClientId == null)
+            {
+                MessageBox.Show("Please select a client before creating an appointment.", "Client Not Selected", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            SaveQuote();
+            var appointment = new Appointment
+            {
+                ClientId = _quoteInput.ClientId.Value,
+                UserId = _quoteInput.ArtistId,
+                ServiceType = _quoteInput.Style,
+                Notes = $"Quote based on: {_quoteInput.Width}x{_quoteInput.Height}cm, { _quoteInput.Placement}",
+                PriceCharged = _quoteEstimate.PriceHigh,
+                DurationMinutes = (int)(_quoteEstimate.EstimatedHoursHigh * 60),
+                DateTime = System.DateTime.Now
+            };
+            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment);
+            dialog.ShowDialog();
+        }
+
+        private void DropImage(object? parameter)
+        {
+            if (parameter is IDataObject dataObject && dataObject.GetDataPresent(DataFormats.FileDrop))
+            {
+                var files = dataObject.GetData(DataFormats.FileDrop) as string[];
+                if (files != null && files.Length > 0)
+                {
+                    ImagePath = files[0];
+                }
+            }
+        }
+
+        private void AnalyzeImage()
+        {
+            if (string.IsNullOrEmpty(ImagePath))
+            {
+                return;
+            }
+
+            using (var stream = File.OpenRead(ImagePath))
+            {
+                ImageComplexityResult = _imageComplexityService.Analyze(stream);
+            }
+        }
+
+        private void ApplyComplexity()
+        {
+            if (ImageComplexityResult == null)
+            {
+                return;
+            }
+
+            LineComplexity = ImageComplexityResult.LineComplexity;
+            ShadingComplexity = ImageComplexityResult.ShadingComplexity;
+            ColorComplexity = ImageComplexityResult.ColorComplexity;
+            Difficulty = ImageComplexityResult.SuggestedDifficulty;
         }
     }
 }

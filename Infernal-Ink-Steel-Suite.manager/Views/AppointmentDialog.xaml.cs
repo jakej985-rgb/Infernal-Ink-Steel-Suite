@@ -22,6 +22,17 @@ namespace InfernalInkSteelSuite.Views
             DataContext = this;
         }
 
+        public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, Appointment appointment)
+        {
+            InitializeComponent();
+            _appointmentRepository = appointmentRepository;
+            _clientRepository = clientRepository;
+            ClientComboBox.ItemsSource = _clientRepository.GetAll();
+            Appointment = appointment;
+            Time = appointment.DateTime.ToString("HH:mm");
+            DataContext = this;
+        }
+
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (ClientComboBox.SelectedItem == null)

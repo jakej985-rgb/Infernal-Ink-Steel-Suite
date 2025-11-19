@@ -18,6 +18,7 @@ namespace InfernalInkSteelSuite.Views
         private readonly IShopSettingsRepository _shopSettingsRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQuoteRepository _quoteRepository;
+        private readonly IImageComplexityService _imageComplexityService;
 
         private readonly User _currentUser;
 
@@ -31,6 +32,7 @@ namespace InfernalInkSteelSuite.Views
             _shopSettingsRepository = new ShopSettingsRepository(_connectionString);
             _userRepository = new UserRepository(_connectionString);
             _quoteRepository = new QuoteRepository(_connectionString);
+            _imageComplexityService = new ImageComplexityService();
 
             InitializeComponent();
             LoadShopSettings();
@@ -93,7 +95,7 @@ namespace InfernalInkSteelSuite.Views
         private void CreateQuote_Click(object sender, RoutedEventArgs e)
         {
             var pricingService = new TattooPricingService(_shopSettingsRepository, _userRepository);
-            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository);
+            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
             var quoteCreateView = new QuoteCreateView();
             quoteCreateView.DataContext = quoteCreateViewModel;
             MainContent.Content = quoteCreateView;
