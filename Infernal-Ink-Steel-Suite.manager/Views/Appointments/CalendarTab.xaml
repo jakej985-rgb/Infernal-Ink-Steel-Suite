@@ -12,6 +12,7 @@
             <Setter Property="Width" Value="80"/>
             <Setter Property="Height" Value="80"/>
             <Setter Property="Padding" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -22,6 +23,9 @@
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="GlowBorder" Property="Background" Value="#1AFFFFFF"/>
+                            </Trigger>
                             <DataTrigger Binding="{Binding HasAppointments}" Value="True">
                                 <Setter TargetName="GlowBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
                                 <Setter TargetName="GlowBorder" Property="Effect">
