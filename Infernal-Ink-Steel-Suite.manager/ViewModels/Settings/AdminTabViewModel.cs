@@ -38,27 +38,27 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public string LoginHeadline
+        public bool IsSpecialMessageEnabled
         {
-            get => _shopSettings.LoginHeadline;
+            get => _shopSettings.IsSpecialMessageEnabled;
             set
             {
-                if (_shopSettings.LoginHeadline != value)
+                if (_shopSettings.IsSpecialMessageEnabled != value)
                 {
-                    _shopSettings.LoginHeadline = value;
+                    _shopSettings.IsSpecialMessageEnabled = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public string LoginTagline
+        public string SpecialMessageText
         {
-            get => _shopSettings.LoginTagline;
+            get => _shopSettings.SpecialMessageText;
             set
             {
-                if (_shopSettings.LoginTagline != value)
+                if (_shopSettings.SpecialMessageText != value)
                 {
-                    _shopSettings.LoginTagline = value;
+                    _shopSettings.SpecialMessageText = value;
                     OnPropertyChanged();
                 }
             }
@@ -133,7 +133,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public RelayCommand UpdateRoleCommand { get; }
         public RelayCommand ResetPasswordCommand { get; }
         public RelayCommand SaveSettingsCommand { get; }
-        public RelayCommand BrowseCommand { get; }
+        public RelayCommand BrowseFileCommand { get; }
 
         public AdminTabViewModel(IUserRepository userRepository, IShopSettingsRepository shopSettingsRepository)
         {
@@ -147,7 +147,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             UpdateRoleCommand = new RelayCommand(UpdateRole, CanUpdateOrReset);
             ResetPasswordCommand = new RelayCommand(ResetPassword, CanUpdateOrReset);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
-            BrowseCommand = new RelayCommand(Browse);
+            BrowseFileCommand = new RelayCommand(BrowseFile);
         }
 
         private void LoadUsers()
@@ -208,15 +208,27 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             SettingsUpdateService.NotifySettingsChanged();
         }
 
-        private void Browse(object? obj)
+        private void BrowseFile(object? parameter)
         {
+            var propertyName = parameter as string;
+            if (string.IsNullOrEmpty(propertyName)) return;
+
             var openFileDialog = new OpenFileDialog
             {
-                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*"
+                Filter = "Image files (*.png;*.jpeg;*.jpg;*.bmp)|*.png;*.jpeg;*.jpg;*.bmp|All files (*.*)|*.*"
             };
+
             if (openFileDialog.ShowDialog() == true)
             {
-                SidebarArtworkPath = openFileDialog.FileName;
+                switch (propertyName)
+                {
+                    case "SidebarArtworkPath":
+                        SidebarArtworkPath = openFileDialog.FileName;
+                        break;
+                    case "LoginBackgroundPath":
+                        LoginBackgroundPath = openFileDialog.FileName;
+                        break;
+                }
             }
         }
     }
