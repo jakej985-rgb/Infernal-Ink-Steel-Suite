@@ -41,20 +41,6 @@ Modern Windows tattoo shop manager for handling appointments, clients, artists, 
 
 ---
 
-## Tech Stack
-
-- **Language:** C++ (C++17/20 recommended)  
-- **IDE:** Visual Studio 2022  
-- **Platform:** Windows 10/11 desktop  
-- **Libraries:**
-  - [`curl`](https://curl.se/) – low-level HTTP
-  - [`OpenSSL`](https://www.openssl.org/) – TLS/crypto
-  - [`cpr`](https://github.com/libcpr/cpr) – C++ HTTP client
-  - [`cpp-httplib`](https://github.com/yhirose/cpp-httplib) – single-header HTTP library
-- **Database:** SQL database (e.g. SQLite) accessed through small DB helper classes (`UserDB`, `AppointmentDB`, etc.)
-
----
-
 ## Building (Visual Studio 2022)
 
 1. Clone the repository:
