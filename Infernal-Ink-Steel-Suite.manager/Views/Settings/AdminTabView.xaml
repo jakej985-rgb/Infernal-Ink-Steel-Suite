@@ -49,7 +49,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseBackgroundCommand}" Margin="10,0,0,0"/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseFileCommand}" CommandParameter="LoginBackgroundPath" Margin="10,0,0,0"/>
                     </Grid>
                 </StackPanel>
             </GroupBox>
@@ -69,7 +69,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Text="{Binding SidebarArtworkPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseCommand}" Margin="10,0,0,0"/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseFileCommand}" CommandParameter="SidebarArtworkPath" Margin="10,0,0,0"/>
                     </Grid>
                 </StackPanel>
             </GroupBox>

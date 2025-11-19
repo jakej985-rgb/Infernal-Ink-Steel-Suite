@@ -28,6 +28,7 @@ namespace InfernalInkSteelSuite.Data
                 connection.Open();
                 CreateTable(connection);
                 EnsureColumnsExist(connection);
+                MigrateShopSettings(connection);
                 EnsureDefaultUserExists(connection);
                 MigrateUserDateFormats(connection);
             }
@@ -85,8 +86,6 @@ namespace InfernalInkSteelSuite.Data
                     LogoPath TEXT,
                     AccentColor TEXT,
                     SidebarArtworkPath TEXT,
-                    LoginHeadline TEXT,
-                    LoginTagline TEXT,
                     LoginBackgroundPath TEXT,
                     LoginHeadlineFontFamily TEXT,
                     LoginTaglineFontFamily TEXT,
@@ -94,7 +93,8 @@ namespace InfernalInkSteelSuite.Data
                     TattooPerHour REAL NOT NULL DEFAULT 0,
                     PiercingSingle REAL NOT NULL DEFAULT 0,
                     PiercingMulti REAL NOT NULL DEFAULT 0,
-                    ShopMinimumRate REAL NOT NULL DEFAULT 0,
+                    SpecialMessageText TEXT,
+                    IsSpecialMessageEnabled INTEGER NOT NULL DEFAULT 1,
                     CreatedAt TEXT,
                     UpdatedAt TEXT
                 )";
@@ -142,6 +142,40 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
+        }
+
+        private void MigrateShopSettings(SqliteConnection connection)
+        {
+            if (TableHasColumn(connection, "shopsettings", "LoginTagline"))
+            {
+                if (!TableHasColumn(connection, "shopsettings", "SpecialMessageText"))
+                {
+                    EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
+                }
+                var command = connection.CreateCommand();
+                command.CommandText = "UPDATE shopsettings SET SpecialMessageText = LoginTagline WHERE SpecialMessageText IS NULL";
+                command.ExecuteNonQuery();
+            }
+
+            if (!TableHasColumn(connection, "shopsettings", "IsSpecialMessageEnabled"))
+            {
+                EnsureColumnExists(connection, "shopsettings", "IsSpecialMessageEnabled", "INTEGER NOT NULL DEFAULT 1");
+            }
+        }
+
+        private void MigrateShopSettings(SqliteConnection connection)
+        {
+            // First, ensure the new columns exist.
+            EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
+            EnsureColumnExists(connection, "shopsettings", "IsSpecialMessageEnabled", "INTEGER NOT NULL DEFAULT 1");
+
+            // Then, if the old column exists, copy its data to the new one.
+            if (TableHasColumn(connection, "shopsettings", "LoginTagline"))
+            {
+                var command = connection.CreateCommand();
+                command.CommandText = "UPDATE shopsettings SET SpecialMessageText = LoginTagline WHERE SpecialMessageText IS NULL";
+                command.ExecuteNonQuery();
+            }
         }
 
         private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)

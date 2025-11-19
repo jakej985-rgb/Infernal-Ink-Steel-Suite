@@ -25,16 +25,16 @@ namespace InfernalInkSteelSuite.Repositories
                     command.ExecuteNonQuery();
 
                     command.CommandText =
-                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes)
-                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginHeadline, $loginTagline, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $shopMinimumRate, $EnableAutomaticHolidayThemes)";
+                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText)
+                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText)";
 
                     command.Parameters.AddWithValue("$shopName", settings.ShopName);
                     command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
                     command.Parameters.AddWithValue("$accentColor", settings.AccentColor);
                     command.Parameters.AddWithValue("$sidebarArtworkPath", settings.SidebarArtworkPath);
-                    command.Parameters.AddWithValue("$loginHeadline", settings.LoginHeadline);
-                    command.Parameters.AddWithValue("$loginTagline", settings.LoginTagline);
                     command.Parameters.AddWithValue("$loginBackgroundPath", settings.LoginBackgroundPath);
+                    command.Parameters.AddWithValue("$IsSpecialMessageEnabled", settings.IsSpecialMessageEnabled ? 1 : 0);
+                    command.Parameters.AddWithValue("$SpecialMessageText", settings.SpecialMessageText);
                     command.Parameters.AddWithValue("$loginHeadlineFontFamily", settings.LoginHeadlineFontFamily);
                     command.Parameters.AddWithValue("$loginTaglineFontFamily", settings.LoginTaglineFontFamily);
                     command.Parameters.AddWithValue("$loginTextColor", settings.LoginTextColor);
@@ -66,10 +66,10 @@ namespace InfernalInkSteelSuite.Repositories
                         settings.LogoPath = reader["logoPath"].ToString() ?? string.Empty;
                         settings.AccentColor = reader["accentColor"].ToString() ?? string.Empty;
                         settings.SidebarArtworkPath = reader["sidebarArtworkPath"].ToString() ?? string.Empty;
-                        settings.LoginHeadline = reader["loginHeadline"].ToString() ?? string.Empty;
-                        settings.LoginTagline = reader["loginTagline"].ToString() ?? string.Empty;
+                        settings.SpecialMessageText = reader["SpecialMessageText"].ToString() ?? string.Empty;
                         settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString() ?? string.Empty;
                         settings.LoginHeadlineFontFamily = reader["loginHeadlineFontFamily"].ToString() ?? string.Empty;
+                        settings.IsSpecialMessageEnabled = Convert.ToInt32(reader["IsSpecialMessageEnabled"]) == 1;
                         settings.LoginTaglineFontFamily = reader["loginTaglineFontFamily"].ToString() ?? string.Empty;
                         settings.LoginTextColor = reader["loginTextColor"].ToString() ?? string.Empty;
                         settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
