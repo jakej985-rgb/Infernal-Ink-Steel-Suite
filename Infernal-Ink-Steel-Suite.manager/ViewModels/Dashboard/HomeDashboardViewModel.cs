@@ -52,6 +52,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             var shopSettings = shopSettingsRepository.LoadSettings();
             ShopName = string.IsNullOrEmpty(shopSettings.ShopName) ? "Infernal Ink & Steel" : shopSettings.ShopName;
             CurrentDate = DateTime.Now.ToString("ddd, MMM dd, yyyy");
+            Greeting = string.Empty;
             SetGreeting();
 
 

@@ -13,6 +13,21 @@ namespace InfernalInkSteelSuite.Controls
             GlowColor = (Color)ColorConverter.ConvertFromString("#FF00FFFF");
         }
 
+        public static readonly DependencyProperty IsGlowingProperty =
+            DependencyProperty.Register("IsGlowing", typeof(bool), typeof(NeonButton), new PropertyMetadata(false, OnIsGlowingChanged));
+
+        public bool IsGlowing
+        {
+            get { return (bool)GetValue(IsGlowingProperty); }
+            set { SetValue(IsGlowingProperty, value); }
+        }
+
+        private static void OnIsGlowingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var button = (NeonButton)d;
+            button.UpdateGlowEffect();
+        }
+
         public static readonly DependencyProperty GlowColorProperty =
             DependencyProperty.Register("GlowColor", typeof(Color), typeof(NeonButton), new PropertyMetadata(Colors.Cyan, OnGlowColorChanged));
 
@@ -27,13 +42,6 @@ namespace InfernalInkSteelSuite.Controls
             var button = (NeonButton)d;
             var newGlowColor = (Color)e.NewValue;
 
-            button.Effect = new DropShadowEffect
-            {
-                Color = newGlowColor,
-                BlurRadius = 20,
-                ShadowDepth = 0
-            };
-
             var gradient = new LinearGradientBrush();
             gradient.StartPoint = new Point(0, 0);
             gradient.EndPoint = new Point(0, 1);
@@ -41,7 +49,26 @@ namespace InfernalInkSteelSuite.Controls
             gradient.GradientStops.Add(new GradientStop(newGlowColor, 1.0));
 
             button.Background = gradient;
+            button.UpdateGlowEffect();
         }
+
+        private void UpdateGlowEffect()
+        {
+            if (IsGlowing)
+            {
+                Effect = new DropShadowEffect
+                {
+                    Color = GlowColor,
+                    BlurRadius = 20,
+                    ShadowDepth = 0
+                };
+            }
+            else
+            {
+                Effect = null;
+            }
+        }
+
         private static Color GetLighterColor(Color color, float factor)
         {
             return Color.FromArgb(color.A, (byte)(color.R * factor > 255 ? 255 : color.R * factor),
