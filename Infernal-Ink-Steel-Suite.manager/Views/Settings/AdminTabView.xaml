@@ -39,12 +39,18 @@
 
             <GroupBox Header="Login Screen Branding" Margin="0,0,0,10">
                 <StackPanel Margin="10">
-                    <Label Content="Headline" Foreground="{DynamicResource TextColor}"/>
-                    <TextBox Text="{Binding LoginHeadline, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Content="Tagline" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
-                    <TextBox Text="{Binding LoginTagline, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox IsChecked="{Binding IsSpecialMessageEnabled}" Content="Enable Special Message" Margin="0,10,0,0"/>
+                    <Label Content="Special Message" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
+                    <TextBox Text="{Binding SpecialMessageText, UpdateSourceTrigger=PropertyChanged}"/>
                     <Label Content="Background Image Path" Foreground="{DynamicResource TextColor}" Margin="0,10,0,0"/>
-                    <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseFileCommand}" CommandParameter="LoginBackgroundPath" Margin="10,0,0,0"/>
+                    </Grid>
                 </StackPanel>
             </GroupBox>
 
@@ -61,7 +67,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Text="{Binding SidebarArtworkPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseCommand}" Margin="10,0,0,0"/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseFileCommand}" CommandParameter="SidebarArtworkPath" Margin="10,0,0,0"/>
                     </Grid>
                 </StackPanel>
             </GroupBox>
