@@ -3,9 +3,71 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewModels="clr-namespace:InfernalInkSteelSuite.ViewModels.Appointments"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance viewModels:CalendarTabViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <Calendar x:Name="AppointmentCalendar" SelectionMode="SingleDate" SelectedDatesChanged="AppointmentCalendar_SelectedDatesChanged"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+            <Button Content="&lt;" Command="{Binding PreviousMonthCommand}" Margin="5"/>
+            <TextBlock Text="{Binding CurrentMonthYear}" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="10,0"/>
+            <Button Content="&gt;" Command="{Binding NextMonthCommand}" Margin="5"/>
+        </StackPanel>
+
+        <!-- Days of the Week -->
+        <UniformGrid Grid.Row="1" Rows="1" Columns="7" Margin="5,0">
+            <TextBlock Text="Sunday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Monday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Tuesday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Wednesday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Thursday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Friday" HorizontalAlignment="Center"/>
+            <TextBlock Text="Saturday" HorizontalAlignment="Center"/>
+        </UniformGrid>
+
+        <!-- Calendar Grid -->
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding Days}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="7"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding DataContext.DayClickedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
+                        <Border BorderBrush="Gray" BorderThickness="1" Margin="2">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{Binding DayNumber}" Margin="5"/>
+                                <ItemsControl Grid.Row="1" ItemsSource="{Binding Appointments}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Ellipse Width="10" Height="10" Fill="Red" Margin="2"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </Border>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </Grid>
 </UserControl>
