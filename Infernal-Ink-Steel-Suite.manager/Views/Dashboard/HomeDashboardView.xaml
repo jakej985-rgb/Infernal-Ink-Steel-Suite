@@ -170,7 +170,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{DynamicResource AccentColor}" BorderThickness="{Binding IsSelected, Converter={StaticResource BooleanToThicknessConverter}}" CornerRadius="5" Padding="10" Margin="2">
+                                    <Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="{Binding IsSelected, Converter={StaticResource BooleanToThicknessConverter}}" CornerRadius="5" Padding="10" Margin="2">
                                         <StackPanel HorizontalAlignment="Center">
                                             <TextBlock Text="{Binding DayLabel}" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
                                             <TextBlock Text="{Binding DateNumber}" Foreground="{DynamicResource TextColor}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
