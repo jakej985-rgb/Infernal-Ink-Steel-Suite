@@ -52,6 +52,20 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         }
 
         public string SpecialMessageText
+        public double ShopMinimumRate
+        {
+            get => _shopSettings.ShopMinimumRate;
+            set
+            {
+                if (_shopSettings.ShopMinimumRate != value)
+                {
+                    _shopSettings.ShopMinimumRate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string LoginTagline
         {
             get => _shopSettings.SpecialMessageText;
             set
