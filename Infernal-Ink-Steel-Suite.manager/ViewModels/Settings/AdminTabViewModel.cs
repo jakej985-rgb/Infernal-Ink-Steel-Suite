@@ -231,17 +231,5 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 }
             }
         }
-
-        private void BrowseBackground(object? obj)
-        {
-            var openFileDialog = new OpenFileDialog
-            {
-                Filter = "Image files (*.png;*.jpeg;*.jpg;*.bmp)|*.png;*.jpeg;*.jpg;*.bmp|All files (*.*)|*.*"
-            };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                LoginBackgroundPath = openFileDialog.FileName;
-            }
-        }
     }
 }
