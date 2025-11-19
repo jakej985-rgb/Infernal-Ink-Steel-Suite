@@ -246,7 +246,7 @@
                             <controls:NeonButton Content="Open Full Calendar" Margin="2" Command="{Binding OpenFullCalendarCommand}"/>
                             <controls:NeonButton Content="View All Clients" Margin="2" Command="{Binding OpenClientsListCommand}"/>
                             <controls:NeonButton Content="Inventory / Supplies" Margin="2" Command="{Binding OpenInventoryCommand}"/>
-                            <controls:NeonButton Content="Shop Settings & Branding" Margin="2" Command="{Binding OpenShopSettingsCommand}"/>
+                            <controls:NeonButton Content="Shop Settings &amp; Branding" Margin="2" Command="{Binding OpenShopSettingsCommand}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
