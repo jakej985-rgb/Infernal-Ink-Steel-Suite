@@ -4,6 +4,8 @@ using InfernalInkSteelSuite.Repositories;
 using System.Windows;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Services;
+using InfernalInkSteelSuite.Views.Dashboard;
+using InfernalInkSteelSuite.ViewModels.Dashboard;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -28,7 +30,10 @@ namespace InfernalInkSteelSuite.Views
 
             InitializeComponent();
             LoadShopSettings();
-            MainContent.Content = new HomeView();
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
+            var homeDashboardView = new HomeDashboardView();
+            homeDashboardView.DataContext = homeDashboardViewModel;
+            MainContent.Content = homeDashboardView;
             SettingsUpdateService.OnSettingsChanged += LoadShopSettings;
             Closed += (s, e) => SettingsUpdateService.OnSettingsChanged -= LoadShopSettings;
         }
@@ -54,7 +59,10 @@ namespace InfernalInkSteelSuite.Views
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new HomeView();
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
+            var homeDashboardView = new HomeDashboardView();
+            homeDashboardView.DataContext = homeDashboardViewModel;
+            MainContent.Content = homeDashboardView;
         }
 
         private void Clients_Click(object sender, RoutedEventArgs e)
