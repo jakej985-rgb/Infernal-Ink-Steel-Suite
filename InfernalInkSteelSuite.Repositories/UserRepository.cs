@@ -213,6 +213,21 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
+        public bool UpdateAvatarPath(string username, string avatarPath)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand();
+                command.CommandText = "UPDATE users SET avatarPath = @avatarPath, updatedAt = @updatedAt WHERE username = @username";
+                command.Parameters.AddWithValue("@avatarPath", avatarPath);
+                command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+                command.Parameters.AddWithValue("@username", username);
+
+                return command.ExecuteNonQuery() > 0;
+            }
+        }
+
         public List<User> GetAllUsers()
         {
             var users = new List<User>();
