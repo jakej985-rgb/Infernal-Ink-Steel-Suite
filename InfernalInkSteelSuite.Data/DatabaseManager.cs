@@ -141,6 +141,7 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "shopsettings", "EnableAutomaticHolidayThemes", "INTEGER NOT NULL DEFAULT 0");
+            EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
         }
 
         private void MigrateShopSettings(SqliteConnection connection)
