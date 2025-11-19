@@ -127,10 +127,10 @@
                 <!-- Today's Flow -->
                 <StackPanel Grid.Column="0" Margin="0,0,10,0">
                     <!-- Today's Appointments -->
-                    <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15">
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15">
                         <StackPanel>
-                            <TextBlock Text="Today’s Appointments" Foreground="{DynamicResource TextColor}" FontSize="16" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding AppointmentSummary}" Foreground="{DynamicResource TextColorSubtle}" Margin="0,0,0,10"/>
+                            <TextBlock Text="Today’s Appointments" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="18" FontWeight="ExtraBold"/>
+                            <TextBlock Text="{Binding AppointmentSummary}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,10"/>
                             <ListView ItemsSource="{Binding TodayAppointments}" Background="Transparent" BorderThickness="0">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -142,16 +142,16 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border BorderBrush="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" BorderThickness="2,0,0,0" Padding="5,0,0,0">
-                                                <TextBlock Text="{Binding TimeRange}" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                            <Border BorderBrush="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" BorderThickness="3,0,0,0" Padding="5,0,0,0">
+                                                <TextBlock Text="{Binding TimeRange}" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
                                             </Border>
-                                            <TextBlock Text="{Binding ClientName}" Grid.Column="1" Foreground="{DynamicResource TextColor}" FontWeight="Bold" Margin="10,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding Service}" Grid.Column="2" Foreground="{DynamicResource TextColorSubtle}" Margin="10,0" VerticalAlignment="Center"/>
-                                            <Border Grid.Column="3" Background="{DynamicResource AccentBrush}" CornerRadius="5" Padding="5,2" Margin="5,0">
-                                                <TextBlock Text="{Binding Artist}" Foreground="White" FontSize="10"/>
+                                            <TextBlock Text="{Binding ClientName}" Grid.Column="1" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="Bold" Margin="10,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Service}" Grid.Column="2" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0" VerticalAlignment="Center"/>
+                                            <Border Grid.Column="3" Background="{DynamicResource DashboardAccentBrush}" CornerRadius="5" Padding="7,4" Margin="5,0">
+                                                <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource AppBackgroundBrush}" FontSize="11" FontWeight="Bold"/>
                                             </Border>
-                                            <Border Grid.Column="4" Background="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" CornerRadius="5" Padding="5,2">
-                                                <TextBlock Text="{Binding Status}" Foreground="White" FontSize="10"/>
+                                            <Border Grid.Column="4" Background="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" CornerRadius="5" Padding="7,4">
+                                                <TextBlock Text="{Binding Status}" Foreground="{DynamicResource AppBackgroundBrush}" FontSize="11" FontWeight="Bold"/>
                                             </Border>
                                         </Grid>
                                     </DataTemplate>
@@ -161,7 +161,7 @@
                     </Border>
 
                     <!-- Mini Week Strip -->
-                    <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="10" Margin="0,10,0,0">
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="10" Margin="0,10,0,0">
                         <ItemsControl ItemsSource="{Binding WeekDays}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -170,10 +170,29 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{DynamicResource AccentBrush}" BorderThickness="{Binding IsSelected, Converter={StaticResource BooleanToThicknessConverter}}" CornerRadius="5" Padding="10" Margin="2">
+                                    <Border CornerRadius="5" Padding="10" Margin="2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource DashboardAccentBrush}"/>
+                                                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                                                        <Setter Property="Effect">
+                                                            <Setter.Value>
+                                                                <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="10" Opacity="0.5" ShadowDepth="0"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="{Binding DayLabel}" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
-                                            <TextBlock Text="{Binding DateNumber}" Foreground="{DynamicResource TextColor}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DayLabel}" Foreground="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DateNumber}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
                                         </StackPanel>
                                         <Border.InputBindings>
                                             <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectDayCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
@@ -189,25 +208,25 @@
                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
                     <!-- KPI Tiles -->
                     <UniformGrid Columns="3">
-                        <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15" Margin="5">
+                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
                             <StackPanel>
-                                <TextBlock Text="Today's Revenue" Foreground="{DynamicResource TextColorSubtle}"/>
-                                <TextBlock Text="{Binding TodayRevenue, StringFormat={}{0:C}}" Foreground="{DynamicResource TextColor}" FontSize="24" FontWeight="Bold"/>
-                                <TextBlock Text="5 completed · 1 pending" Foreground="{DynamicResource TextColorSubtle}"/>
+                                <TextBlock Text="Today's Revenue" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding TodayRevenue, StringFormat={}{0:C}}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                                <TextBlock Text="5 completed · 1 pending" Foreground="{DynamicResource SecondaryTextBrush}"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15" Margin="5">
+                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
                             <StackPanel>
-                                <TextBlock Text="This Week's Bookings" Foreground="{DynamicResource TextColorSubtle}"/>
-                                <TextBlock Text="{Binding ThisWeekBookings}" Foreground="{DynamicResource TextColor}" FontSize="24" FontWeight="Bold"/>
-                                <TextBlock Text="+4 vs last week" Foreground="{DynamicResource TextColorSubtle}"/>
+                                <TextBlock Text="This Week's Bookings" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding ThisWeekBookings}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                                <TextBlock Text="+4 vs last week" Foreground="{DynamicResource SecondaryTextBrush}"/>
                             </StackPanel>
                         </Border>
-                        <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15" Margin="5">
+                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
                             <StackPanel>
-                                <TextBlock Text="New Clients" Foreground="{DynamicResource TextColorSubtle}"/>
-                                <TextBlock Text="{Binding NewClients}" Foreground="{DynamicResource TextColor}" FontSize="24" FontWeight="Bold"/>
-                                <TextBlock Text="Tap to open client list" Foreground="{DynamicResource AccentBrush}" Cursor="Hand">
+                                <TextBlock Text="New Clients" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding NewClients}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                                <TextBlock Text="Tap to open client list" Foreground="{DynamicResource DashboardAccentBrush}" Cursor="Hand">
                                     <TextBlock.InputBindings>
                                         <MouseBinding MouseAction="LeftClick" Command="{Binding OpenClientsListCommand}"/>
                                     </TextBlock.InputBindings>
@@ -217,9 +236,9 @@
                     </UniformGrid>
 
                     <!-- Action Inbox -->
-                    <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
                         <StackPanel>
-                            <TextBlock Text="Action Inbox" Foreground="{DynamicResource TextColor}" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="Action Inbox" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold"/>
                             <ListView ItemsSource="{Binding ActionInboxItems}" Background="Transparent" BorderThickness="0">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
@@ -230,7 +249,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <TextBlock Text="{Binding Icon}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            <TextBlock Text="{Binding Description}" Grid.Column="1" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Description}" Grid.Column="1" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
                                             <controls:NeonButton Grid.Column="2" Content="Resolve" Padding="5,2" FontSize="10" Command="{Binding DataContext.ResolveActionItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
                                         </Grid>
                                     </DataTemplate>
@@ -240,9 +259,9 @@
                     </Border>
 
                     <!-- Quick Links -->
-                    <Border Background="{DynamicResource CardBackgroundBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
                         <StackPanel>
-                            <TextBlock Text="Quick Links" Foreground="{DynamicResource TextColor}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <TextBlock Text="Quick Links" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
                             <controls:NeonButton Content="Open Full Calendar" Margin="2" Command="{Binding OpenFullCalendarCommand}"/>
                             <controls:NeonButton Content="View All Clients" Margin="2" Command="{Binding OpenClientsListCommand}"/>
                             <controls:NeonButton Content="Inventory / Supplies" Margin="2" Command="{Binding OpenInventoryCommand}"/>
