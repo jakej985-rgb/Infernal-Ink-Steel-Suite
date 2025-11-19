@@ -10,7 +10,7 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt";
+        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor";
         private readonly string _connectionString;
 
         public UserRepository(string connectionString)
@@ -32,7 +32,9 @@ namespace InfernalInkSteelSuite.Repositories
                 ThemeKey = reader.GetString(4),
                 AvatarPath = reader.GetString(5),
                 CreatedAt = string.IsNullOrEmpty(createdAtString) ? DateTime.MinValue : DateTime.Parse(createdAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
-                UpdatedAt = string.IsNullOrEmpty(updatedAtString) ? DateTime.MinValue : DateTime.Parse(updatedAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+                UpdatedAt = string.IsNullOrEmpty(updatedAtString) ? DateTime.MinValue : DateTime.Parse(updatedAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                HourlyRate = reader.GetDecimal(8),
+                SpeedFactor = reader.GetDouble(9)
             };
         }
 
