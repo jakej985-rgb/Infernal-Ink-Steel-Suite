@@ -1,6 +1,6 @@
 using System.Windows.Controls;
 
-namespace InfernalInkSteelSuite.manager.Controls
+namespace InfernalInkSteelSuite.Controls
 {
     public class AvatarLabel : Label
     {
