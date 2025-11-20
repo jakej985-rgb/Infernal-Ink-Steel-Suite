@@ -44,24 +44,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Left Sidebar -->
+        <!-- Left Sidebar (Modified: Removed Brand and User Profile, kept Navigation) -->
         <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" CornerRadius="10,0,0,10">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- Brand Block -->
-                <StackPanel Grid.Row="0" Margin="20">
-                    <controls:GlowAvatar Width="60" Height="60" Initials="II" Margin="0,0,0,10"/>
-                    <TextBlock Text="{Binding ShopName}" Foreground="{DynamicResource TextColor}" FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="Tattoo &amp; Piercing Studio Suite" Foreground="{DynamicResource TextColorSubtle}" FontSize="12"/>
-                </StackPanel>
-
                 <!-- Navigation -->
-                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                <StackPanel VerticalAlignment="Center">
                     <controls:NeonButton Content="Dashboard" Margin="10" IsGlowing="True"/>
                     <controls:NeonButton Content="Calendar" Margin="10" Command="{Binding OpenFullCalendarCommand}"/>
                     <controls:NeonButton Content="Clients" Margin="10" Command="{Binding OpenClientsListCommand}"/>
@@ -69,20 +56,6 @@
                     <controls:NeonButton Content="Inventory" Margin="10" Command="{Binding OpenInventoryCommand}"/>
                     <controls:NeonButton Content="Documents" Margin="10"/>
                     <controls:NeonButton Content="Settings" Margin="10" Command="{Binding OpenShopSettingsCommand}"/>
-                </StackPanel>
-
-                <!-- User Profile -->
-                <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20" VerticalAlignment="Bottom">
-                    <controls:GlowAvatar Width="40" Height="40" Initials="{Binding UserInitials}"/>
-                    <StackPanel Margin="10,0,0,0">
-                        <TextBlock Text="{Binding UserName}" Foreground="{DynamicResource TextColor}" FontWeight="Bold"/>
-                        <TextBlock Text="{Binding UserRole}" Foreground="{DynamicResource TextColorSubtle}"/>
-                        <TextBlock Text="Logout" Foreground="{DynamicResource AccentBrush}" Cursor="Hand">
-                            <TextBlock.InputBindings>
-                                <MouseBinding MouseAction="LeftClick" Command="{Binding LogoutCommand}"/>
-                            </TextBlock.InputBindings>
-                        </TextBlock>
-                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
@@ -113,6 +86,8 @@
                         <TextBox Width="200" Margin="0,0,10,0" VerticalContentAlignment="Center" Style="{StaticResource SearchBoxStyle}"/>
                         <controls:NeonButton Content="+ New Appointment" Margin="5,0" Command="{Binding CreateNewAppointmentCommand}"/>
                         <controls:NeonButton Content="+ New Client" Margin="5,0" Command="{Binding CreateNewClientCommand}"/>
+                        <!-- Relocated Logout Button -->
+                        <controls:NeonButton Content="Logout" Margin="5,0" Command="{Binding LogoutCommand}"/>
                     </StackPanel>
                 </Grid>
             </Border>
