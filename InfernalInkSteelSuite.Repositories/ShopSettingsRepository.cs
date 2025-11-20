@@ -10,70 +10,62 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void SaveSettings(ShopSettings settings)
         {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
-                {
-                    var command = connection.CreateCommand();
-                    command.CommandText = "DELETE FROM shopsettings";
-                    command.ExecuteNonQuery();
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM shopsettings";
+            command.ExecuteNonQuery();
 
-                    command.CommandText =
-                        @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText)
+            command.CommandText =
+                @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText)
                         VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText)";
 
-                    command.Parameters.AddWithValue("$shopName", settings.ShopName);
-                    command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
-                    command.Parameters.AddWithValue("$accentColor", settings.AccentColor);
-                    command.Parameters.AddWithValue("$sidebarArtworkPath", settings.SidebarArtworkPath);
-                    command.Parameters.AddWithValue("$loginBackgroundPath", settings.LoginBackgroundPath);
-                    command.Parameters.AddWithValue("$IsSpecialMessageEnabled", settings.IsSpecialMessageEnabled ? 1 : 0);
-                    command.Parameters.AddWithValue("$SpecialMessageText", settings.SpecialMessageText);
-                    command.Parameters.AddWithValue("$loginHeadlineFontFamily", settings.LoginHeadlineFontFamily);
-                    command.Parameters.AddWithValue("$loginTaglineFontFamily", settings.LoginTaglineFontFamily);
-                    command.Parameters.AddWithValue("$loginTextColor", settings.LoginTextColor);
-                    command.Parameters.AddWithValue("$tattooPerHour", settings.TattooPerHour);
-                    command.Parameters.AddWithValue("$piercingSingle", settings.PiercingSingle);
-                    command.Parameters.AddWithValue("$piercingMulti", settings.PiercingMulti);
-                    command.Parameters.AddWithValue("$shopMinimumRate", settings.ShopMinimumRate);
-                    command.Parameters.AddWithValue("$EnableAutomaticHolidayThemes", settings.EnableAutomaticHolidayThemes ? 1 : 0);
+            command.Parameters.AddWithValue("$shopName", settings.ShopName);
+            command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
+            command.Parameters.AddWithValue("$accentColor", settings.AccentColor);
+            command.Parameters.AddWithValue("$sidebarArtworkPath", settings.SidebarArtworkPath);
+            command.Parameters.AddWithValue("$loginBackgroundPath", settings.LoginBackgroundPath);
+            command.Parameters.AddWithValue("$IsSpecialMessageEnabled", settings.IsSpecialMessageEnabled ? 1 : 0);
+            command.Parameters.AddWithValue("$SpecialMessageText", settings.SpecialMessageText);
+            command.Parameters.AddWithValue("$loginHeadlineFontFamily", settings.LoginHeadlineFontFamily);
+            command.Parameters.AddWithValue("$loginTaglineFontFamily", settings.LoginTaglineFontFamily);
+            command.Parameters.AddWithValue("$loginTextColor", settings.LoginTextColor);
+            command.Parameters.AddWithValue("$tattooPerHour", settings.TattooPerHour);
+            command.Parameters.AddWithValue("$piercingSingle", settings.PiercingSingle);
+            command.Parameters.AddWithValue("$piercingMulti", settings.PiercingMulti);
+            command.Parameters.AddWithValue("$shopMinimumRate", settings.ShopMinimumRate);
+            command.Parameters.AddWithValue("$EnableAutomaticHolidayThemes", settings.EnableAutomaticHolidayThemes ? 1 : 0);
 
-                    command.ExecuteNonQuery();
-                    transaction.Commit();
-                }
-            }
+            command.ExecuteNonQuery();
+            transaction.Commit();
         }
 
         public ShopSettings LoadSettings()
         {
             var settings = new ShopSettings();
-            using (var connection = new SqliteConnection(_connectionString))
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled FROM shopsettings LIMIT 1";
+            using var reader = command.ExecuteReader();
+            if (reader.Read())
             {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled FROM shopsettings LIMIT 1";
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        settings.ShopName = reader["shopName"].ToString() ?? string.Empty;
-                        settings.LogoPath = reader["logoPath"].ToString() ?? string.Empty;
-                        settings.AccentColor = reader["accentColor"].ToString() ?? string.Empty;
-                        settings.SidebarArtworkPath = reader["sidebarArtworkPath"].ToString() ?? string.Empty;
-                        settings.SpecialMessageText = reader["SpecialMessageText"].ToString() ?? string.Empty;
-                        settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString() ?? string.Empty;
-                        settings.LoginHeadlineFontFamily = reader["loginHeadlineFontFamily"].ToString() ?? string.Empty;
-                        settings.IsSpecialMessageEnabled = Convert.ToInt32(reader["IsSpecialMessageEnabled"]) == 1;
-                        settings.LoginTaglineFontFamily = reader["loginTaglineFontFamily"].ToString() ?? string.Empty;
-                        settings.LoginTextColor = reader["loginTextColor"].ToString() ?? string.Empty;
-                        settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
-                        settings.PiercingSingle = Convert.ToDouble(reader["piercingSingle"]);
-                        settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);
-                        settings.ShopMinimumRate = Convert.ToDouble(reader["shopMinimumRate"]);
-                        settings.EnableAutomaticHolidayThemes = Convert.ToInt32(reader["EnableAutomaticHolidayThemes"]) == 1;
-                    }
-                }
+                settings.ShopName = reader["shopName"].ToString() ?? string.Empty;
+                settings.LogoPath = reader["logoPath"].ToString() ?? string.Empty;
+                settings.AccentColor = reader["accentColor"].ToString() ?? string.Empty;
+                settings.SidebarArtworkPath = reader["sidebarArtworkPath"].ToString() ?? string.Empty;
+                settings.SpecialMessageText = reader["SpecialMessageText"].ToString() ?? string.Empty;
+                settings.LoginBackgroundPath = reader["loginBackgroundPath"].ToString() ?? string.Empty;
+                settings.LoginHeadlineFontFamily = reader["loginHeadlineFontFamily"].ToString() ?? string.Empty;
+                settings.IsSpecialMessageEnabled = Convert.ToInt32(reader["IsSpecialMessageEnabled"]) == 1;
+                settings.LoginTaglineFontFamily = reader["loginTaglineFontFamily"].ToString() ?? string.Empty;
+                settings.LoginTextColor = reader["loginTextColor"].ToString() ?? string.Empty;
+                settings.TattooPerHour = Convert.ToDouble(reader["tattooPerHour"]);
+                settings.PiercingSingle = Convert.ToDouble(reader["piercingSingle"]);
+                settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);
+                settings.ShopMinimumRate = Convert.ToDouble(reader["shopMinimumRate"]);
+                settings.EnableAutomaticHolidayThemes = Convert.ToInt32(reader["EnableAutomaticHolidayThemes"]) == 1;
             }
             return settings;
         }
