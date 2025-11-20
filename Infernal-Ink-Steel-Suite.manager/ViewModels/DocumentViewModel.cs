@@ -2,16 +2,10 @@ using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
-    public class DocumentViewModel : BaseViewModel
+    public class DocumentViewModel(Document document) : BaseViewModel
     {
-        private readonly Document _document;
-        private string _clientName;
-
-        public DocumentViewModel(Document document)
-        {
-            _document = document;
-            _clientName = string.Empty;
-        }
+        private readonly Document _document = document;
+        private string _clientName = string.Empty;
 
         public int Id => _document.Id;
         public string Title => _document.Title;
