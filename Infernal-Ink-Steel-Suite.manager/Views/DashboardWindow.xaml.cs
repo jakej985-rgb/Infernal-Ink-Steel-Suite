@@ -12,13 +12,13 @@ namespace InfernalInkSteelSuite.Views
     public partial class DashboardWindow : Window
     {
         private readonly string _connectionString;
-        private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IClientRepository _clientRepository;
-        private readonly IDocumentRepository _documentRepository;
-        private readonly IShopSettingsRepository _shopSettingsRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly IQuoteRepository _quoteRepository;
-        private readonly IImageComplexityService _imageComplexityService;
+        private readonly AppointmentRepository _appointmentRepository;
+        private readonly ClientRepository _clientRepository;
+        private readonly DocumentRepository _documentRepository;
+        private readonly ShopSettingsRepository _shopSettingsRepository;
+        private readonly UserRepository _userRepository;
+        private readonly QuoteRepository _quoteRepository;
+        private readonly ImageComplexityService _imageComplexityService;
 
         private readonly User _currentUser;
 

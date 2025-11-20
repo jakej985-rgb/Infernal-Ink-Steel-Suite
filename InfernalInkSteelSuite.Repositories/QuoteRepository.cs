@@ -6,22 +6,16 @@ using System.Globalization;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class QuoteRepository : IQuoteRepository
+    public class QuoteRepository(string connectionString) : IQuoteRepository
     {
-        private readonly string _connectionString;
-
-        public QuoteRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         public bool AddQuote(Quote quote)
         {
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = @"
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = @"
                     INSERT INTO quotes (
                         clientId, artistId, placement, style, isCoverUp, width, height,
                         coverageLevel, lineComplexity, shadingComplexity, colorComplexity,
@@ -35,48 +29,43 @@ namespace InfernalInkSteelSuite.Repositories
                         @priceHigh, @shopMinimum, @recommendedDeposit, @confidenceScore,
                         @similarJobsCount, @createdAt)";
 
-                command.Parameters.AddWithValue("@clientId", quote.ClientId ?? (object)DBNull.Value);
-                command.Parameters.AddWithValue("@artistId", quote.ArtistId);
-                command.Parameters.AddWithValue("@placement", quote.Placement);
-                command.Parameters.AddWithValue("@style", quote.Style);
-                command.Parameters.AddWithValue("@isCoverUp", quote.IsCoverUp);
-                command.Parameters.AddWithValue("@width", quote.Width);
-                command.Parameters.AddWithValue("@height", quote.Height);
-                command.Parameters.AddWithValue("@coverageLevel", quote.CoverageLevel);
-                command.Parameters.AddWithValue("@lineComplexity", quote.LineComplexity);
-                command.Parameters.AddWithValue("@shadingComplexity", quote.ShadingComplexity);
-                command.Parameters.AddWithValue("@colorComplexity", quote.ColorComplexity);
-                command.Parameters.AddWithValue("@difficulty", quote.Difficulty);
-                command.Parameters.AddWithValue("@estimatedHoursLow", quote.EstimatedHoursLow);
-                command.Parameters.AddWithValue("@estimatedHoursHigh", quote.EstimatedHoursHigh);
-                command.Parameters.AddWithValue("@priceLow", quote.PriceLow);
-                command.Parameters.AddWithValue("@priceHigh", quote.PriceHigh);
-                command.Parameters.AddWithValue("@shopMinimum", quote.ShopMinimum);
-                command.Parameters.AddWithValue("@recommendedDeposit", quote.RecommendedDeposit);
-                command.Parameters.AddWithValue("@confidenceScore", quote.ConfidenceScore);
-                command.Parameters.AddWithValue("@similarJobsCount", quote.SimilarJobsCount);
-                command.Parameters.AddWithValue("@createdAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@clientId", quote.ClientId ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@artistId", quote.ArtistId);
+            command.Parameters.AddWithValue("@placement", quote.Placement);
+            command.Parameters.AddWithValue("@style", quote.Style);
+            command.Parameters.AddWithValue("@isCoverUp", quote.IsCoverUp);
+            command.Parameters.AddWithValue("@width", quote.Width);
+            command.Parameters.AddWithValue("@height", quote.Height);
+            command.Parameters.AddWithValue("@coverageLevel", quote.CoverageLevel);
+            command.Parameters.AddWithValue("@lineComplexity", quote.LineComplexity);
+            command.Parameters.AddWithValue("@shadingComplexity", quote.ShadingComplexity);
+            command.Parameters.AddWithValue("@colorComplexity", quote.ColorComplexity);
+            command.Parameters.AddWithValue("@difficulty", quote.Difficulty);
+            command.Parameters.AddWithValue("@estimatedHoursLow", quote.EstimatedHoursLow);
+            command.Parameters.AddWithValue("@estimatedHoursHigh", quote.EstimatedHoursHigh);
+            command.Parameters.AddWithValue("@priceLow", quote.PriceLow);
+            command.Parameters.AddWithValue("@priceHigh", quote.PriceHigh);
+            command.Parameters.AddWithValue("@shopMinimum", quote.ShopMinimum);
+            command.Parameters.AddWithValue("@recommendedDeposit", quote.RecommendedDeposit);
+            command.Parameters.AddWithValue("@confidenceScore", quote.ConfidenceScore);
+            command.Parameters.AddWithValue("@similarJobsCount", quote.SimilarJobsCount);
+            command.Parameters.AddWithValue("@createdAt", DateTime.UtcNow.ToString("o"));
 
-                return command.ExecuteNonQuery() > 0;
-            }
+            return command.ExecuteNonQuery() > 0;
         }
 
         public List<Quote> GetAllQuotes()
         {
             var quotes = new List<Quote>();
-            using (var connection = new SqliteConnection(_connectionString))
-            {
-                connection.Open();
-                var command = connection.CreateCommand();
-                command.CommandText = "SELECT * FROM quotes";
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT * FROM quotes";
 
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        quotes.Add(MapReaderToQuote(reader));
-                    }
-                }
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                quotes.Add(MapReaderToQuote(reader));
             }
             return quotes;
         }

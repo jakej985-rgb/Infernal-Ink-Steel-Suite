@@ -4,16 +4,10 @@ using System.Collections.ObjectModel;
 
 namespace InfernalInkSteelSuite.ViewModels.Appointments
 {
-    public class AppointmentDetailsDialogViewModel : BaseViewModel
+    public class AppointmentDetailsDialogViewModel(DateTime date, ObservableCollection<Appointment> appointments) : BaseViewModel
     {
-        private DateTime _date;
-        private ObservableCollection<Appointment> _appointments;
-
-        public AppointmentDetailsDialogViewModel(DateTime date, ObservableCollection<Appointment> appointments)
-        {
-            _date = date;
-            _appointments = appointments;
-        }
+        private DateTime _date = date;
+        private ObservableCollection<Appointment> _appointments = appointments;
 
         public DateTime Date
         {
