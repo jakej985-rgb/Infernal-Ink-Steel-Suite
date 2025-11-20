@@ -18,7 +18,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Content="First Name:" Grid.Row="0" Grid.Column="0"/>
-        <TextBox Text="{Binding Client.FirstName}" Grid.Row="0" Grid.Column="1"/>
+        <TextBox x:Name="FirstNameTextBox" Text="{Binding Client.FirstName}" Grid.Row="0" Grid.Column="1"/>
 
         <Label Content="Last Name:" Grid.Row="1" Grid.Column="0"/>
         <TextBox Text="{Binding Client.LastName}" Grid.Row="1" Grid.Column="1"/>

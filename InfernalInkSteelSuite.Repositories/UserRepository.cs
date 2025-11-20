@@ -53,7 +53,9 @@ namespace InfernalInkSteelSuite.Repositories
             return true;
         }
 
-        public string HashPassword(string plain)
+        public string HashPassword(string plain) => ComputeHash(plain);
+
+        private static string ComputeHash(string plain)
         {
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plain));
             StringBuilder builder = new();
@@ -149,7 +151,7 @@ namespace InfernalInkSteelSuite.Repositories
         {
             User? u = GetUserByUsername(username);
             if (u == null) return false;
-            return u.PasswordHash == HashPassword(plainPassword);
+            return u.PasswordHash == ComputeHash(plainPassword);
         }
 
         public bool DeleteUser(string username)
