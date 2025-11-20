@@ -42,7 +42,7 @@
                         <Button Content="Script - small symbol" Command="{Binding SetSizePresetCommand}" CommandParameter="small" Margin="0,0,5,0"/>
                         <Button Content="Palm-sized" Command="{Binding SetSizePresetCommand}" CommandParameter="medium" Margin="0,0,5,0"/>
                         <Button Content="Half sleeve" Command="{Binding SetSizePresetCommand}" CommandParameter="large" Margin="0,0,5,0"/>
-                        <Button Content="Full day piece" Command="{Binding SetSizePresetCommand}" CommandParameter="xlarge" Margin="0,0,5,0}"/>
+                        <Button Content="Full day piece" Command="{Binding SetSizePresetCommand}" CommandParameter="xlarge" Margin="0,0,5,0"/>
                     </StackPanel>
                     <Label Content="Skin Coverage (1-Minimal to 5-Heavy)"/>
                     <Slider Minimum="1" Maximum="5" Value="{Binding CoverageLevel}" TickFrequency="1" IsSnapToTickEnabled="True"/>

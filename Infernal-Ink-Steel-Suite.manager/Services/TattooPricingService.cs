@@ -85,7 +85,7 @@ namespace InfernalInkSteelSuite.Services
         private decimal GetShopMinimum()
         {
             var settings = _shopSettingsRepository.LoadSettings();
-            return settings.ShopMinimumRate;
+            return (decimal)settings.ShopMinimumRate;
         }
 
         private double GetArtistSpeedFactor(int artistId)
