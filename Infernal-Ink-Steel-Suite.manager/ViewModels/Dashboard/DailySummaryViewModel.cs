@@ -31,7 +31,27 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             LoadMetrics();
 
             CloseCommand = new RelayCommand(p => RequestClose?.Invoke(this, EventArgs.Empty));
-            PrintCommand = new RelayCommand(p => MessageBox.Show("Printing functionality not implemented yet."));
+            PrintCommand = new RelayCommand(p => ExportSummary());
+        }
+
+        private void ExportSummary()
+        {
+            try
+            {
+                var summary = @$"Daily Summary for {CurrentDate}
+---------------------------------
+Completed Appointments: {CompletedAppointments}
+Total Revenue: {TotalRevenue:C}
+No-Shows / Cancellations: {NoShows}
+Outstanding Balances: {OutstandingBalances:C}";
+
+                System.IO.File.WriteAllText("daily_summary.txt", summary);
+                MessageBox.Show("Summary exported to daily_summary.txt", "Export Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to export summary: {ex.Message}", "Export Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadMetrics()
@@ -57,7 +77,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             // Domain model doesn't seem to have "PaidAmount", just "PriceCharged".
             // I'll assume PriceCharged is what they owe if not paid? Or maybe there's no data for this yet.
             // I'll just use a placeholder logic or 0 if not trackable.
-            OutstandingBalances = 0;
+            OutstandingBalances = appointments.Where(a => a.Status == "Pending" || a.Status == "Confirmed").Sum(a => a.PriceCharged);
         }
     }
 }
