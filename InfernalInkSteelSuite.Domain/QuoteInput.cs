@@ -4,8 +4,8 @@ namespace InfernalInkSteelSuite.Domain
     {
         // Client & Tattoo
         public int? ClientId { get; set; }
-        public string Placement { get; set; }
-        public string Style { get; set; }
+        public string Placement { get; set; } = string.Empty;
+        public string Style { get; set; } = string.Empty;
         public bool IsCoverUp { get; set; }
 
         // Size

@@ -85,7 +85,7 @@
                 </Border>
             </GroupBox>
 
-            <GroupBox Header="Artist & Pricing Summary" Margin="0,10,0,0">
+            <GroupBox Header="Artist &amp; Pricing Summary" Margin="0,10,0,0">
                 <StackPanel>
                     <Label Content="Artist"/>
                     <ComboBox ItemsSource="{Binding Artists}" DisplayMemberPath="Username" SelectedValuePath="Id" SelectedValue="{Binding ArtistId}"/>
