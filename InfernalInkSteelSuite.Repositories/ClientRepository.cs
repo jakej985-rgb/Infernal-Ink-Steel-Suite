@@ -6,14 +6,9 @@ using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class ClientRepository : IClientRepository
+    public class ClientRepository(string connectionString) : IClientRepository
     {
-        private readonly string _connectionString;
-
-        public ClientRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         public Client? Get(int id)
         {

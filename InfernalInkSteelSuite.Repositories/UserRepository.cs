@@ -8,15 +8,10 @@ using System.Text;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(string connectionString) : IUserRepository
     {
         private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor";
-        private readonly string _connectionString;
-
-        public UserRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         private User MapReaderToUser(SqliteDataReader reader)
         {
@@ -60,18 +55,15 @@ namespace InfernalInkSteelSuite.Repositories
             return true;
         }
 
-        public string HashPassword(string plain)
+        public static string HashPassword(string plain)
         {
-            using (SHA256 sha256Hash = SHA256.Create())
+            byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plain));
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < bytes.Length; i++)
             {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(plain));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
+                builder.Append(bytes[i].ToString("x2"));
             }
+            return builder.ToString();
         }
 
         public string? GetUsernameById(int userId)

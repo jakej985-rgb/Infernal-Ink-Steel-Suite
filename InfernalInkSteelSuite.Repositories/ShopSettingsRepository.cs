@@ -4,14 +4,9 @@ using System;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class ShopSettingsRepository : IShopSettingsRepository
+    public class ShopSettingsRepository(string connectionString) : IShopSettingsRepository
     {
-        private readonly string _connectionString;
-
-        public ShopSettingsRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         public void SaveSettings(ShopSettings settings)
         {

@@ -6,15 +6,9 @@ using System.Collections.Generic;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class DocumentRepository : IDocumentRepository
+    public class DocumentRepository(string connectionString) : IDocumentRepository
     {
-        private readonly string _connectionString;
-
-        public DocumentRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
+        private readonly string _connectionString = connectionString;
 
         public Document? Get(int id)
         {
