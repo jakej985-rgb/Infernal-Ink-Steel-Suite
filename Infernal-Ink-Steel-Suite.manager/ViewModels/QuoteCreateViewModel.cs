@@ -184,8 +184,8 @@ namespace InfernalInkSteelSuite.ViewModels
 
             Clients = new ObservableCollection<Client>(_clientRepository.GetAll());
             Artists = new ObservableCollection<User>(_userRepository.GetAllUsers());
-            Placements = new ObservableCollection<string> { "Forearm", "Calf", "Ribs", "Hand", "Neck" };
-            Styles = new ObservableCollection<string> { "Fine line", "Traditional", "Neo-trad", "Realism", "Color realism", "Blackwork" };
+            Placements = ["Forearm", "Calf", "Ribs", "Hand", "Neck"];
+            Styles = ["Fine line", "Traditional", "Neo-trad", "Realism", "Color realism", "Blackwork"];
 
             RecalculateCommand = new RelayCommand(_ => RecalculateEstimate());
             SaveQuoteCommand = new RelayCommand(_ => SaveQuote());
@@ -199,7 +199,12 @@ namespace InfernalInkSteelSuite.ViewModels
 
         private void SetSizePreset(object? parameter)
         {
-            switch (parameter as string)
+            if (parameter is not string sizePreset)
+            {
+                return;
+            }
+
+            switch (sizePreset)
             {
                 case "small":
                     Width = 5;

@@ -6,14 +6,9 @@ using System.Globalization;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class QuoteRepository : IQuoteRepository
+    public class QuoteRepository(string connectionString) : IQuoteRepository
     {
-        private readonly string _connectionString;
-
-        public QuoteRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         public bool AddQuote(Quote quote)
         {

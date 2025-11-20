@@ -125,7 +125,7 @@ namespace InfernalInkSteelSuite.ViewModels
             {
                 var client = _clientRepository.Get(d.ClientId);
                 var clientName = client != null ? $"{client.FirstName} {client.LastName}" : "Unknown";
-                return clientName.ToLower().Contains(FilterText.ToLower());
+                return clientName.Contains(FilterText, System.StringComparison.OrdinalIgnoreCase);
             });
 
             Documents.Clear();
