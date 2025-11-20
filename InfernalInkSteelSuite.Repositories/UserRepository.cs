@@ -53,7 +53,9 @@ namespace InfernalInkSteelSuite.Repositories
             return true;
         }
 
-        public static string HashPassword(string plain)
+        public string HashPassword(string plain) => ComputeHash(plain);
+
+        private static string ComputeHash(string plain)
         {
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plain));
             StringBuilder builder = new StringBuilder();
@@ -85,7 +87,7 @@ namespace InfernalInkSteelSuite.Repositories
                     INSERT INTO users (username, passwordHash, role, avatarPath, ThemeKey)
                     VALUES (@username, @passwordHash, @role, @avatarPath, @themeKey)";
             command.Parameters.AddWithValue("@username", user.Username);
-            command.Parameters.AddWithValue("@passwordHash", HashPassword(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
+            command.Parameters.AddWithValue("@passwordHash", ComputeHash(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
             command.Parameters.AddWithValue("@role", string.IsNullOrEmpty(user.Role) ? "User" : user.Role);
             command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
             command.Parameters.AddWithValue("@themeKey", user.ThemeKey);
@@ -149,7 +151,7 @@ namespace InfernalInkSteelSuite.Repositories
         {
             User? u = GetUserByUsername(username);
             if (u == null) return false;
-            return u.PasswordHash == HashPassword(plainPassword);
+            return u.PasswordHash == ComputeHash(plainPassword);
         }
 
         public bool DeleteUser(string username)
@@ -182,7 +184,7 @@ namespace InfernalInkSteelSuite.Repositories
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = "UPDATE users SET passwordHash = @passwordHash, updatedAt = @updatedAt WHERE username = @username";
-            command.Parameters.AddWithValue("@passwordHash", HashPassword(password));
+            command.Parameters.AddWithValue("@passwordHash", ComputeHash(password));
             command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
             command.Parameters.AddWithValue("@username", username);
 
