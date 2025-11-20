@@ -7,8 +7,8 @@ namespace InfernalInkSteelSuite.Domain
         public int Id { get; set; }
         public int? ClientId { get; set; }
         public int ArtistId { get; set; }
-        public string Placement { get; set; }
-        public string Style { get; set; }
+        public string Placement { get; set; } = string.Empty;
+        public string Style { get; set; } = string.Empty;
         public bool IsCoverUp { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
