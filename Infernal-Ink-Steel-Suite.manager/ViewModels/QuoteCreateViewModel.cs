@@ -20,7 +20,7 @@ namespace InfernalInkSteelSuite.ViewModels
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IImageComplexityService _imageComplexityService;
         private QuoteInput _quoteInput;
-        private QuoteEstimate _quoteEstimate;
+        private QuoteEstimate? _quoteEstimate;
 
         #region Input Properties
 
@@ -100,7 +100,7 @@ namespace InfernalInkSteelSuite.ViewModels
 
         #region Estimate Properties
 
-        public QuoteEstimate QuoteEstimate
+        public QuoteEstimate? QuoteEstimate
         {
             get => _quoteEstimate;
             set
@@ -119,8 +119,8 @@ namespace InfernalInkSteelSuite.ViewModels
 
         #region Photo Assist Properties
 
-        private string _imagePath;
-        public string ImagePath
+        private string? _imagePath;
+        public string? ImagePath
         {
             get => _imagePath;
             set
@@ -130,8 +130,8 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        private ImageComplexityResult _imageComplexityResult;
-        public ImageComplexityResult ImageComplexityResult
+        private ImageComplexityResult? _imageComplexityResult;
+        public ImageComplexityResult? ImageComplexityResult
         {
             get => _imageComplexityResult;
             set
@@ -227,6 +227,8 @@ namespace InfernalInkSteelSuite.ViewModels
 
         private void SaveQuote()
         {
+            if (_quoteEstimate == null) return;
+
             var quote = new Quote
             {
                 ClientId = _quoteInput.ClientId,
@@ -262,10 +264,16 @@ namespace InfernalInkSteelSuite.ViewModels
                 return;
             }
 
+            if (_quoteEstimate == null)
+            {
+                 MessageBox.Show("Unable to create appointment: Quote estimate is missing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                 return;
+            }
+
             SaveQuote();
             var appointment = new Appointment
             {
-                ClientId = _quoteInput.ClientId.Value,
+                ClientId = ClientId.Value,
                 UserId = _quoteInput.ArtistId,
                 ServiceType = _quoteInput.Style,
                 Notes = $"Quote based on: {_quoteInput.Width}x{_quoteInput.Height}cm, { _quoteInput.Placement}",
