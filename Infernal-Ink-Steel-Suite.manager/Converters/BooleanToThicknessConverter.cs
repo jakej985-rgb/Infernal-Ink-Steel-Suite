@@ -9,7 +9,7 @@ namespace InfernalInkSteelSuite.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is bool && (bool)value) ? new Thickness(2) : new Thickness(0);
+            return value is true ? new Thickness(2) : new Thickness(0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

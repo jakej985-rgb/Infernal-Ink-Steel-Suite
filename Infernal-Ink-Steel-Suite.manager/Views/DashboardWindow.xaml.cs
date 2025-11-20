@@ -37,8 +37,10 @@ namespace InfernalInkSteelSuite.Views
             InitializeComponent();
             LoadShopSettings();
             var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
-            var homeDashboardView = new HomeDashboardView();
-            homeDashboardView.DataContext = homeDashboardViewModel;
+            var homeDashboardView = new HomeDashboardView
+            {
+                DataContext = homeDashboardViewModel
+            };
             MainContent.Content = homeDashboardView;
             SettingsUpdateService.OnSettingsChanged += LoadShopSettings;
             Closed += (s, e) => SettingsUpdateService.OnSettingsChanged -= LoadShopSettings;
@@ -66,16 +68,20 @@ namespace InfernalInkSteelSuite.Views
         private void Home_Click(object sender, RoutedEventArgs e)
         {
             var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
-            var homeDashboardView = new HomeDashboardView();
-            homeDashboardView.DataContext = homeDashboardViewModel;
+            var homeDashboardView = new HomeDashboardView
+            {
+                DataContext = homeDashboardViewModel
+            };
             MainContent.Content = homeDashboardView;
         }
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
             var clientViewModel = new ClientViewModel(_clientRepository);
-            var clientView = new ClientView();
-            clientView.DataContext = clientViewModel;
+            var clientView = new ClientView
+            {
+                DataContext = clientViewModel
+            };
             MainContent.Content = clientView;
         }
 
@@ -87,8 +93,10 @@ namespace InfernalInkSteelSuite.Views
         private void Quotes_Click(object sender, RoutedEventArgs e)
         {
             var quotesViewModel = new QuotesViewModel(_appointmentRepository);
-            var quotesView = new QuotesView(_appointmentRepository);
-            quotesView.DataContext = quotesViewModel;
+            var quotesView = new QuotesView(_appointmentRepository)
+            {
+                DataContext = quotesViewModel
+            };
             MainContent.Content = quotesView;
         }
 
@@ -96,24 +104,30 @@ namespace InfernalInkSteelSuite.Views
         {
             var pricingService = new TattooPricingService(_shopSettingsRepository, _userRepository);
             var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
-            var quoteCreateView = new QuoteCreateView();
-            quoteCreateView.DataContext = quoteCreateViewModel;
+            var quoteCreateView = new QuoteCreateView
+            {
+                DataContext = quoteCreateViewModel
+            };
             MainContent.Content = quoteCreateView;
         }
 
         private void Documents_Click(object sender, RoutedEventArgs e)
         {
             var documentsViewModel = new DocumentsViewModel(_documentRepository, _clientRepository);
-            var documentsView = new DocumentsView();
-            documentsView.DataContext = documentsViewModel;
+            var documentsView = new DocumentsView
+            {
+                DataContext = documentsViewModel
+            };
             MainContent.Content = documentsView;
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             var settingsViewModel = new SettingsViewModel(_connectionString, _currentUser);
-            var settingsView = new SettingsView();
-            settingsView.DataContext = settingsViewModel;
+            var settingsView = new SettingsView
+            {
+                DataContext = settingsViewModel
+            };
             MainContent.Content = settingsView;
         }
 

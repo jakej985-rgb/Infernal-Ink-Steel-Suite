@@ -14,8 +14,8 @@ namespace InfernalInkSteelSuite.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private IAppointmentRepository _appointmentRepository;
-        private IShopSettingsRepository _shopSettingsRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
 
         public ObservableCollection<int> Years { get; set; }
 
@@ -55,11 +55,11 @@ namespace InfernalInkSteelSuite.ViewModels
             VisitsChart = new WpfPlot();
             HoursChart = new WpfPlot();
 
-            IncomeData = Array.Empty<double>();
-            VisitsData = Array.Empty<double>();
-            HoursData = Array.Empty<double>();
+            IncomeData = [];
+            VisitsData = [];
+            HoursData = [];
 
-            Years = new ObservableCollection<int>();
+            Years = [];
             PopulateYearSelector();
             SelectedYear = Years.FirstOrDefault();
             LoadData(SelectedYear);
@@ -153,7 +153,7 @@ namespace InfernalInkSteelSuite.ViewModels
         }
 
 
-        private bool ShouldCountAppointment(string status)
+        private static bool ShouldCountAppointment(string status)
         {
             var trimmedStatus = status.Trim();
             return trimmedStatus.Equals("Completed", StringComparison.OrdinalIgnoreCase) ||

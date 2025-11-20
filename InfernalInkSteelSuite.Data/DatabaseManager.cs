@@ -18,15 +18,13 @@ namespace InfernalInkSteelSuite.Data
 
         public void InitializeDatabase()
         {
-            using (var connection = GetConnection())
-            {
-                connection.Open();
-                CreateTable(connection);
-                EnsureColumnsExist(connection);
-                MigrateShopSettings(connection);
-                EnsureDefaultUserExists(connection);
-                MigrateUserDateFormats(connection);
-            }
+            using var connection = GetConnection();
+            connection.Open();
+            CreateTable(connection);
+            EnsureColumnsExist(connection);
+            MigrateShopSettings(connection);
+            EnsureDefaultUserExists(connection);
+            MigrateUserDateFormats(connection);
         }
 
         private void CreateTable(SqliteConnection connection)
@@ -291,25 +289,25 @@ namespace InfernalInkSteelSuite.Data
                 }
             }
 
-            foreach (var user in usersToUpdate)
+            foreach (var (id, createdAt, updatedAt) in usersToUpdate)
             {
                 var updateCommand = connection.CreateCommand();
                 var setClauses = new System.Collections.Generic.List<string>();
-                if (user.createdAt != null)
+                if (createdAt != null)
                 {
                     setClauses.Add("createdAt = @createdAt");
-                    updateCommand.Parameters.AddWithValue("@createdAt", user.createdAt);
+                    updateCommand.Parameters.AddWithValue("@createdAt", createdAt);
                 }
-                if (user.updatedAt != null)
+                if (updatedAt != null)
                 {
                     setClauses.Add("updatedAt = @updatedAt");
-                    updateCommand.Parameters.AddWithValue("@updatedAt", user.updatedAt);
+                    updateCommand.Parameters.AddWithValue("@updatedAt", updatedAt);
                 }
 
                 if (setClauses.Count > 0)
                 {
                     updateCommand.CommandText = $"UPDATE users SET {string.Join(", ", setClauses)} WHERE id = @id";
-                    updateCommand.Parameters.AddWithValue("@id", user.id);
+                    updateCommand.Parameters.AddWithValue("@id", id);
                     updateCommand.ExecuteNonQuery();
                 }
             }

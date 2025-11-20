@@ -19,7 +19,7 @@ namespace InfernalInkSteelSuite.ViewModels
         private readonly IUserRepository _userRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IImageComplexityService _imageComplexityService;
-        private QuoteInput _quoteInput;
+        private readonly QuoteInput _quoteInput;
         private QuoteEstimate? _quoteEstimate;
 
         #region Input Properties
@@ -182,8 +182,8 @@ namespace InfernalInkSteelSuite.ViewModels
                 Style = "Fine line"
             };
 
-            Clients = new ObservableCollection<Client>(_clientRepository.GetAll());
-            Artists = new ObservableCollection<User>(_userRepository.GetAllUsers());
+            Clients = [_.. _clientRepository.GetAll()];
+            Artists = [_.. _userRepository.GetAllUsers()];
             Placements = ["Forearm", "Calf", "Ribs", "Hand", "Neck"];
             Styles = ["Fine line", "Traditional", "Neo-trad", "Realism", "Color realism", "Blackwork"];
 
@@ -294,8 +294,7 @@ namespace InfernalInkSteelSuite.ViewModels
         {
             if (parameter is IDataObject dataObject && dataObject.GetDataPresent(DataFormats.FileDrop))
             {
-                var files = dataObject.GetData(DataFormats.FileDrop) as string[];
-                if (files != null && files.Length > 0)
+                if (dataObject.GetData(DataFormats.FileDrop) is string[] files && files.Length > 0)
                 {
                     ImagePath = files[0];
                 }
@@ -309,10 +308,8 @@ namespace InfernalInkSteelSuite.ViewModels
                 return;
             }
 
-            using (var stream = File.OpenRead(ImagePath))
-            {
-                ImageComplexityResult = _imageComplexityService.Analyze(stream);
-            }
+            using var stream = File.OpenRead(ImagePath);
+            ImageComplexityResult = _imageComplexityService.Analyze(stream);
         }
 
         private void ApplyComplexity()

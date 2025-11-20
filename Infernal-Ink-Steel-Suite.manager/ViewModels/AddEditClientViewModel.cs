@@ -18,8 +18,8 @@ namespace InfernalInkSteelSuite.ViewModels
             _clientRepository = clientRepository;
             _client = client;
 
-            SaveCommand = new RelayCommand(p => Save(p));
-            CancelCommand = new RelayCommand(p => Cancel(p));
+            SaveCommand = new RelayCommand(_ => Save());
+            CancelCommand = new RelayCommand(_ => Cancel());
         }
 
         public Client Client
@@ -35,7 +35,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        private void Save(object? parameter)
+        private void Save()
         {
             if (Client.Id == 0)
             {
@@ -48,7 +48,7 @@ namespace InfernalInkSteelSuite.ViewModels
             OnRequestClose();
         }
 
-        private void Cancel(object? parameter)
+        private void Cancel()
         {
             OnRequestClose();
         }

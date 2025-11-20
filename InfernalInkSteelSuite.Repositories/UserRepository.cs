@@ -58,7 +58,7 @@ namespace InfernalInkSteelSuite.Repositories
         private static string ComputeHash(string plain)
         {
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plain));
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             for (int i = 0; i < bytes.Length; i++)
             {
                 builder.Append(bytes[i].ToString("x2"));
@@ -87,7 +87,7 @@ namespace InfernalInkSteelSuite.Repositories
                     INSERT INTO users (username, passwordHash, role, avatarPath, ThemeKey)
                     VALUES (@username, @passwordHash, @role, @avatarPath, @themeKey)";
             command.Parameters.AddWithValue("@username", user.Username);
-            command.Parameters.AddWithValue("@passwordHash", ComputeHash(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
+            command.Parameters.AddWithValue("@passwordHash", HashPassword(string.IsNullOrEmpty(user.PasswordHash) ? "password" : user.PasswordHash));
             command.Parameters.AddWithValue("@role", string.IsNullOrEmpty(user.Role) ? "User" : user.Role);
             command.Parameters.AddWithValue("@avatarPath", user.AvatarPath);
             command.Parameters.AddWithValue("@themeKey", user.ThemeKey);
@@ -184,7 +184,7 @@ namespace InfernalInkSteelSuite.Repositories
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText = "UPDATE users SET passwordHash = @passwordHash, updatedAt = @updatedAt WHERE username = @username";
-            command.Parameters.AddWithValue("@passwordHash", ComputeHash(password));
+            command.Parameters.AddWithValue("@passwordHash", HashPassword(password));
             command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
             command.Parameters.AddWithValue("@username", username);
 
@@ -247,7 +247,7 @@ namespace InfernalInkSteelSuite.Repositories
             return command.ExecuteNonQuery() > 0;
         }
 
-        private DateTime ParseDateTime(object? readerValue)
+        private static DateTime ParseDateTime(object? readerValue)
         {
             if (readerValue == null || readerValue == DBNull.Value)
             {

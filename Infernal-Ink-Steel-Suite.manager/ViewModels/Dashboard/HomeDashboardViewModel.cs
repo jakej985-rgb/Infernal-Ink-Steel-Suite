@@ -54,13 +54,13 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             _clientRepository = new ClientRepository(connectionString);
 
             // Initialize Collections
-            TodayAppointments = new ObservableCollection<TodayAppointmentVm>();
-            WeekDays = new ObservableCollection<DaySummaryVm>();
-            ActionInboxItems = new ObservableCollection<ActionItemVm>();
+            TodayAppointments = [];
+            WeekDays = [];
+            ActionInboxItems = [];
 
             // Set Dynamic Properties
             UserName = currentUser.Username ?? "User";
-            UserInitials = string.IsNullOrEmpty(UserName) ? "?" : UserName.Substring(0, 1).ToUpper();
+            UserInitials = string.IsNullOrEmpty(UserName) ? "?" : UserName[..1].ToUpper();
             UserRole = currentUser.Role ?? "Guest";
             var shopSettings = shopSettingsRepository.LoadSettings();
             ShopName = string.IsNullOrEmpty(shopSettings.ShopName) ? "Infernal Ink & Steel" : shopSettings.ShopName;
@@ -74,15 +74,21 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             ThisWeekBookings = 18;
             NewClients = 3;
 
-            TodayAppointments.Add(new TodayAppointmentVm { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
-            TodayAppointments.Add(new TodayAppointmentVm { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
+            TodayAppointments =
+            [
+                new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" },
+                new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" }
+            ];
 
             AppointmentSummary = $"{TodayAppointments.Count} booked · 1 no-show risk · 2 walk-ins";
 
             PopulateWeekDays();
 
-            ActionInboxItems.Add(new ActionItemVm { Icon = "⚠", Description = "Unsigned consent form – Maria Lopez (Today 11:00)" });
-            ActionInboxItems.Add(new ActionItemVm { Icon = "💰", Description = "Deposit overdue – John Smith (Tomorrow 14:00)" });
+            ActionInboxItems =
+            [
+                new() { Icon = "⚠", Description = "Unsigned consent form – Maria Lopez (Today 11:00)" },
+                new() { Icon = "💰", Description = "Deposit overdue – John Smith (Tomorrow 14:00)" }
+            ];
 
             // Initialize Commands
             SelectDayCommand = new RelayCommand(SelectDay);
@@ -173,12 +179,12 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
                 TodayAppointments.Clear();
                 if (selectedDay.Date.Date == DateTime.Now.Date)
                 {
-                    TodayAppointments.Add(new TodayAppointmentVm { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
-                    TodayAppointments.Add(new TodayAppointmentVm { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
+                    TodayAppointments.Add(new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
+                    TodayAppointments.Add(new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
                 }
                 else
                 {
-                     TodayAppointments.Add(new TodayAppointmentVm { TimeRange = "10:00-11:00", ClientName = "Another Client", Service = "Consultation", Artist = "XY", Status = "Confirmed"});
+                    TodayAppointments.Add(new() { TimeRange = "10:00-11:00", ClientName = "Another Client", Service = "Consultation", Artist = "XY", Status = "Confirmed"});
                 }
             }
         }
