@@ -28,130 +28,121 @@ namespace InfernalInkSteelSuite.Services
         Fall
     }
 
-    public sealed class ThemeDefinition
+    public sealed class ThemeDefinition(ThemeId id, string key, string displayName, string resourcePath)
     {
-        public ThemeId Id { get; }
-        public string Key { get; }
-        public string DisplayName { get; }
-        public Uri ResourceUri { get; }
-
-        public ThemeDefinition(ThemeId id, string key, string displayName, string resourcePath)
-        {
-            Id = id;
-            Key = key;
-            DisplayName = displayName;
-            ResourceUri = new Uri($"pack://application:,,,/{resourcePath}", UriKind.Absolute);
-        }
+        public ThemeId Id { get; } = id;
+        public string Key { get; } = key;
+        public string DisplayName { get; } = displayName;
+        public Uri ResourceUri { get; } = new Uri($"pack://application:,,,/{resourcePath}", UriKind.Absolute);
     }
 
     public static class ThemeManager
     {
         public static IReadOnlyList<ThemeDefinition> AvailableThemes { get; } =
-            new List<ThemeDefinition>
-            {
-                new ThemeDefinition(
+            [
+                new(
                     ThemeId.Dark,
                     key: "Dark",
                     displayName: "Dark",
                     resourcePath: "Themes/Dark.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.Light,
                     key: "Light",
                     displayName: "Light",
                     resourcePath: "Themes/Light.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.InfernalNeon,
                     key: "InfernalNeon",
                     displayName: "Infernal Neon",
                     resourcePath: "Themes/InfernalNeon.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.Oceanic,
                     key: "Oceanic",
                     displayName: "Oceanic",
                     resourcePath: "Themes/Oceanic.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.Forest,
                     key: "Forest",
                     displayName: "Forest",
                     resourcePath: "Themes/Forest.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.Vampire,
                     key: "Vampire",
                     displayName: "Vampire",
                     resourcePath: "Themes/Vampire.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.EightiesSunset,
                     key: "80sSunset",
                     displayName: "80s Sunset",
                     resourcePath: "Themes/80sSunset.xaml"),
 
-                new ThemeDefinition(
+                new(
                     ThemeId.Monochrome,
                     key: "Monochrome",
                     displayName: "Monochrome",
                     resourcePath: "Themes/Monochrome.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Christmas,
                     key: "Christmas",
                     displayName: "Christmas",
                     resourcePath: "Themes/Christmas.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Halloween,
                     key: "Halloween",
                     displayName: "Halloween",
                     resourcePath: "Themes/Halloween.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.July4th,
                     key: "July4th",
                     displayName: "4th of July",
                     resourcePath: "Themes/July4th.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Thanksgiving,
                     key: "Thanksgiving",
                     displayName: "Thanksgiving",
                     resourcePath: "Themes/Thanksgiving.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Easter,
                     key: "Easter",
                     displayName: "Easter",
                     resourcePath: "Themes/Easter.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.MothersDay,
                     key: "MothersDay",
                     displayName: "Mother's Day",
                     resourcePath: "Themes/MothersDay.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.FathersDay,
                     key: "FathersDay",
                     displayName: "Father's Day",
                     resourcePath: "Themes/FathersDay.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Spring,
                     key: "Spring",
                     displayName: "Spring",
                     resourcePath: "Themes/Spring.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Summer,
                     key: "Summer",
                     displayName: "Summer",
                     resourcePath: "Themes/Summer.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Winter,
                     key: "Winter",
                     displayName: "Winter",
                     resourcePath: "Themes/Winter.xaml"),
-                new ThemeDefinition(
+                new(
                     ThemeId.Fall,
                     key: "Fall",
                     displayName: "Fall",
                     resourcePath: "Themes/Fall.xaml"),
-            };
+            ];
 
         public static ThemeDefinition CurrentTheme { get; private set; } =
             AvailableThemes.First(t => t.Id == ThemeId.InfernalNeon);

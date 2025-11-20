@@ -12,17 +12,13 @@ namespace InfernalInkSteelSuite.Converters
         {
             if (value is string status)
             {
-                switch (status.ToLower())
+                return status.ToLower() switch
                 {
-                    case "confirmed":
-                        return new SolidColorBrush(Colors.Green);
-                    case "pending":
-                        return new SolidColorBrush(Colors.Orange);
-                    case "cancelled":
-                        return new SolidColorBrush(Colors.Red);
-                    default:
-                        return new SolidColorBrush(Colors.Gray);
-                }
+                    "confirmed" => new SolidColorBrush(Colors.Green),
+                    "pending" => new SolidColorBrush(Colors.Orange),
+                    "cancelled" => new SolidColorBrush(Colors.Red),
+                    _ => new SolidColorBrush(Colors.Gray),
+                };
             }
             return Brushes.Transparent;
         }

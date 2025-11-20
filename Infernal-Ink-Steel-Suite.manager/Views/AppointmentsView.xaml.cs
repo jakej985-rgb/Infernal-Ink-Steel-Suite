@@ -21,8 +21,10 @@ namespace InfernalInkSteelSuite.Views
             UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository);
             PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository);
             CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository);
-            var calendarTab = new CalendarTab();
-            calendarTab.DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository);
+            var calendarTab = new CalendarTab
+            {
+                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository)
+            };
             CalendarTab.Content = calendarTab;
 
             AddButton.Click += AddButton_Click;
