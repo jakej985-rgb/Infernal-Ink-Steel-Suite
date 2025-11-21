@@ -169,6 +169,7 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "users", "HourlyRate", "DECIMAL NOT NULL DEFAULT 150");
             EnsureColumnExists(connection, "users", "SpeedFactor", "DOUBLE NOT NULL DEFAULT 1.0");
+            EnsureColumnExists(connection, "clients", "photoPath", "TEXT DEFAULT ''");
         }
 
         private static void MigrateShopSettings(SqliteConnection connection)

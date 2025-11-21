@@ -1,15 +1,56 @@
+using System.ComponentModel;
+
 namespace InfernalInkSteelSuite.Domain
 {
-    public class Client
+    public class Client : INotifyPropertyChanged
     {
+        private string _firstName = "";
+        private string _lastName = "";
+        private string _photoPath = "";
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public int Id { get; set; }
-        public string FirstName { get; set; } = "";
+
+        public string FirstName
+        {
+            get => _firstName;
+            set
+            {
+                _firstName = value;
+                OnPropertyChanged(nameof(FirstName));
+                OnPropertyChanged(nameof(FullName));
+            }
+        }
+
         public string MiddleName { get; set; } = "";
-        public string LastName { get; set; } = "";
+
+        public string LastName
+        {
+            get => _lastName;
+            set
+            {
+                _lastName = value;
+                OnPropertyChanged(nameof(LastName));
+                OnPropertyChanged(nameof(FullName));
+            }
+        }
+
         public string Phone { get; set; } = "";
         public string Email { get; set; } = "";
         public string Notes { get; set; } = "";
         public int Visits { get; set; }
+
+        public string PhotoPath
+        {
+            get => _photoPath;
+            set
+            {
+                _photoPath = value;
+                OnPropertyChanged(nameof(PhotoPath));
+            }
+        }
+
 
         public string FullName
         {
@@ -30,6 +71,11 @@ namespace InfernalInkSteelSuite.Domain
                 }
                 return string.Join(" ", nameParts);
             }
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

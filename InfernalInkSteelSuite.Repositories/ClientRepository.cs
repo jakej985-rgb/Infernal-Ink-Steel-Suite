@@ -15,7 +15,7 @@ namespace InfernalInkSteelSuite.Repositories
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients WHERE id = $id;";
+            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits, photoPath FROM clients WHERE id = $id;";
             command.Parameters.AddWithValue("$id", id);
 
             using var reader = command.ExecuteReader();
@@ -30,7 +30,8 @@ namespace InfernalInkSteelSuite.Repositories
                     Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
                     Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
                     Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
-                    Visits = reader.GetInt32(7)
+                    Visits = reader.GetInt32(7),
+                    PhotoPath = reader.IsDBNull(8) ? "" : reader.GetString(8)
                 };
             }
             return null;
@@ -43,7 +44,7 @@ namespace InfernalInkSteelSuite.Repositories
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits FROM clients ORDER BY firstName, lastName;";
+            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits, photoPath FROM clients ORDER BY firstName, lastName;";
 
             using var reader = command.ExecuteReader();
             while (reader.Read())
@@ -57,7 +58,8 @@ namespace InfernalInkSteelSuite.Repositories
                     Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
                     Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
                     Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
-                    Visits = reader.GetInt32(7)
+                    Visits = reader.GetInt32(7),
+                    PhotoPath = reader.IsDBNull(8) ? "" : reader.GetString(8)
                 };
                 result.Add(client);
             }
@@ -71,8 +73,8 @@ namespace InfernalInkSteelSuite.Repositories
             connection.Open();
             var command = connection.CreateCommand();
             command.CommandText =
-                @"INSERT INTO clients (firstName, middleName, lastName, phone, email, notes, visits)
-                  VALUES ($firstName, $middleName, $lastName, $phone, $email, $notes, $visits);";
+                @"INSERT INTO clients (firstName, middleName, lastName, phone, email, notes, visits, photoPath)
+                  VALUES ($firstName, $middleName, $lastName, $phone, $email, $notes, $visits, $photoPath);";
 
             command.Parameters.AddWithValue("$firstName", client.FirstName);
             command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
@@ -81,6 +83,7 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("$email", client.Email);
             command.Parameters.AddWithValue("$notes", client.Notes);
             command.Parameters.AddWithValue("$visits", client.Visits);
+            command.Parameters.AddWithValue("$photoPath", client.PhotoPath ?? "");
 
             command.ExecuteNonQuery();
 
@@ -101,7 +104,8 @@ namespace InfernalInkSteelSuite.Repositories
                       phone = $phone,
                       email = $email,
                       notes = $notes,
-                      visits = $visits
+                      visits = $visits,
+                      photoPath = $photoPath
                   WHERE id = $id;";
 
             command.Parameters.AddWithValue("$firstName", client.FirstName);
@@ -111,6 +115,7 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("$email", client.Email);
             command.Parameters.AddWithValue("$notes", client.Notes);
             command.Parameters.AddWithValue("$visits", client.Visits);
+            command.Parameters.AddWithValue("$photoPath", client.PhotoPath ?? "");
             command.Parameters.AddWithValue("$id", client.Id);
 
             command.ExecuteNonQuery();
