@@ -137,7 +137,7 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\DashboardWindow.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\EditAppointmentDialog.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\HomeView.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\App.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Login.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AddEditClientView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AppointmentDialog.g.cs
@@ -171,6 +171,8 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\GeneratedInternalTypeHelper.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite_MarkupCompile.cache
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite_MarkupCompile.lref
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\App.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Login.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Themes\Base.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\AppointmentDetailsDialog.baml
@@ -205,5 +207,3 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.pdb
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.genruntimeconfig.cache
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\ref\Infernal-Ink-Steel-Suite.dll
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.baml

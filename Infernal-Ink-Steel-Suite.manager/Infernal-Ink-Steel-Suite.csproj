@@ -30,4 +30,9 @@
   <ItemGroup>
     <None Remove="shop_manager.db" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Images\eye_open.png" />
+    <Resource Include="Assets\Images\eye_closed.png" />
+  </ItemGroup>
 </Project>
