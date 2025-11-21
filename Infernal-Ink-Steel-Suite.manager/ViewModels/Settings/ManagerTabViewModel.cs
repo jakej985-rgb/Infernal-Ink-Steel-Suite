@@ -61,9 +61,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public ManagerTabViewModel(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _users = new ObservableCollection<User>();
+            _users = [];
             _selectedUser = new User();
-            _roles = new ObservableCollection<string>();
+            _roles = [];
             _selectedRole = string.Empty;
             LoadUsers();
             LoadRoles();
@@ -73,12 +73,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadUsers()
         {
-            Users = new ObservableCollection<User>(_userRepository.GetAllUsers());
+            Users = [.. _userRepository.GetAllUsers()];
         }
 
         private void LoadRoles()
         {
-            Roles = new ObservableCollection<string> { "Admin", "Manager", "User" };
+            Roles = ["Admin", "Manager", "User"];
         }
 
         private void UpdateRole(object? obj)

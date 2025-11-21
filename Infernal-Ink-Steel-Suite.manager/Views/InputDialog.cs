@@ -5,8 +5,8 @@ namespace InfernalInkSteelSuite.Views
 {
     public class InputDialog : Window
     {
-        private TextBox inputTextBox;
-        private Button okButton;
+        private readonly TextBox inputTextBox;
+        private readonly Button okButton;
 
         public string InputText => inputTextBox.Text;
 

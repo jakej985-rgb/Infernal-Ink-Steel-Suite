@@ -11,7 +11,7 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
         public DateTime Date { get; set; }
         public int DayNumber => Date.Day;
         public bool IsInCurrentMonth { get; set; }
-        public ObservableCollection<Appointment> Appointments { get; set; } = new();
+        public ObservableCollection<Appointment> Appointments { get; set; } = [];
 
         public bool HasAppointments => Appointments.Any();
 

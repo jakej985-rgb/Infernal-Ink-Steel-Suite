@@ -39,28 +39,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- Left Sidebar (Modified: Removed Brand and User Profile, kept Navigation) -->
-        <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" CornerRadius="10,0,0,10">
-            <Grid>
-                <!-- Navigation -->
-                <StackPanel VerticalAlignment="Center">
-                    <controls:NeonButton Content="Dashboard" Margin="10" IsGlowing="True"/>
-                    <controls:NeonButton Content="Calendar" Margin="10" Command="{Binding OpenFullCalendarCommand}"/>
-                    <controls:NeonButton Content="Clients" Margin="10" Command="{Binding OpenClientsListCommand}"/>
-                    <controls:NeonButton Content="Artists" Margin="10"/>
-                    <controls:NeonButton Content="Inventory" Margin="10" Command="{Binding OpenInventoryCommand}"/>
-                    <controls:NeonButton Content="Documents" Margin="10"/>
-                    <controls:NeonButton Content="Settings" Margin="10" Command="{Binding OpenShopSettingsCommand}"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <Grid Grid.Column="1">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="70"/>
                 <RowDefinition Height="*"/>
@@ -86,8 +65,6 @@
                         <TextBox Width="200" Margin="0,0,10,0" VerticalContentAlignment="Center" Style="{StaticResource SearchBoxStyle}"/>
                         <controls:NeonButton Content="+ New Appointment" Margin="5,0" Command="{Binding CreateNewAppointmentCommand}"/>
                         <controls:NeonButton Content="+ New Client" Margin="5,0" Command="{Binding CreateNewClientCommand}"/>
-                        <!-- Relocated Logout Button -->
-                        <controls:NeonButton Content="Logout" Margin="5,0" Command="{Binding LogoutCommand}"/>
                     </StackPanel>
                 </Grid>
             </Border>

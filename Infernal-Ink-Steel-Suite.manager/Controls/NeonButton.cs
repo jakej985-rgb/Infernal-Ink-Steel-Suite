@@ -42,11 +42,16 @@ namespace InfernalInkSteelSuite.Controls
             var button = (NeonButton)d;
             var newGlowColor = (Color)e.NewValue;
 
-            var gradient = new LinearGradientBrush();
-            gradient.StartPoint = new Point(0, 0);
-            gradient.EndPoint = new Point(0, 1);
-            gradient.GradientStops.Add(new GradientStop(GetLighterColor(newGlowColor, 1.3f), 0.0));
-            gradient.GradientStops.Add(new GradientStop(newGlowColor, 1.0));
+            var gradient = new LinearGradientBrush
+            {
+                StartPoint = new Point(0, 0),
+                EndPoint = new Point(0, 1),
+                GradientStops =
+                [
+                    new GradientStop(GetLighterColor(newGlowColor, 1.3f), 0.0),
+                    new GradientStop(newGlowColor, 1.0)
+                ]
+            };
 
             button.Background = gradient;
             button.UpdateGlowEffect();

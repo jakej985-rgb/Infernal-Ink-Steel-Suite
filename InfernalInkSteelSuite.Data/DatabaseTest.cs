@@ -8,10 +8,8 @@ namespace InfernalInkSteelSuite.Data
         {
             try
             {
-                using (var connection = Database.CreateConnection())
-                {
-                    Console.WriteLine("Connection successful!");
-                }
+                using var connection = Database.CreateConnection();
+                Console.WriteLine("Connection successful!");
             }
             catch (Exception ex)
             {

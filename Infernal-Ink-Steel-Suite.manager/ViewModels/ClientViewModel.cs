@@ -18,8 +18,8 @@ namespace InfernalInkSteelSuite.ViewModels
         public ClientViewModel(IClientRepository clientRepository)
         {
             _clientRepository = clientRepository;
-            _allClients = new List<Client>();
-            _clients = new List<Client>();
+            _allClients = [];
+            _clients = [];
             LoadClients();
 
             AddClientCommand = new RelayCommand(_ => AddClient());
@@ -64,7 +64,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
             else
             {
-                Clients = _allClients.Where(c => c.FullName.ToLower().Contains(SearchText.ToLower())).ToList();
+                Clients = [.. _allClients.Where(c => c.FullName.Contains(SearchText, System.StringComparison.OrdinalIgnoreCase))];
             }
         }
 

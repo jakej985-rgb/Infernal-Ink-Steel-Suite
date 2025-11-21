@@ -31,7 +31,7 @@ namespace InfernalInkSteelSuite.ViewModels
 
         public SettingsViewModel(string connectionString, User currentUser)
         {
-            _tabs = new ObservableCollection<SettingsTabViewModel>();
+            _tabs = [];
             _selectedTab = null!;
             var shopSettingsRepository = new ShopSettingsRepository(connectionString);
             var userRepository = new UserRepository(connectionString);

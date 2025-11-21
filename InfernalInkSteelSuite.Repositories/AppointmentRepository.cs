@@ -5,21 +5,16 @@ using System.Collections.Generic;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class AppointmentRepository : IAppointmentRepository
+    public class AppointmentRepository(string connectionString) : IAppointmentRepository
     {
-        private readonly string _connectionString;
-
-        public AppointmentRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         private SqliteConnection GetConnection()
         {
             return new SqliteConnection(_connectionString);
         }
 
-        private Appointment MapReaderToAppointment(SqliteDataReader reader)
+        private static Appointment MapReaderToAppointment(SqliteDataReader reader)
         {
             return new Appointment
             {
@@ -41,19 +36,15 @@ namespace InfernalInkSteelSuite.Repositories
 
         public Appointment? Get(int id)
         {
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            using var reader = cmd.ExecuteReader();
+            if (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE id = @id";
-                cmd.Parameters.AddWithValue("@id", id);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return MapReaderToAppointment(reader);
-                    }
-                }
+                return MapReaderToAppointment(reader);
             }
             return null;
         }
@@ -61,97 +52,83 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAll()
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments ORDER BY dateTime ASC";
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments ORDER BY dateTime ASC";
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }
 
         public void Add(Appointment appointment)
         {
-            using (var conn = GetConnection())
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status)";
-                cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
-                cmd.Parameters.AddWithValue("@userId", appointment.UserId);
-                cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
-                cmd.Parameters.AddWithValue("@dateTime", appointment.DateTime);
-                cmd.Parameters.AddWithValue("@durationMinutes", appointment.DurationMinutes);
-                cmd.Parameters.AddWithValue("@serviceType", appointment.ServiceType);
-                cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
-                cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
-                cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-                cmd.Parameters.AddWithValue("@notes", appointment.Notes);
-                cmd.Parameters.AddWithValue("@color", appointment.Color);
-                cmd.Parameters.AddWithValue("@status", appointment.Status);
-                cmd.ExecuteNonQuery();
-            }
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status)";
+            cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
+            cmd.Parameters.AddWithValue("@userId", appointment.UserId);
+            cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
+            cmd.Parameters.AddWithValue("@dateTime", appointment.DateTime);
+            cmd.Parameters.AddWithValue("@durationMinutes", appointment.DurationMinutes);
+            cmd.Parameters.AddWithValue("@serviceType", appointment.ServiceType);
+            cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
+            cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
+            cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
+            cmd.Parameters.AddWithValue("@notes", appointment.Notes);
+            cmd.Parameters.AddWithValue("@color", appointment.Color);
+            cmd.Parameters.AddWithValue("@status", appointment.Status);
+            cmd.ExecuteNonQuery();
         }
 
         public void Update(Appointment appointment)
         {
-            using (var conn = GetConnection())
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status WHERE id = @id";
-                cmd.Parameters.AddWithValue("@id", appointment.Id);
-                cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
-                cmd.Parameters.AddWithValue("@userId", appointment.UserId);
-                cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
-                cmd.Parameters.AddWithValue("@dateTime", appointment.DateTime);
-                cmd.Parameters.AddWithValue("@durationMinutes", appointment.DurationMinutes);
-                cmd.Parameters.AddWithValue("@serviceType", appointment.ServiceType);
-                cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
-                cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
-                cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-                cmd.Parameters.AddWithValue("@notes", appointment.Notes);
-                cmd.Parameters.AddWithValue("@color", appointment.Color);
-                cmd.Parameters.AddWithValue("@status", appointment.Status);
-                cmd.ExecuteNonQuery();
-            }
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", appointment.Id);
+            cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
+            cmd.Parameters.AddWithValue("@userId", appointment.UserId);
+            cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
+            cmd.Parameters.AddWithValue("@dateTime", appointment.DateTime);
+            cmd.Parameters.AddWithValue("@durationMinutes", appointment.DurationMinutes);
+            cmd.Parameters.AddWithValue("@serviceType", appointment.ServiceType);
+            cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
+            cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
+            cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
+            cmd.Parameters.AddWithValue("@notes", appointment.Notes);
+            cmd.Parameters.AddWithValue("@color", appointment.Color);
+            cmd.Parameters.AddWithValue("@status", appointment.Status);
+            cmd.ExecuteNonQuery();
         }
 
         public void Delete(int id)
         {
-            using (var conn = GetConnection())
-            {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "DELETE FROM appointments WHERE id = @id";
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.ExecuteNonQuery();
-            }
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "DELETE FROM appointments WHERE id = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
         }
 
         public List<Appointment> GetAppointmentsByDate(DateTime date)
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE DATE(dateTime) = @date ORDER BY dateTime ASC";
+            cmd.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE DATE(dateTime) = @date ORDER BY dateTime ASC";
-                cmd.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }
@@ -159,19 +136,15 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByUserId(int userId)
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE userId = @userId ORDER BY dateTime ASC";
+            cmd.Parameters.AddWithValue("@userId", userId);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE userId = @userId ORDER BY dateTime ASC";
-                cmd.Parameters.AddWithValue("@userId", userId);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }
@@ -179,19 +152,15 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByClientId(int clientId)
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE clientId = @clientId ORDER BY dateTime DESC";
+            cmd.Parameters.AddWithValue("@clientId", clientId);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE clientId = @clientId ORDER BY dateTime DESC";
-                cmd.Parameters.AddWithValue("@clientId", clientId);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }
@@ -199,20 +168,16 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByDateRange(DateTime start, DateTime end)
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE dateTime BETWEEN @start AND @end ORDER BY dateTime ASC";
+            cmd.Parameters.AddWithValue("@start", start);
+            cmd.Parameters.AddWithValue("@end", end);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE dateTime BETWEEN @start AND @end ORDER BY dateTime ASC";
-                cmd.Parameters.AddWithValue("@start", start);
-                cmd.Parameters.AddWithValue("@end", end);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }
@@ -220,19 +185,15 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByStatus(string status)
         {
             var appointments = new List<Appointment>();
-            using (var conn = GetConnection())
+            using var conn = GetConnection();
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT * FROM appointments WHERE status = @status ORDER BY dateTime ASC";
+            cmd.Parameters.AddWithValue("@status", status);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                conn.Open();
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT * FROM appointments WHERE status = @status ORDER BY dateTime ASC";
-                cmd.Parameters.AddWithValue("@status", status);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        appointments.Add(MapReaderToAppointment(reader));
-                    }
-                }
+                appointments.Add(MapReaderToAppointment(reader));
             }
             return appointments;
         }

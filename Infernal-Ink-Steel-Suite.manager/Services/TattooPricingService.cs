@@ -4,16 +4,10 @@ using InfernalInkSteelSuite.Repositories;
 
 namespace InfernalInkSteelSuite.Services
 {
-    public class TattooPricingService : ITattooPricingService
+    public class TattooPricingService(IShopSettingsRepository shopSettingsRepository, IUserRepository userRepository) : ITattooPricingService
     {
-        private readonly IShopSettingsRepository _shopSettingsRepository;
-        private readonly IUserRepository _userRepository;
-
-        public TattooPricingService(IShopSettingsRepository shopSettingsRepository, IUserRepository userRepository)
-        {
-            _shopSettingsRepository = shopSettingsRepository;
-            _userRepository = userRepository;
-        }
+        private readonly IShopSettingsRepository _shopSettingsRepository = shopSettingsRepository;
+        private readonly IUserRepository _userRepository = userRepository;
 
         public QuoteEstimate GetEstimate(QuoteInput input)
         {
