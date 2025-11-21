@@ -5,10 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "C#: <project-name> Debug",
-            "type": "dotnet",
+            "name": "C#: Infernal-Ink-Steel-Suite Debug",
+            "type": "coreclr",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/<relative-path-to-project-folder><project-name>.csproj"
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Infernal-Ink-Steel-Suite.manager/bin/Debug/net8.0-windows10.0.19041/Infernal-Ink-Steel-Suite.dll",
         }
     ]
 }

@@ -205,3 +205,5 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.pdb
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.genruntimeconfig.cache
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\ref\Infernal-Ink-Steel-Suite.dll
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.g.cs
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.baml

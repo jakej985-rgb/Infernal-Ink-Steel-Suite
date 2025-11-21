@@ -9,6 +9,9 @@
                 <ResourceDictionary Source="Themes/Base.xaml" />
                 <!-- ThemeManager will add Dark/Light/InfernalNeon at runtime -->
             </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Global Converters -->
+            <converters:EyeIconConverter x:Key="EyeIconConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

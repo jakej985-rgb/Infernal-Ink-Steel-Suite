@@ -9,7 +9,7 @@
             <Label Content="Username"/>
             <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Content="Password"/>
-            <PasswordBox attachedProperties:PasswordBoxHelper.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <controls:PasswordBoxWithToggle Password="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" xmlns:controls="clr-namespace:InfernalInkSteelSuite.Controls"/>
             <Label Content="Role"/>
             <ComboBox ItemsSource="{Binding Roles}" SelectedItem="{Binding SelectedRole}"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">

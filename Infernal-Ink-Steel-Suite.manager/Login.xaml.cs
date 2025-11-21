@@ -124,8 +124,7 @@ namespace InfernalInkSteelSuite
 
                 SignInButton.Background = gradient;
                 BackButton.Background = gradient;
-                PasswordEdit.BorderBrush = new SolidColorBrush(accentColor);
-                PasswordTextBox.BorderBrush = new SolidColorBrush(accentColor);
+                // Border brush styling removed - handled by control style
             }
         }
 
@@ -134,8 +133,7 @@ namespace InfernalInkSteelSuite
             _currentUser = user;
             AvatarInitials.Text = user.Username[..1].ToUpper();
             SelectedUserLabel.Text = user.Username;
-            PasswordEdit.Clear();
-            PasswordTextBox.Clear();
+            PasswordEdit.Password = string.Empty;
             UserScrollArea.Visibility = Visibility.Collapsed;
             UserLoginView.Visibility = Visibility.Visible;
             PasswordEdit.Focus();
@@ -143,7 +141,7 @@ namespace InfernalInkSteelSuite
 
         private void SignIn_Click(object sender, RoutedEventArgs e)
         {
-            var password = ShowPasswordCheck.IsChecked == true ? PasswordTextBox.Text : PasswordEdit.Password;
+            var password = PasswordEdit.Password;
             if (string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Please enter your password.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -170,19 +168,7 @@ namespace InfernalInkSteelSuite
             UserScrollArea.Visibility = Visibility.Visible;
         }
 
-        private void ShowPasswordCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            PasswordTextBox.Text = PasswordEdit.Password;
-            PasswordTextBox.Visibility = Visibility.Visible;
-            PasswordEdit.Visibility = Visibility.Collapsed;
-        }
 
-        private void ShowPasswordCheck_Unchecked(object sender, RoutedEventArgs e)
-        {
-            PasswordEdit.Password = PasswordTextBox.Text;
-            PasswordEdit.Visibility = Visibility.Visible;
-            PasswordTextBox.Visibility = Visibility.Collapsed;
-        }
 
         private static string GetSha256Hash(string input)
         {
