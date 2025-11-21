@@ -25,7 +25,7 @@
             </ScrollViewer>
 
             <!-- Login View -->
-            <Grid x:Name="UserLoginView" Grid.Row="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid x:Name="UserLoginView" Grid.Row="1" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" KeyDown="UserLoginView_KeyDown">
                 <StackPanel>
                     <!-- Replace GlowAvatar with a simple Ellipse and TextBlock for initials -->
                     <Grid HorizontalAlignment="Center" Width="140" Height="140">
@@ -53,7 +53,7 @@
                                                     Margin="0,18,0,0"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
                         <Button x:Name="BackButton" Content="Back" Width="140" Height="44" Margin="0,0,10,0" Click="Back_Click"/>
-                        <Button x:Name="SignInButton" Content="Sign In" Width="140" Height="44" Click="SignIn_Click"/>
+                        <Button x:Name="SignInButton" Content="Sign In" Width="140" Height="44" Click="SignIn_Click" IsDefault="True"/>
                     </StackPanel>
                 </StackPanel>
             </Grid>

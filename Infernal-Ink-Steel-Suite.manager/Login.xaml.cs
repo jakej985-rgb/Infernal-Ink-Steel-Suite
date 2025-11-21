@@ -168,6 +168,15 @@ namespace InfernalInkSteelSuite
             UserScrollArea.Visibility = Visibility.Visible;
         }
 
+        private void UserLoginView_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                SignIn_Click(sender, e);
+            }
+        }
+
+
 
 
         private static string GetSha256Hash(string input)
