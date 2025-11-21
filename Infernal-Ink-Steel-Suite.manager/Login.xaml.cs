@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using InfernalInkSteelSuite.Controls;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
@@ -38,20 +39,40 @@ namespace InfernalInkSteelSuite
             var users = _userRepository.GetAllUsers();
             foreach (var user in users)
             {
-                var userWidget = new StackPanel { Margin = new Thickness(30) };
-                var avatar = new GlowAvatar
+                var userWidget = new StackPanel { Margin = new Thickness(12) };
+
+                var avatarGrid = new Grid
                 {
-                    Size = 100,
-                    Initials = user.Username[..1].ToUpper()
+                    Width = 80,
+                    Height = 80,
+                    HorizontalAlignment = HorizontalAlignment.Center
                 };
+
+                var circle = new Ellipse();
+                circle.SetResourceReference(Shape.FillProperty, "AccentBrush");
+
+                var initials = new TextBlock
+                {
+                    Text = user.Username[..1].ToUpper(),
+                    FontSize = 36,
+                    FontWeight = FontWeights.Bold,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                initials.SetResourceReference(ForegroundProperty, "PrimaryTextBrush");
+
+                avatarGrid.Children.Add(circle);
+                avatarGrid.Children.Add(initials);
+
                 var nameLabel = new TextBlock
                 {
                     Text = user.Username,
-                    Foreground = Brushes.White,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(0, 6, 0, 0)
+                    Margin = new Thickness(0, 8, 0, 0)
                 };
-                userWidget.Children.Add(avatar);
+                nameLabel.SetResourceReference(ForegroundProperty, "PrimaryTextBrush");
+
+                userWidget.Children.Add(avatarGrid);
                 userWidget.Children.Add(nameLabel);
                 userWidget.MouseDown += (sender, e) => ShowUserSelected(user);
                 UserGrid.Children.Add(userWidget);
@@ -83,11 +104,11 @@ namespace InfernalInkSteelSuite
             // Background Image
             if (!string.IsNullOrWhiteSpace(settings.LoginBackgroundPath) && File.Exists(settings.LoginBackgroundPath))
             {
-                BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(settings.LoginBackgroundPath)));
+                BackgroundImage.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(settings.LoginBackgroundPath)));
             }
             else if (File.Exists(defaultImagePath))
             {
-                BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(defaultImagePath)));
+                BackgroundImage.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(defaultImagePath)));
             }
 
             if (!string.IsNullOrWhiteSpace(settings.AccentColor))
