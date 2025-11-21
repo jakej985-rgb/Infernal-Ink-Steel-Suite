@@ -114,7 +114,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
 
             IncomeData = incomeData;
-            VisitsData = visitsData.Select(v => (double)v).ToArray();
+            VisitsData = [.. visitsData.Select(v => (double)v)];
             HoursData = hoursData;
 
             TotalIncome = IncomeData.Sum();

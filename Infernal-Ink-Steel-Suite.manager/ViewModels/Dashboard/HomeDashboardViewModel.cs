@@ -33,7 +33,6 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
         // Commands
         public ICommand SelectDayCommand { get; }
-        public ICommand LogoutCommand { get; }
         public ICommand OpenAppointmentCommand { get; }
         public ICommand OpenClientCommand { get; }
         public ICommand CreateNewAppointmentCommand { get; }
@@ -92,12 +91,6 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
             // Initialize Commands
             SelectDayCommand = new RelayCommand(SelectDay);
-            LogoutCommand = new RelayCommand(p =>
-            {
-                var login = new Login();
-                login.Show();
-                Application.Current.MainWindow.Close();
-            });
             OpenAppointmentCommand = new RelayCommand(p => Console.WriteLine("Open Appointment"));
             OpenClientCommand = new RelayCommand(p => Console.WriteLine("Open Client"));
 
