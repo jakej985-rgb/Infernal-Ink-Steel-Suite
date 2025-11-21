@@ -12,7 +12,7 @@
             <GroupBox Header="Profile">
                 <StackPanel>
                     <TextBlock Text="{Binding Username}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
-                    <Image Source="{Binding AvatarPath}" Width="100" Height="100" Margin="0,0,0,10"/>
+                    <Image Source="{Binding AvatarPath, TargetNullValue={x:Null}}" Width="100" Height="100" Margin="0,0,0,10"/>
                     <Button Content="Change Avatar..." Command="{Binding OpenChangeAvatarDialogCommand}"/>
                 </StackPanel>
             </GroupBox>
