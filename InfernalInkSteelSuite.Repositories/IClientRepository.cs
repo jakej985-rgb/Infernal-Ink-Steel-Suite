@@ -12,5 +12,7 @@ namespace InfernalInkSteelSuite.Repositories
         void Delete(int id);
         string? GetClientNameById(int clientId);
         int? GetClientIdByName(string name);
+        int? GetClientIdByEmail(string email);
+        int? GetClientIdByPhone(string phone);
     }
 }

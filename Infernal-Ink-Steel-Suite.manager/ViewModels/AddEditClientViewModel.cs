@@ -32,13 +32,54 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
         private void Save()
         {
+            ErrorMessage = string.Empty;
+
             if (Client.Id == 0)
             {
+                // Check for duplicates
+                var existingIdByName = _clientRepository.GetClientIdByName(Client.FullName);
+                if (existingIdByName.HasValue)
+                {
+                    ErrorMessage = "A client with this name already exists.";
+                    return;
+                }
+
+                if (!string.IsNullOrWhiteSpace(Client.Email))
+                {
+                    var existingIdByEmail = _clientRepository.GetClientIdByEmail(Client.Email);
+                    if (existingIdByEmail.HasValue)
+                    {
+                        ErrorMessage = "A client with this email already exists.";
+                        return;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(Client.Phone))
+                {
+                    var existingIdByPhone = _clientRepository.GetClientIdByPhone(Client.Phone);
+                    if (existingIdByPhone.HasValue)
+                    {
+                        ErrorMessage = "A client with this phone number already exists.";
+                        return;
+                    }
+                }
+
                 _clientRepository.Insert(Client);
             }
             else

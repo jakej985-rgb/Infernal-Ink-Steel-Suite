@@ -19,7 +19,7 @@
 
         <DataGrid Grid.Row="1" ItemsSource="{Binding Clients}" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="*"/>
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
             </DataGrid.Columns>

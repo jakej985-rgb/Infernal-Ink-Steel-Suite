@@ -210,5 +210,34 @@ namespace InfernalInkSteelSuite.Repositories
                 return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
             }
         }
+
+        public int? GetClientIdByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return null;
+
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT id FROM clients WHERE lower(email) = lower($email) LIMIT 1;";
+            command.Parameters.AddWithValue("$email", email.Trim());
+
+            var result = command.ExecuteScalar();
+            return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
+        }
+
+        public int? GetClientIdByPhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone)) return null;
+
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            var command = connection.CreateCommand();
+            // Phone matching can be tricky due to formatting. For now, exact match.
+            command.CommandText = "SELECT id FROM clients WHERE phone = $phone LIMIT 1;";
+            command.Parameters.AddWithValue("$phone", phone.Trim());
+
+            var result = command.ExecuteScalar();
+            return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
+        }
     }
 }
