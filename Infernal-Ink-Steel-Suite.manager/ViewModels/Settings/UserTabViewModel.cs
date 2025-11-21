@@ -36,7 +36,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public IEnumerable<ThemeDefinition> Themes => ThemeManager.AvailableThemes;
+        public static IEnumerable<ThemeDefinition> Themes => ThemeManager.AvailableThemes;
 
         private ThemeDefinition _selectedTheme;
         public ThemeDefinition SelectedTheme

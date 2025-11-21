@@ -37,7 +37,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             _username = username;
             _selectedAvatar = string.Empty;
 
-            DefaultAvatars = new ObservableCollection<string>();
+            DefaultAvatars = [];
             LoadDefaultAvatars();
 
             BrowseCommand = new RelayCommand(Browse);

@@ -70,7 +70,7 @@ namespace InfernalInkSteelSuite.Repositories
             return quotes;
         }
 
-        private Quote MapReaderToQuote(SqliteDataReader reader)
+        private static Quote MapReaderToQuote(SqliteDataReader reader)
         {
             return new Quote
             {

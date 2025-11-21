@@ -14,7 +14,7 @@ namespace InfernalInkSteelSuite.Repositories
             return new SqliteConnection(_connectionString);
         }
 
-        private Appointment MapReaderToAppointment(SqliteDataReader reader)
+        private static Appointment MapReaderToAppointment(SqliteDataReader reader)
         {
             return new Appointment
             {

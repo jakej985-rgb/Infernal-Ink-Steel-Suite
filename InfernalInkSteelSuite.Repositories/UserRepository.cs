@@ -13,7 +13,7 @@ namespace InfernalInkSteelSuite.Repositories
         private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor";
         private readonly string _connectionString = connectionString;
 
-        private User MapReaderToUser(SqliteDataReader reader)
+        private static User MapReaderToUser(SqliteDataReader reader)
         {
             var createdAtString = reader.IsDBNull(6) ? null : reader.GetString(6);
             var updatedAtString = reader.IsDBNull(7) ? null : reader.GetString(7);

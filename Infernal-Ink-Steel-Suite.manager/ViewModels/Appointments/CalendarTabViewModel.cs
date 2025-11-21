@@ -13,7 +13,7 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private DateTime _currentDate = DateTime.Today;
-        private ObservableCollection<CalendarDay> _days = new();
+        private ObservableCollection<CalendarDay> _days = [];
 
         public CalendarTabViewModel(IAppointmentRepository appointmentRepository)
         {

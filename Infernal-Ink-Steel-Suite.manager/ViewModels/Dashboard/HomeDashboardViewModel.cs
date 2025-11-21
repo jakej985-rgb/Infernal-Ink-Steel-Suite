@@ -154,7 +154,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             for (int i = 0; i < 7; i++)
             {
                 var date = startOfWeek.AddDays(i);
-                WeekDays.Add(new DaySummaryVm
+                WeekDays.Add(new()
                 {
                     Date = date,
                     DayLabel = date.ToString("ddd"),
@@ -166,26 +166,28 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
         private void SelectDay(object? parameter)
         {
-            if (parameter is DaySummaryVm selectedDay)
+            if (parameter is not DaySummaryVm selectedDay)
             {
-                foreach (var day in WeekDays)
-                {
-                    day.IsSelected = false;
-                }
-                selectedDay.IsSelected = true;
+                return;
+            }
 
-                // In a real implementation, you would load appointments for the selected day here.
-                // For now, we'll just clear and add a dummy item to show it works.
-                TodayAppointments.Clear();
-                if (selectedDay.Date.Date == DateTime.Now.Date)
-                {
-                    TodayAppointments.Add(new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
-                    TodayAppointments.Add(new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
-                }
-                else
-                {
-                    TodayAppointments.Add(new() { TimeRange = "10:00-11:00", ClientName = "Another Client", Service = "Consultation", Artist = "XY", Status = "Confirmed"});
-                }
+            foreach (var day in WeekDays)
+            {
+                day.IsSelected = false;
+            }
+            selectedDay.IsSelected = true;
+
+            // In a real implementation, you would load appointments for the selected day here.
+            // For now, we'll just clear and add a dummy item to show it works.
+            TodayAppointments.Clear();
+            if (selectedDay.Date.Date == DateTime.Now.Date)
+            {
+                TodayAppointments.Add(new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
+                TodayAppointments.Add(new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
+            }
+            else
+            {
+                TodayAppointments.Add(new() { TimeRange = "10:00-11:00", ClientName = "Another Client", Service = "Consultation", Artist = "XY", Status = "Confirmed" });
             }
         }
     }

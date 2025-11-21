@@ -52,7 +52,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             _username = string.Empty;
             _password = string.Empty;
-            _roles = new ObservableCollection<string> { "Admin", "Manager", "User" };
+            _roles = ["Admin", "Manager", "User"];
             _selectedRole = _roles[0];
         }
     }

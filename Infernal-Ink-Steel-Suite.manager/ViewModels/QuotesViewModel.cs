@@ -34,7 +34,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public ObservableCollection<QuoteDto> Quotes { get; } = new ObservableCollection<QuoteDto>();
+        public ObservableCollection<QuoteDto> Quotes { get; } = [];
 
         public ICommand LoadQuotesCommand { get; }
 

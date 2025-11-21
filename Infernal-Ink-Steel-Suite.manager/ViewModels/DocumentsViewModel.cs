@@ -48,7 +48,7 @@ namespace InfernalInkSteelSuite.ViewModels
             _selectedDocument = null!;
             _filterText = string.Empty;
 
-            Documents = new ObservableCollection<DocumentViewModel>();
+            Documents = [];
 
             AddDocumentCommand = new RelayCommand(_ => AddDocument());
             RefreshDocumentsCommand = new RelayCommand(_ => LoadDocuments());

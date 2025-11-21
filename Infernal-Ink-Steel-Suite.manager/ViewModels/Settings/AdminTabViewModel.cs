@@ -12,7 +12,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
     {
         private readonly IUserRepository _userRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
-        private ShopSettings _shopSettings;
+        private readonly ShopSettings _shopSettings;
 
         public override string Header => "Admin";
 
@@ -139,7 +139,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             _userRepository = userRepository;
             _shopSettingsRepository = shopSettingsRepository;
-            _users = new ObservableCollection<User>();
+            _users = [];
             LoadUsers();
             _shopSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
 
@@ -152,7 +152,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadUsers()
         {
-            Users = new ObservableCollection<User>(_userRepository.GetAllUsers());
+            Users = [.. _userRepository.GetAllUsers()];
         }
 
         private void AddUser(object? obj)

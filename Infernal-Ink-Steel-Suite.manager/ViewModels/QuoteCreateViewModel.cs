@@ -182,8 +182,8 @@ namespace InfernalInkSteelSuite.ViewModels
                 Style = "Fine line"
             };
 
-            Clients = [_.. _clientRepository.GetAll()];
-            Artists = [_.. _userRepository.GetAllUsers()];
+            Clients = [.. _clientRepository.GetAll()];
+            Artists = [.. _userRepository.GetAllUsers()];
             Placements = ["Forearm", "Calf", "Ribs", "Hand", "Neck"];
             Styles = ["Fine line", "Traditional", "Neo-trad", "Realism", "Color realism", "Blackwork"];
 

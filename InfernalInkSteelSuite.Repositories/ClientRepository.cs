@@ -155,7 +155,7 @@ namespace InfernalInkSteelSuite.Repositories
             }
 
             string firstName = nameParts[0];
-            string lastName = nameParts[nameParts.Length - 1];
+            string lastName = nameParts[^1];
             string? middleName = null;
             if (nameParts.Length > 2)
             {
