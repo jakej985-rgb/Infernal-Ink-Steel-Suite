@@ -49,7 +49,7 @@ namespace InfernalInkSteelSuite
                 };
 
                 var circle = new Ellipse();
-                circle.SetResourceReference(Shape.FillBrushProperty, "AccentBrush");
+                circle.SetResourceReference(Shape.FillProperty, "AccentBrush");
 
                 var initials = new TextBlock
                 {
@@ -104,11 +104,11 @@ namespace InfernalInkSteelSuite
             // Background Image
             if (!string.IsNullOrWhiteSpace(settings.LoginBackgroundPath) && File.Exists(settings.LoginBackgroundPath))
             {
-                BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(settings.LoginBackgroundPath)));
+                BackgroundImage.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(settings.LoginBackgroundPath)));
             }
             else if (File.Exists(defaultImagePath))
             {
-                BackgroundImage.Source = new BitmapImage(new Uri(Path.GetFullPath(defaultImagePath)));
+                BackgroundImage.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath(defaultImagePath)));
             }
 
             if (!string.IsNullOrWhiteSpace(settings.AccentColor))
