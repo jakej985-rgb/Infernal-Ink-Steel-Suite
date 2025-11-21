@@ -161,23 +161,32 @@
                 <!-- Studio Snapshot -->
                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
                     <!-- KPI Tiles -->
-                    <UniformGrid Columns="3">
-                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
-                            <StackPanel>
-                                <TextBlock Text="Today's Revenue" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                                <TextBlock Text="{Binding TodayRevenue, StringFormat={}{0:C}}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
-                                <TextBlock Text="5 completed · 1 pending" Foreground="{DynamicResource SecondaryTextBrush}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
-                            <StackPanel>
+                    <!-- Today's Revenue -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Today's Revenue" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Text="{Binding TodayRevenue, StringFormat={}{0:C}}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="5 completed · 1 pending" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Combined Weekly Stats -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- This Week's Bookings -->
+                            <StackPanel Grid.Column="0">
                                 <TextBlock Text="This Week's Bookings" Foreground="{DynamicResource SecondaryTextBrush}"/>
                                 <TextBlock Text="{Binding ThisWeekBookings}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
                                 <TextBlock Text="+4 vs last week" Foreground="{DynamicResource SecondaryTextBrush}"/>
                             </StackPanel>
-                        </Border>
-                        <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="5">
-                            <StackPanel>
+
+                            <!-- New Clients -->
+                            <StackPanel Grid.Column="1">
                                 <TextBlock Text="New Clients" Foreground="{DynamicResource SecondaryTextBrush}"/>
                                 <TextBlock Text="{Binding NewClients}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
                                 <TextBlock Text="Tap to open client list" Foreground="{DynamicResource DashboardAccentBrush}" Cursor="Hand">
@@ -186,8 +195,8 @@
                                     </TextBlock.InputBindings>
                                 </TextBlock>
                             </StackPanel>
-                        </Border>
-                    </UniformGrid>
+                        </Grid>
+                    </Border>
 
                     <!-- Action Inbox -->
                     <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
@@ -216,10 +225,21 @@
                     <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
                         <StackPanel>
                             <TextBlock Text="Quick Links" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
-                            <controls:NeonButton Content="Open Full Calendar" Margin="2" Command="{Binding OpenFullCalendarCommand}"/>
-                            <controls:NeonButton Content="View All Clients" Margin="2" Command="{Binding OpenClientsListCommand}"/>
-                            <controls:NeonButton Content="Inventory / Supplies" Margin="2" Command="{Binding OpenInventoryCommand}"/>
-                            <controls:NeonButton Content="Shop Settings &amp; Branding" Margin="2" Command="{Binding OpenShopSettingsCommand}"/>
+
+                            <!-- Primary Actions -->
+                            <WrapPanel Margin="0,0,0,10">
+                                <controls:NeonButton Content="New Appointment (Today)" Margin="2" Command="{Binding CreateNewAppointmentCommand}" IsGlowing="True"/>
+                                <controls:NeonButton Content="Add New Client" Margin="2" Command="{Binding CreateNewClientCommand}" IsGlowing="True"/>
+                                <controls:NeonButton Content="Daily Summary" Margin="2" Command="{Binding OpenDailySummaryCommand}" IsGlowing="True"/>
+                            </WrapPanel>
+
+                            <!-- Secondary Actions -->
+                            <WrapPanel>
+                                <controls:NeonButton Content="Open Full Calendar" Margin="2" Command="{Binding OpenFullCalendarCommand}"/>
+                                <controls:NeonButton Content="View All Clients" Margin="2" Command="{Binding OpenClientsListCommand}"/>
+                                <controls:NeonButton Content="Inventory / Supplies" Margin="2" Command="{Binding OpenInventoryCommand}"/>
+                                <controls:NeonButton Content="Shop Settings &amp; Branding" Margin="2" Command="{Binding OpenShopSettingsCommand}"/>
+                            </WrapPanel>
                         </StackPanel>
                     </Border>
                 </StackPanel>
