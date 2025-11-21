@@ -38,6 +38,19 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        public string ShopName
+        {
+            get => _shopSettings.ShopName;
+            set
+            {
+                if (_shopSettings.ShopName != value)
+                {
+                    _shopSettings.ShopName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public bool IsSpecialMessageEnabled
         {
             get => _shopSettings.IsSpecialMessageEnabled;
@@ -98,6 +111,19 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 if (_shopSettings.PiercingSingle != value)
                 {
                     _shopSettings.PiercingSingle = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public double ShopMinimumRate
+        {
+            get => _shopSettings.ShopMinimumRate;
+            set
+            {
+                if (_shopSettings.ShopMinimumRate != value)
+                {
+                    _shopSettings.ShopMinimumRate = value;
                     OnPropertyChanged();
                 }
             }
