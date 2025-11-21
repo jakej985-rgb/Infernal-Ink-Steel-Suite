@@ -11,6 +11,11 @@ namespace InfernalInkSteelSuite.Views
             DataContext = viewModel;
 
             viewModel.RequestClose += (s, e) => Close();
+
+            Loaded += (s, e) =>
+            {
+                FirstNameTextBox.Focus();
+            };
         }
     }
 }

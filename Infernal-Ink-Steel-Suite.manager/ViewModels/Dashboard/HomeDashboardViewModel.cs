@@ -5,11 +5,17 @@ using System.Windows;
 using System.Windows.Input;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Views.Dashboard;
 
 namespace InfernalInkSteelSuite.ViewModels.Dashboard
 {
     public class HomeDashboardViewModel : BaseViewModel
     {
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IClientRepository _clientRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
+
         // Properties for Data Binding
         public string Greeting { get; private set; }
         public string UserName { get; private set; }
@@ -31,6 +37,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
         public ICommand OpenClientCommand { get; }
         public ICommand CreateNewAppointmentCommand { get; }
         public ICommand CreateNewClientCommand { get; }
+        public ICommand OpenDailySummaryCommand { get; }
         public ICommand OpenFullCalendarCommand { get; }
         public ICommand OpenClientsListCommand { get; }
         public ICommand OpenInventoryCommand { get; }
@@ -39,6 +46,12 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
         public HomeDashboardViewModel(User currentUser, IShopSettingsRepository shopSettingsRepository)
         {
+            _shopSettingsRepository = shopSettingsRepository;
+            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString
+                                   ?? "Data Source=shop_manager.db";
+            _appointmentRepository = new AppointmentRepository(connectionString);
+            _clientRepository = new ClientRepository(connectionString);
+
             // Initialize Collections
             TodayAppointments = [];
             WeekDays = [];
@@ -80,8 +93,35 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             SelectDayCommand = new RelayCommand(SelectDay);
             OpenAppointmentCommand = new RelayCommand(p => Console.WriteLine("Open Appointment"));
             OpenClientCommand = new RelayCommand(p => Console.WriteLine("Open Client"));
-            CreateNewAppointmentCommand = new RelayCommand(p => Console.WriteLine("Create New Appointment"));
-            CreateNewClientCommand = new RelayCommand(p => Console.WriteLine("Create New Client"));
+
+            CreateNewAppointmentCommand = new RelayCommand(p =>
+            {
+                var appointment = new Appointment { DateTime = DateTime.Today };
+                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment);
+                dialog.Owner = Application.Current.MainWindow;
+                if (dialog.ShowDialog() == true)
+                {
+                    // Refresh logic if needed
+                }
+            });
+
+            CreateNewClientCommand = new RelayCommand(p =>
+            {
+                var vm = new AddEditClientViewModel(_clientRepository, new Client());
+                var view = new AddEditClientView(vm);
+                view.Owner = Application.Current.MainWindow;
+                // Assuming we want to show it as a dialog
+                view.ShowDialog();
+            });
+
+            OpenDailySummaryCommand = new RelayCommand(p =>
+            {
+                var vm = new DailySummaryViewModel(_appointmentRepository);
+                var view = new DailySummaryView(vm);
+                view.Owner = Application.Current.MainWindow;
+                view.ShowDialog();
+            });
+
             OpenFullCalendarCommand = new RelayCommand(p => Console.WriteLine("Open Full Calendar"));
             OpenClientsListCommand = new RelayCommand(p => Console.WriteLine("Open Clients List"));
             OpenInventoryCommand = new RelayCommand(p => Console.WriteLine("Open Inventory"));
