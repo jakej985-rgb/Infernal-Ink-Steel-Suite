@@ -7,7 +7,7 @@ namespace InfernalInkSteelSuite.Services
 {
     public static class HolidayThemeService
     {
-        private static readonly Dictionary<ThemeId, (DateTime Start, DateTime End)> HolidayRanges = new();
+        private static readonly Dictionary<ThemeId, (DateTime Start, DateTime End)> HolidayRanges = [];
         private static bool _holidayThemesEnabled;
 
         static HolidayThemeService()

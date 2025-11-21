@@ -9,7 +9,7 @@ namespace InfernalInkSteelSuite.Views
     public partial class ClientsView : UserControl
     {
         private readonly ClientRepository _clientRepo;
-        public ObservableCollection<Client> Clients { get; } = new ObservableCollection<Client>();
+        public ObservableCollection<Client> Clients { get; } = [];
 
         public ClientsView(string connectionString)
         {

@@ -7,14 +7,9 @@ using System.Text;
 
 namespace InfernalInkSteelSuite.Data
 {
-    public class DatabaseManager
+    public class DatabaseManager(string connectionString)
     {
-        private readonly string _connectionString;
-
-        public DatabaseManager(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
+        private readonly string _connectionString = connectionString;
 
         private SqliteConnection GetConnection()
         {
@@ -23,15 +18,13 @@ namespace InfernalInkSteelSuite.Data
 
         public void InitializeDatabase()
         {
-            using (var connection = GetConnection())
-            {
-                connection.Open();
-                CreateTable(connection);
-                EnsureColumnsExist(connection);
-                MigrateShopSettings(connection);
-                EnsureDefaultUserExists(connection);
-                MigrateUserDateFormats(connection);
-            }
+            using var connection = GetConnection();
+            connection.Open();
+            CreateTable(connection);
+            EnsureColumnsExist(connection);
+            MigrateShopSettings(connection);
+            EnsureDefaultUserExists(connection);
+            MigrateUserDateFormats(connection);
         }
 
         private void CreateTable(SqliteConnection connection)
@@ -62,7 +55,7 @@ namespace InfernalInkSteelSuite.Data
             CreateQuotesTable(connection);
         }
 
-        private void CreateQuotesTable(SqliteConnection connection)
+        private static void CreateQuotesTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -93,7 +86,7 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
         }
 
-        private void CreateDocumentsTable(SqliteConnection connection)
+        private static void CreateDocumentsTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -108,7 +101,7 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
         }
 
-        private void CreateShopSettingsTable(SqliteConnection connection)
+        private static void CreateShopSettingsTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -133,7 +126,7 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
         }
 
-        private void CreateUsersTable(SqliteConnection connection)
+        private static void CreateUsersTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -150,7 +143,7 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
         }
 
-        private void CreateClientsTable(SqliteConnection connection)
+        private static void CreateClientsTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -167,7 +160,7 @@ namespace InfernalInkSteelSuite.Data
             command.ExecuteNonQuery();
         }
 
-        private void EnsureColumnsExist(SqliteConnection connection)
+        private static void EnsureColumnsExist(SqliteConnection connection)
         {
             EnsureColumnExists(connection, "appointments", "serviceCategory", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
@@ -178,7 +171,7 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "users", "SpeedFactor", "DOUBLE NOT NULL DEFAULT 1.0");
         }
 
-        private void MigrateShopSettings(SqliteConnection connection)
+        private static void MigrateShopSettings(SqliteConnection connection)
         {
             // First, ensure the new columns exist.
             EnsureColumnExists(connection, "shopsettings", "SpecialMessageText", "TEXT");
@@ -193,7 +186,7 @@ namespace InfernalInkSteelSuite.Data
             }
         }
 
-        private bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)
+        private static bool TableHasColumn(SqliteConnection connection, string tableName, string columnName)
         {
             var command = connection.CreateCommand();
             command.CommandText = $"PRAGMA table_info({tableName})";
@@ -210,7 +203,7 @@ namespace InfernalInkSteelSuite.Data
             return false;
         }
 
-        private void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition)
+        private static void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition)
         {
             if (!TableHasColumn(connection, tableName, columnName))
             {
@@ -219,7 +212,7 @@ namespace InfernalInkSteelSuite.Data
                 command.ExecuteNonQuery();
             }
         }
-        private void EnsureDefaultUserExists(SqliteConnection connection)
+        private static void EnsureDefaultUserExists(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText = "SELECT COUNT(*) FROM users";
@@ -246,19 +239,16 @@ namespace InfernalInkSteelSuite.Data
 
         private static string GetSha256Hash(string input)
         {
-            using (var sha256 = SHA256.Create())
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
+            var builder = new StringBuilder();
+            foreach (var b in bytes)
             {
-                var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
-                var builder = new StringBuilder();
-                foreach (var b in bytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
+                builder.Append(b.ToString("x2"));
             }
+            return builder.ToString();
         }
 
-        private void MigrateUserDateFormats(SqliteConnection connection)
+        private static void MigrateUserDateFormats(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText = "SELECT id, createdAt, updatedAt FROM users";
@@ -299,25 +289,25 @@ namespace InfernalInkSteelSuite.Data
                 }
             }
 
-            foreach (var user in usersToUpdate)
+            foreach (var (id, createdAt, updatedAt) in usersToUpdate)
             {
                 var updateCommand = connection.CreateCommand();
                 var setClauses = new System.Collections.Generic.List<string>();
-                if (user.createdAt != null)
+                if (createdAt != null)
                 {
                     setClauses.Add("createdAt = @createdAt");
-                    updateCommand.Parameters.AddWithValue("@createdAt", user.createdAt);
+                    updateCommand.Parameters.AddWithValue("@createdAt", createdAt);
                 }
-                if (user.updatedAt != null)
+                if (updatedAt != null)
                 {
                     setClauses.Add("updatedAt = @updatedAt");
-                    updateCommand.Parameters.AddWithValue("@updatedAt", user.updatedAt);
+                    updateCommand.Parameters.AddWithValue("@updatedAt", updatedAt);
                 }
 
                 if (setClauses.Count > 0)
                 {
                     updateCommand.CommandText = $"UPDATE users SET {string.Join(", ", setClauses)} WHERE id = @id";
-                    updateCommand.Parameters.AddWithValue("@id", user.id);
+                    updateCommand.Parameters.AddWithValue("@id", id);
                     updateCommand.ExecuteNonQuery();
                 }
             }

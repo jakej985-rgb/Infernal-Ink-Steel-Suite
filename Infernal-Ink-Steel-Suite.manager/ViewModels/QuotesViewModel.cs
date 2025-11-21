@@ -34,7 +34,7 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public ObservableCollection<QuoteDto> Quotes { get; } = new ObservableCollection<QuoteDto>();
+        public ObservableCollection<QuoteDto> Quotes { get; } = [];
 
         public ICommand LoadQuotesCommand { get; }
 
@@ -68,10 +68,10 @@ namespace InfernalInkSteelSuite.ViewModels
             AveragePiercingPrice = CalculateAverage("piercing", completedAppointments);
         }
 
-        private decimal CalculateAverage(string serviceType, List<Appointment> appointments)
+        private static decimal CalculateAverage(string serviceType, List<Appointment> appointments)
         {
             var filteredAppointments = appointments
-                .Where(a => a.ServiceType != null && a.ServiceType.ToLower() == serviceType && a.DurationMinutes > 0);
+                .Where(a => a.ServiceType != null && string.Equals(a.ServiceType, serviceType, System.StringComparison.OrdinalIgnoreCase) && a.DurationMinutes > 0);
 
             if (!filteredAppointments.Any())
             {
