@@ -105,6 +105,15 @@ namespace InfernalInkSteelSuite.Views
 
             Appointment = appointment;
 
+            if (Appointment.ClientId != 0)
+            {
+                var client = _allClients.FirstOrDefault(c => c.Id == Appointment.ClientId);
+                if (client != null)
+                {
+                    ClientSearchText = client.FullName;
+                }
+            }
+            
             InitializeCollections();
             InitializeTimeFromAppointment();
 

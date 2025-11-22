@@ -24,6 +24,7 @@
         <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ClientComboBox" 
                   IsEditable="True" 
                   IsTextSearchEnabled="False"
+                  TextSearch.TextPath="FullName"
                   Text="{Binding ClientSearchText, UpdateSourceTrigger=PropertyChanged}"
                   ItemsSource="{Binding FilteredClients}" 
                   SelectedValue="{Binding Appointment.ClientId}" 
