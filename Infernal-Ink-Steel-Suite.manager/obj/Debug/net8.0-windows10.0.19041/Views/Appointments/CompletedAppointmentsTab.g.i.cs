@@ -60,8 +60,8 @@ namespace InfernalInkSteelSuite.Views.Appointments {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite;V1.0.0.0;component/views/appointments/completedappointm" +
-                    "entstab.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite;component/views/appointments/completedappointmentstab.x" +
+                    "aml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\Views\Appointments\CompletedAppointmentsTab.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
