@@ -61,7 +61,7 @@ namespace InfernalInkSteelSuite.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite;V1.0.0.0;component/views/addeditclientview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Infernal-Ink-Steel-Suite;component/views/addeditclientview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\AddEditClientView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
