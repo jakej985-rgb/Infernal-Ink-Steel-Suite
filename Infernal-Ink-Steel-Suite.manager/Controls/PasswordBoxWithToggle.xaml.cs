@@ -103,5 +103,25 @@ namespace InfernalInkSteelSuite.Controls
                 _isUpdating = false;
             }
         }
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            if (e.OriginalSource == this)
+            {
+                FocusInput();
+            }
+        }
+
+        public void FocusInput()
+        {
+            if (IsPasswordVisible)
+            {
+                TxtBox.Focus();
+            }
+            else
+            {
+                PwdBox.Focus();
+            }
+        }
     }
 }

@@ -136,7 +136,7 @@ namespace InfernalInkSteelSuite
             PasswordEdit.Password = string.Empty;
             UserScrollArea.Visibility = Visibility.Collapsed;
             UserLoginView.Visibility = Visibility.Visible;
-            PasswordEdit.Focus();
+            PasswordEdit.FocusInput();
         }
 
         private void SignIn_Click(object sender, RoutedEventArgs e)
