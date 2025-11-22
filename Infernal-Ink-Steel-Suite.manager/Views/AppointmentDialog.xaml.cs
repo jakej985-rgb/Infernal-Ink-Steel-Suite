@@ -75,6 +75,25 @@ namespace InfernalInkSteelSuite.Views
             }
         }
 
+        private Client? _selectedClient;
+        public Client? SelectedClient
+        {
+            get => _selectedClient;
+            set
+            {
+                if (_selectedClient != value)
+                {
+                    _selectedClient = value;
+                    OnPropertyChanged(nameof(SelectedClient));
+                    if (_selectedClient != null)
+                    {
+                        ClientSearchText = _selectedClient.FullName;
+                        Appointment.ClientId = _selectedClient.Id;
+                    }
+                }
+            }
+        }
+
         public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
         {
             InitializeComponent();
@@ -110,10 +129,10 @@ namespace InfernalInkSteelSuite.Views
                 var client = _allClients.FirstOrDefault(c => c.Id == Appointment.ClientId);
                 if (client != null)
                 {
-                    ClientSearchText = client.FullName;
+                    SelectedClient = client;
                 }
             }
-            
+
             InitializeCollections();
             InitializeTimeFromAppointment();
 

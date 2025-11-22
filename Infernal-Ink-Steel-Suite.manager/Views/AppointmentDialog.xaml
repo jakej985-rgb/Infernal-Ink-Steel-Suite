@@ -27,8 +27,7 @@
                   TextSearch.TextPath="FullName"
                   Text="{Binding ClientSearchText, UpdateSourceTrigger=PropertyChanged}"
                   ItemsSource="{Binding FilteredClients}" 
-                  SelectedValue="{Binding Appointment.ClientId}" 
-                  SelectedValuePath="Id">
+                  SelectedItem="{Binding SelectedClient}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding FullName}"/>

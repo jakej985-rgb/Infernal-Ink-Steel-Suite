@@ -313,7 +313,90 @@
         </Setter>
     </Style>
 
+    <!-- Style for DatePicker -->
+    <Style TargetType="DatePicker">
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePicker">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{StaticResource ControlCornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid x:Name="PART_Root" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <DatePickerTextBox x:Name="PART_TextBox"
+                                               Grid.Column="0"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               Background="Transparent"
+                                               Focusable="{TemplateBinding Focusable}"
+                                               HorizontalContentAlignment="Stretch"
+                                               VerticalContentAlignment="Center"
+                                               SelectionBrush="{DynamicResource AccentBrush}" />
+                            <Button x:Name="PART_Button"
+                                    Grid.Column="1"
+                                    Width="20"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    Focusable="False"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Margin="3,0,3,0">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="Transparent" BorderThickness="0">
+                                            <Path Data="M0,0 L4,4 L8,0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Placement="Bottom"
+                                   PlacementTarget="{Binding ElementName=PART_Root}"
+                                   StaysOpen="False">
+                                <Border Background="{DynamicResource SurfaceAltBrush}"
+                                        BorderBrush="{DynamicResource PrimaryBorderBrush}"
+                                        BorderThickness="1"
+                                        Padding="2">
+                                    <Calendar x:Name="PART_Calendar"
+                                              Style="{StaticResource {x:Type Calendar}}" />
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Style for ComboBox -->
+    <Style x:Key="ComboBoxEditableTextBox" TargetType="TextBox">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="AllowDrop" Value="true"/>
+        <Setter Property="MinWidth" Value="0"/>
+        <Setter Property="MinHeight" Value="0"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource PrimaryTextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Setter Property="Template">
             <Setter.Value>
@@ -416,8 +499,21 @@
                                           Margin="{TemplateBinding Padding}"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <TextBox x:Name="PART_EditableTextBox"
+                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                 IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+                                 Margin="{TemplateBinding Padding}"
+                                 Style="{StaticResource ComboBoxEditableTextBox}"
+                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                 Visibility="Hidden"/>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="IsEditable" Value="true">
+                            <Setter Property="IsTabStop" Value="false"/>
+                            <Setter Property="Padding" Value="2"/>
+                            <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="contentPresenter" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="BorderBrush" Value="{DynamicResource PrimaryHoverBrush}" />
                             <Setter TargetName="toggleButton" Property="Effect">
