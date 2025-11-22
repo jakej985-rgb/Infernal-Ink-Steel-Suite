@@ -33,16 +33,15 @@
         <TextBox Grid.Row="3" Grid.Column="1" x:Name="DurationTextBox" Text="{Binding Appointment.DurationMinutes}"/>
 
         <Label Grid.Row="4" Grid.Column="0" Content="Service Type:"/>
-        <TextBox Grid.Row="4" Grid.Column="1" x:Name="ServiceTypeTextBox" Text="{Binding Appointment.ServiceType}"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" x:Name="ServiceTypeComboBox" ItemsSource="{Binding ServiceTypes}" SelectedItem="{Binding SelectedServiceType}"/>
 
         <Label Grid.Row="5" Grid.Column="0" Content="Service Category:"/>
-        <TextBox Grid.Row="5" Grid.Column="1" x:Name="ServiceCategoryTextBox" Text="{Binding Appointment.ServiceCategory}"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" x:Name="ServiceCategoryComboBox" ItemsSource="{Binding ServiceCategories}" SelectedItem="{Binding Appointment.ServiceCategory}"/>
 
         <Label Grid.Row="6" Grid.Column="0" Content="Price Type:"/>
-        <TextBox Grid.Row="6" Grid.Column="1" x:Name="PriceTypeTextBox" Text="{Binding Appointment.PriceType}"/>
+        <ComboBox Grid.Row="6" Grid.Column="1" x:Name="PriceTypeComboBox" ItemsSource="{Binding PriceTypes}" SelectedItem="{Binding Appointment.PriceType}"/>
 
-        <Label Grid.Row="7" Grid.Column="0" Content="Price Charged:"/>
-        <TextBox Grid.Row="7" Grid.Column="1" x:Name="PriceChargedTextBox" Text="{Binding Appointment.PriceCharged}"/>
+
 
         <Label Grid.Row="8" Grid.Column="0" Content="Notes:"/>
         <TextBox Grid.Row="8" Grid.Column="1" x:Name="NotesTextBox" Text="{Binding Appointment.Notes}" TextWrapping="Wrap" AcceptsReturn="True"/>
