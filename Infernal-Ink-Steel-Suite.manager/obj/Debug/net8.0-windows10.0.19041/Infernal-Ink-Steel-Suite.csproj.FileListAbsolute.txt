@@ -147,7 +147,6 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\PendingAppointmentsTab.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\UpcomingAppointmentsTab.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\ClientsView.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\ClientView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\DashboardWindow.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Dashboard\DailySummaryView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Dashboard\HomeDashboardView.g.cs
@@ -177,7 +176,6 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AddEditClientView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\AppointmentDetailsDialog.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\CalendarTab.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\ClientView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Dashboard\DailySummaryView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Dashboard\HomeDashboardView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\DocumentsView.baml

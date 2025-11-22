@@ -77,12 +77,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
-            var clientViewModel = new ClientViewModel(_clientRepository);
-            var clientView = new ClientView
-            {
-                DataContext = clientViewModel
-            };
-            MainContent.Content = clientView;
+            MainContent.Content = new ClientsView(_connectionString);
         }
 
         private void Appointments_Click(object sender, RoutedEventArgs e)

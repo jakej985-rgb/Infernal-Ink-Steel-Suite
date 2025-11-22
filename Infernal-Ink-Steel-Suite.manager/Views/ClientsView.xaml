@@ -32,6 +32,13 @@
                   GridLinesVisibility="None"
                   MouseDoubleClick="ClientsGrid_MouseDoubleClick"
                   PreviewKeyDown="ClientsGrid_PreviewKeyDown">
+            <DataGrid.Resources>
+                <!-- Style to make all column content use TextBlock (labels) instead of TextBox -->
+                <Style x:Key="ReadOnlyCellTextStyle" TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Padding" Value="4,0"/>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
@@ -56,11 +63,11 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="150" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Visits" Binding="{Binding Visits}" Width="80" IsReadOnly="True"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="150" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Visits" Binding="{Binding Visits}" Width="80" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
