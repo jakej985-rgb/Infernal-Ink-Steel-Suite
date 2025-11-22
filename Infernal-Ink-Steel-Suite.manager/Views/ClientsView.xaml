@@ -24,13 +24,20 @@
                   Grid.Row="1"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
-                  GridLinesVisibility="None">
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeRows="False"
+                  SelectionMode="Single"
+                  GridLinesVisibility="None"
+                  MouseDoubleClick="ClientsGrid_MouseDoubleClick"
+                  PreviewKeyDown="ClientsGrid_PreviewKeyDown">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
-                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*"/>
-                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="150"/>
-                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200"/>
-                <DataGridTextColumn Header="Visits" Binding="{Binding Visits}" Width="80"/>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="150" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Visits" Binding="{Binding Visits}" Width="80" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
