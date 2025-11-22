@@ -1,11 +1,9 @@
 <Window x:Class="InfernalInkSteelSuite.Views.AddEditClientView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
+        xmlns:controls="clr-namespace:InfernalInkSteelSuite.Controls"
         Title="Add/Edit Client" Height="480" Width="560">
     <Window.Resources>
-        <converters:PhotoToImageSourceConverter x:Key="PhotoToImageSourceConverter"/>
-        <converters:PhotoPathToVisibilityConverter x:Key="PhotoPathToVisibilityConverter"/>
         <Style x:Key="OptionalTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource TextBoxStyle}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -88,49 +86,11 @@
             </Grid>
 
             <!-- Avatar Circle (Right Side) -->
-            <Grid Grid.Column="1" Width="120" Height="120" Margin="20,0,0,0" VerticalAlignment="Center">
-                <Grid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Change Photo..." Command="{Binding SelectPhotoCommand}"/>
-                        <MenuItem Header="Clear Photo" Command="{Binding ClearPhotoCommand}"/>
-                    </ContextMenu>
-                </Grid.ContextMenu>
-
-                <!-- Outer Glow Ring -->
-                <Ellipse Stroke="{DynamicResource AccentBrush}" StrokeThickness="3" Margin="2">
-                    <Ellipse.Effect>
-                        <DropShadowEffect Color="{Binding Source={StaticResource AccentBrush}, Path=Color}" 
-                                         BlurRadius="15" 
-                                         ShadowDepth="0" 
-                                         Opacity="0.8"/>
-                    </Ellipse.Effect>
-                </Ellipse>
-
-                <!-- Photo or Placeholder -->
-                <Grid>
-                    <!-- Photo Image (if exists) -->
-                    <Ellipse Margin="5" Visibility="{Binding Client.PhotoPath, Converter={StaticResource PhotoPathToVisibilityConverter}, ConverterParameter=HasPhoto}">
-                        <Ellipse.Fill>
-                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Client.PhotoPath, Converter={StaticResource PhotoToImageSourceConverter}}"/>
-                        </Ellipse.Fill>
-                    </Ellipse>
-
-                    <!-- Placeholder Background (if no photo) -->
-                    <Ellipse Fill="{DynamicResource SurfaceBrush}" Margin="5" Visibility="{Binding Client.PhotoPath, Converter={StaticResource PhotoPathToVisibilityConverter}, ConverterParameter=NoPhoto}"/>
-
-                    <!-- Initials (if no photo) -->
-                    <TextBlock Text="{Binding AvatarInitials}" 
-                              FontSize="36" 
-                              FontWeight="Bold" 
-                              Foreground="{DynamicResource PrimaryTextBrush}"
-                              HorizontalAlignment="Center" 
-                              VerticalAlignment="Center"
-                              Visibility="{Binding Client.PhotoPath, Converter={StaticResource PhotoPathToVisibilityConverter}, ConverterParameter=NoPhoto}"/>
-                </Grid>
-
-                <!-- Click target overlay -->
-                <Ellipse Fill="Transparent" MouseDown="Avatar_MouseDown" Cursor="Hand" ToolTip="Click to change photo, right-click for options"/>
-            </Grid>
+            <controls:GlowAvatar Grid.Column="1" 
+                                Size="120" 
+                                Initials="{Binding AvatarInitials}"
+                                Margin="20,0,0,0" 
+                                VerticalAlignment="Center"/>
         </Grid>
 
         <Label Content="Phone:" Grid.Row="1" Grid.Column="0"/>

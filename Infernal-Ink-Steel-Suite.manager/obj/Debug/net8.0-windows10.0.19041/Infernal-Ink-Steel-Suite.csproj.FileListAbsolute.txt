@@ -127,7 +127,6 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Themes\Thanksgiving.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Themes\Vampire.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Themes\Winter.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AddEditClientView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AppointmentDialog.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AppointmentsView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\CompletedAppointmentsTab.baml
@@ -175,6 +174,7 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Login.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Themes\Base.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AddEditClientView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\AppointmentDetailsDialog.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Appointments\CalendarTab.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\ClientView.baml
