@@ -96,6 +96,13 @@ namespace InfernalInkSteelSuite.Domain
             set { _status = value; OnPropertyChanged(nameof(Status)); }
         }
 
+        private bool _isBlockOff;
+        public bool IsBlockOff
+        {
+            get { return _isBlockOff; }
+            set { _isBlockOff = value; OnPropertyChanged(nameof(IsBlockOff)); }
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Text.Json;
+using System.IO;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -13,6 +15,7 @@ namespace InfernalInkSteelSuite.Views
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
         private List<Client> _allClients;
 
         public Appointment Appointment { get; set; }
@@ -99,6 +102,7 @@ namespace InfernalInkSteelSuite.Views
             InitializeComponent();
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
+            _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
 
             _allClients = _clientRepository.GetAll().ToList();
             FilterClients(); // Initialize FilteredClients
@@ -118,6 +122,7 @@ namespace InfernalInkSteelSuite.Views
             InitializeComponent();
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
+            _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
 
             _allClients = _clientRepository.GetAll().ToList();
             FilterClients();
@@ -267,13 +272,78 @@ namespace InfernalInkSteelSuite.Views
                 var timeOfDay = new TimeSpan(hour, minute, 0);
 
                 Appointment.DateTime = DatePicker.SelectedDate.Value.Date + timeOfDay;
-                _appointmentRepository.Add(Appointment);
+
+                // Validate Shop Hours
+                var endTime = Appointment.DateTime.AddMinutes(Appointment.DurationMinutes);
+                if (!ValidateShopHours(Appointment.DateTime, endTime))
+                {
+                    MessageBox.Show("Selected time is outside of shop hours.", "Shop Closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Check Conflicts
+                if (CheckConflicts(Appointment.DateTime, endTime))
+                {
+                    MessageBox.Show("This time slot conflicts with another appointment or block-off.", "Conflict", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (Appointment.Id == 0)
+                    _appointmentRepository.Add(Appointment);
+                else
+                    _appointmentRepository.Update(Appointment);
+
                 DialogResult = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error saving appointment: {ex.Message}");
             }
+        }
+        private bool ValidateShopHours(DateTime start, DateTime end)
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            if (string.IsNullOrEmpty(settings.ShopHoursJson)) return true;
+
+            List<ShopDaySetting> shopHours;
+            try
+            {
+                shopHours = JsonSerializer.Deserialize<List<ShopDaySetting>>(settings.ShopHoursJson);
+            }
+            catch
+            {
+                return true;
+            }
+
+            if (shopHours == null) return true;
+
+            var daySetting = shopHours.FirstOrDefault(d => d.Day == start.DayOfWeek);
+            if (daySetting == null) return true;
+
+            if (!daySetting.IsOpen) return false;
+
+            var shopStart = start.Date.Add(daySetting.StartTime);
+            var shopEnd = start.Date.Add(daySetting.EndTime);
+
+            return start >= shopStart && end <= shopEnd;
+        }
+
+        private bool CheckConflicts(DateTime start, DateTime end)
+        {
+            var appointments = _appointmentRepository.GetAppointmentsByDate(start.Date);
+            foreach (var appt in appointments)
+            {
+                if (appt.Id == Appointment.Id) continue;
+
+                var apptStart = appt.DateTime;
+                var apptEnd = apptStart.AddMinutes(appt.DurationMinutes);
+
+                if (start < apptEnd && end > apptStart)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

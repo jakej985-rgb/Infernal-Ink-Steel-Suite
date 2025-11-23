@@ -22,7 +22,16 @@ namespace InfernalInkSteelSuite.Domain
         public double ShopMinimumRate { get; set; } = 0.0;
         public bool EnableAutomaticHolidayThemes { get; set; } = false;
         public bool IsSpecialMessageEnabled { get; set; } = true;
+        public string ShopHoursJson { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    }
+
+    public class ShopDaySetting
+    {
+        public DayOfWeek Day { get; set; }
+        public bool IsOpen { get; set; }
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime { get; set; }
     }
 }

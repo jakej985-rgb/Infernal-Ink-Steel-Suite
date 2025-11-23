@@ -5,9 +5,77 @@ using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.Windows;
 using InfernalInkSteelSuite.Views.Settings;
+using System.Text.Json;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
+    public class ShopDaySettingViewModel : BaseViewModel
+    {
+        private bool _isOpen;
+        public bool IsOpen
+        {
+            get => _isOpen;
+            set { _isOpen = value; OnPropertyChanged(); }
+        }
+
+        private DateTime _startTime;
+        public DateTime StartTime
+        {
+            get => _startTime;
+            set { _startTime = value; OnPropertyChanged(); }
+        }
+
+        private DateTime _endTime;
+        public DateTime EndTime
+        {
+            get => _endTime;
+            set { _endTime = value; OnPropertyChanged(); }
+        }
+
+        public DayOfWeek Day { get; set; }
+
+        public string DayName => Day.ToString();
+
+        public ObservableCollection<string> TimeSlots { get; } = new ObservableCollection<string>();
+
+        private string _selectedStartTime;
+        public string SelectedStartTime
+        {
+            get => _selectedStartTime;
+            set
+            {
+                _selectedStartTime = value;
+                if (DateTime.TryParse(value, out var time)) StartTime = time;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _selectedEndTime;
+        public string SelectedEndTime
+        {
+            get => _selectedEndTime;
+            set
+            {
+                _selectedEndTime = value;
+                if (DateTime.TryParse(value, out var time)) EndTime = time;
+                OnPropertyChanged();
+            }
+        }
+
+        public ShopDaySettingViewModel()
+        {
+            // Generate time slots
+            var start = DateTime.Today;
+            for (int i = 0; i < 48; i++)
+            {
+                TimeSlots.Add(start.AddMinutes(i * 30).ToString("hh:mm tt"));
+            }
+        }
+    }
+
     public class AdminTabViewModel : SettingsTabViewModel
     {
         private readonly IUserRepository _userRepository;
@@ -155,6 +223,54 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        public ObservableCollection<ShopDaySettingViewModel> ShopHours { get; set; } = new();
+
+        private void LoadShopHours()
+        {
+            List<ShopDaySetting> settings = null;
+            if (!string.IsNullOrEmpty(_shopSettings.ShopHoursJson))
+            {
+                try
+                {
+                    settings = JsonSerializer.Deserialize<List<ShopDaySetting>>(_shopSettings.ShopHoursJson);
+                }
+                catch { }
+            }
+
+            if (settings == null || settings.Count == 0)
+            {
+                settings = new List<ShopDaySetting>();
+                foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    settings.Add(new ShopDaySetting
+                    {
+                        Day = day,
+                        IsOpen = day != DayOfWeek.Sunday,
+                        StartTime = DateTime.Today.AddHours(10).TimeOfDay,
+                        EndTime = DateTime.Today.AddHours(19).TimeOfDay
+                    });
+                }
+            }
+
+            ShopHours.Clear();
+            // Sort by Monday first
+            var orderedDays = settings.OrderBy(s => s.Day == DayOfWeek.Sunday ? 7 : (int)s.Day);
+
+            foreach (var s in orderedDays)
+            {
+                var vm = new ShopDaySettingViewModel
+                {
+                    Day = s.Day,
+                    IsOpen = s.IsOpen,
+                    StartTime = DateTime.Today.Add(s.StartTime),
+                    EndTime = DateTime.Today.Add(s.EndTime)
+                };
+                vm.SelectedStartTime = vm.StartTime.ToString("hh:mm tt");
+                vm.SelectedEndTime = vm.EndTime.ToString("hh:mm tt");
+                ShopHours.Add(vm);
+            }
+        }
+
         public RelayCommand AddUserCommand { get; }
         public RelayCommand UpdateRoleCommand { get; }
         public RelayCommand ResetPasswordCommand { get; }
@@ -168,6 +284,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             _users = [];
             LoadUsers();
             _shopSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
+            LoadShopHours();
 
             AddUserCommand = new RelayCommand(AddUser);
             UpdateRoleCommand = new RelayCommand(UpdateRole, CanUpdateOrReset);
@@ -230,6 +347,17 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void SaveSettings(object? obj)
         {
+            // Serialize Shop Hours
+            var settings = ShopHours.Select(vm => new ShopDaySetting
+            {
+                Day = vm.Day,
+                IsOpen = vm.IsOpen,
+                StartTime = vm.StartTime.TimeOfDay,
+                EndTime = vm.EndTime.TimeOfDay
+            }).ToList();
+
+            _shopSettings.ShopHoursJson = JsonSerializer.Serialize(settings);
+
             _shopSettingsRepository.SaveSettings(_shopSettings);
             SettingsUpdateService.NotifySettingsChanged();
         }

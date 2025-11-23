@@ -12,14 +12,16 @@ namespace InfernalInkSteelSuite.Repositories
         {
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
+            EnsureColumnExists(connection, "ShopHoursJson", "TEXT");
+
             using var transaction = connection.BeginTransaction();
             var command = connection.CreateCommand();
             command.CommandText = "DELETE FROM shopsettings";
             command.ExecuteNonQuery();
 
             command.CommandText =
-                @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText)
-                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText)";
+                @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText, ShopHoursJson)
+                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText, $ShopHoursJson)";
 
             command.Parameters.AddWithValue("$shopName", settings.ShopName);
             command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
@@ -36,6 +38,7 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("$piercingMulti", settings.PiercingMulti);
             command.Parameters.AddWithValue("$shopMinimumRate", settings.ShopMinimumRate);
             command.Parameters.AddWithValue("$EnableAutomaticHolidayThemes", settings.EnableAutomaticHolidayThemes ? 1 : 0);
+            command.Parameters.AddWithValue("$ShopHoursJson", settings.ShopHoursJson ?? string.Empty);
 
             command.ExecuteNonQuery();
             transaction.Commit();
@@ -46,8 +49,9 @@ namespace InfernalInkSteelSuite.Repositories
             var settings = new ShopSettings();
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
+            EnsureColumnExists(connection, "ShopHoursJson", "TEXT");
             var command = connection.CreateCommand();
-            command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled FROM shopsettings LIMIT 1";
+            command.CommandText = "SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled, ShopHoursJson FROM shopsettings LIMIT 1";
             using var reader = command.ExecuteReader();
             if (reader.Read())
             {
@@ -66,8 +70,34 @@ namespace InfernalInkSteelSuite.Repositories
                 settings.PiercingMulti = Convert.ToDouble(reader["piercingMulti"]);
                 settings.ShopMinimumRate = Convert.ToDouble(reader["shopMinimumRate"]);
                 settings.EnableAutomaticHolidayThemes = Convert.ToInt32(reader["EnableAutomaticHolidayThemes"]) == 1;
+                settings.ShopHoursJson = reader["ShopHoursJson"].ToString() ?? string.Empty;
             }
             return settings;
+        }
+
+        private void EnsureColumnExists(SqliteConnection connection, string columnName, string columnType)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = $"PRAGMA table_info(shopsettings)";
+            bool exists = false;
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (reader["name"].ToString().Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!exists)
+            {
+                var alter = connection.CreateCommand();
+                alter.CommandText = $"ALTER TABLE shopsettings ADD COLUMN {columnName} {columnType} DEFAULT ''";
+                alter.ExecuteNonQuery();
+            }
         }
     }
 }

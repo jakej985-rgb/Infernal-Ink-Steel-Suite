@@ -9,9 +9,37 @@ namespace InfernalInkSteelSuite.Repositories
     {
         private readonly string _connectionString = connectionString;
 
-        private SqliteConnection GetConnection()
+        private SqliteConnection OpenConnection()
         {
-            return new SqliteConnection(_connectionString);
+            var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            EnsureColumnExists(conn, "IsBlockOff", "INTEGER");
+            return conn;
+        }
+
+        private void EnsureColumnExists(SqliteConnection connection, string columnName, string columnType)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = $"PRAGMA table_info(appointments)";
+            bool exists = false;
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (reader["name"].ToString().Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!exists)
+            {
+                var alter = connection.CreateCommand();
+                alter.CommandText = $"ALTER TABLE appointments ADD COLUMN {columnName} {columnType} DEFAULT 0";
+                alter.ExecuteNonQuery();
+            }
         }
 
         private static Appointment MapReaderToAppointment(SqliteDataReader reader)
@@ -30,14 +58,14 @@ namespace InfernalInkSteelSuite.Repositories
                 PriceCharged = reader.GetDecimal(reader.GetOrdinal("priceCharged")),
                 Notes = reader.GetString(reader.GetOrdinal("notes")),
                 Color = reader.GetString(reader.GetOrdinal("color")),
-                Status = reader.GetString(reader.GetOrdinal("status"))
+                Status = reader.GetString(reader.GetOrdinal("status")),
+                IsBlockOff = reader.GetInt32(reader.GetOrdinal("IsBlockOff")) == 1
             };
         }
 
         public Appointment? Get(int id)
         {
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE id = @id";
             cmd.Parameters.AddWithValue("@id", id);
@@ -52,8 +80,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAll()
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments ORDER BY dateTime ASC";
             using var reader = cmd.ExecuteReader();
@@ -66,10 +93,9 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Add(Appointment appointment)
         {
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status)";
+            cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status, IsBlockOff) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status, @IsBlockOff)";
             cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
             cmd.Parameters.AddWithValue("@userId", appointment.UserId);
             cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
@@ -87,10 +113,9 @@ namespace InfernalInkSteelSuite.Repositories
 
         public void Update(Appointment appointment)
         {
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status WHERE id = @id";
+            cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status, IsBlockOff = @IsBlockOff WHERE id = @id";
             cmd.Parameters.AddWithValue("@id", appointment.Id);
             cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
             cmd.Parameters.AddWithValue("@userId", appointment.UserId);
@@ -104,13 +129,13 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@notes", appointment.Notes);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
+            cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
             cmd.ExecuteNonQuery();
         }
 
         public void Delete(int id)
         {
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "DELETE FROM appointments WHERE id = @id";
             cmd.Parameters.AddWithValue("@id", id);
@@ -120,8 +145,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByDate(DateTime date)
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE DATE(dateTime) = @date ORDER BY dateTime ASC";
             cmd.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
@@ -136,8 +160,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByUserId(int userId)
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE userId = @userId ORDER BY dateTime ASC";
             cmd.Parameters.AddWithValue("@userId", userId);
@@ -152,8 +175,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByClientId(int clientId)
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE clientId = @clientId ORDER BY dateTime DESC";
             cmd.Parameters.AddWithValue("@clientId", clientId);
@@ -168,8 +190,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByDateRange(DateTime start, DateTime end)
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE dateTime BETWEEN @start AND @end ORDER BY dateTime ASC";
             cmd.Parameters.AddWithValue("@start", start);
@@ -185,8 +206,7 @@ namespace InfernalInkSteelSuite.Repositories
         public List<Appointment> GetAppointmentsByStatus(string status)
         {
             var appointments = new List<Appointment>();
-            using var conn = GetConnection();
-            conn.Open();
+            using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
             cmd.CommandText = "SELECT * FROM appointments WHERE status = @status ORDER BY dateTime ASC";
             cmd.Parameters.AddWithValue("@status", status);
