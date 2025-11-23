@@ -1,6 +1,6 @@
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.dll
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.dll.config
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.deps.json
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.dll
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.pdb
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\net8.0\InfernalInkSteelSuite.Domain.csproj.AssemblyReference.cache
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Domain\obj\Debug\net8.0\InfernalInkSteelSuite.Domain.GeneratedMSBuildEditorConfig.editorconfig

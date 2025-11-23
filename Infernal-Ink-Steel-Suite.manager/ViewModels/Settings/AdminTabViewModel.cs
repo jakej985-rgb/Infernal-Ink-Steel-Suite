@@ -41,7 +41,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         public ObservableCollection<string> TimeSlots { get; } = new ObservableCollection<string>();
 
-        private string _selectedStartTime;
+        private string _selectedStartTime = "10:00 AM";
         public string SelectedStartTime
         {
             get => _selectedStartTime;
@@ -53,7 +53,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        private string _selectedEndTime;
+        private string _selectedEndTime = "07:00 PM";
         public string SelectedEndTime
         {
             get => _selectedEndTime;
@@ -227,7 +227,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadShopHours()
         {
-            List<ShopDaySetting> settings = null;
+            List<ShopDaySetting>? settings = null;
             if (!string.IsNullOrEmpty(_shopSettings.ShopHoursJson))
             {
                 try
