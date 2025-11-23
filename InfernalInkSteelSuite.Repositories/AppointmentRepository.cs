@@ -26,7 +26,7 @@ namespace InfernalInkSteelSuite.Repositories
             {
                 while (reader.Read())
                 {
-                    if (reader["name"].ToString().Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    if (reader["name"]?.ToString()?.Equals(columnName, StringComparison.OrdinalIgnoreCase) == true)
                     {
                         exists = true;
                         break;

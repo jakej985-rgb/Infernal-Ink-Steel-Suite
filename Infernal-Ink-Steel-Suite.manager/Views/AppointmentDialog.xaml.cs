@@ -305,7 +305,7 @@ namespace InfernalInkSteelSuite.Views
             var settings = _shopSettingsRepository.LoadSettings();
             if (string.IsNullOrEmpty(settings.ShopHoursJson)) return true;
 
-            List<ShopDaySetting> shopHours;
+            List<ShopDaySetting>? shopHours;
             try
             {
                 shopHours = JsonSerializer.Deserialize<List<ShopDaySetting>>(settings.ShopHoursJson);
