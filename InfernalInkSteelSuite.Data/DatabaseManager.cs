@@ -27,7 +27,7 @@ namespace InfernalInkSteelSuite.Data
             MigrateUserDateFormats(connection);
         }
 
-        private void CreateTable(SqliteConnection connection)
+        private static void CreateTable(SqliteConnection connection)
         {
             var command = connection.CreateCommand();
             command.CommandText =
@@ -191,14 +191,12 @@ namespace InfernalInkSteelSuite.Data
         {
             var command = connection.CreateCommand();
             command.CommandText = $"PRAGMA table_info({tableName})";
-            using (var reader = command.ExecuteReader())
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                while (reader.Read())
+                if (reader.GetString(1) == columnName)
                 {
-                    if (reader.GetString(1) == columnName)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
             return false;

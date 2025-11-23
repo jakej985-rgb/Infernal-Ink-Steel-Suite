@@ -97,8 +97,10 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             CreateNewAppointmentCommand = new RelayCommand(p =>
             {
                 var appointment = new Appointment { DateTime = DateTime.Today };
-                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment);
-                dialog.Owner = Application.Current.MainWindow;
+                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment)
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 if (dialog.ShowDialog() == true)
                 {
                     // Refresh logic if needed
@@ -108,8 +110,10 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             CreateNewClientCommand = new RelayCommand(p =>
             {
                 var vm = new AddEditClientViewModel(_clientRepository, new Client());
-                var view = new AddEditClientView(vm);
-                view.Owner = Application.Current.MainWindow;
+                var view = new AddEditClientView(vm)
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 // Assuming we want to show it as a dialog
                 view.ShowDialog();
             });
@@ -117,8 +121,10 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             OpenDailySummaryCommand = new RelayCommand(p =>
             {
                 var vm = new DailySummaryViewModel(_appointmentRepository);
-                var view = new DailySummaryView(vm);
-                view.Owner = Application.Current.MainWindow;
+                var view = new DailySummaryView(vm)
+                {
+                    Owner = Application.Current.MainWindow
+                };
                 view.ShowDialog();
             });
 

@@ -7,8 +7,8 @@ namespace InfernalInkSteelSuite.Converters
 {
     public class EyeIconConverter : IValueConverter
     {
-        private static readonly BitmapImage EyeOpen = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/eye_open.png", UriKind.Absolute));
-        private static readonly BitmapImage EyeClosed = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/eye_closed.png", UriKind.Absolute));
+        private static readonly BitmapImage EyeOpen = new(new Uri("pack://application:,,,/Assets/Images/eye_open.png", UriKind.Absolute));
+        private static readonly BitmapImage EyeClosed = new(new Uri("pack://application:,,,/Assets/Images/eye_closed.png", UriKind.Absolute));
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

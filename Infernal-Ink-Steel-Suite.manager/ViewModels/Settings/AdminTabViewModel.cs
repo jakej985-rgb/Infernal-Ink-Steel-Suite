@@ -39,7 +39,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         public string DayName => Day.ToString();
 
-        public ObservableCollection<string> TimeSlots { get; } = new ObservableCollection<string>();
+        public ObservableCollection<string> TimeSlots { get; } = [];
 
         private string _selectedStartTime = "10:00 AM";
         public string SelectedStartTime
@@ -223,7 +223,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public ObservableCollection<ShopDaySettingViewModel> ShopHours { get; set; } = new();
+        public ObservableCollection<ShopDaySettingViewModel> ShopHours { get; set; } = [];
 
         private void LoadShopHours()
         {
@@ -239,7 +239,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
             if (settings == null || settings.Count == 0)
             {
-                settings = new List<ShopDaySetting>();
+                settings = [];
                 foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
                 {
                     settings.Add(new ShopDaySetting

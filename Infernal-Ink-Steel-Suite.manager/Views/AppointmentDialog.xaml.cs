@@ -15,19 +15,19 @@ namespace InfernalInkSteelSuite.Views
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
-        private readonly IShopSettingsRepository _shopSettingsRepository;
-        private List<Client> _allClients;
+        private readonly ShopSettingsRepository _shopSettingsRepository;
+        private readonly List<Client> _allClients;
 
         public Appointment Appointment { get; set; }
 
-        public ObservableCollection<string> ServiceTypes { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<string> ServiceCategories { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<string> PriceTypes { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<string> ServiceTypes { get; set; } = [];
+        public ObservableCollection<string> ServiceCategories { get; set; } = [];
+        public ObservableCollection<string> PriceTypes { get; set; } = [];
 
         // Time Properties
-        public ObservableCollection<int> Hours { get; set; } = new ObservableCollection<int>();
-        public ObservableCollection<string> Minutes { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<string> AmPmOptions { get; set; } = new ObservableCollection<string> { "AM", "PM" };
+        public ObservableCollection<int> Hours { get; set; } = [];
+        public ObservableCollection<string> Minutes { get; set; } = [];
+        public ObservableCollection<string> AmPmOptions { get; set; } = ["AM", "PM"];
 
         private int _selectedHour;
         public int SelectedHour
@@ -63,7 +63,7 @@ namespace InfernalInkSteelSuite.Views
             }
         }
 
-        public ObservableCollection<Client> FilteredClients { get; set; } = new ObservableCollection<Client>();
+        public ObservableCollection<Client> FilteredClients { get; set; } = [];
 
         private string _selectedServiceType = string.Empty;
         public string SelectedServiceType
@@ -104,12 +104,14 @@ namespace InfernalInkSteelSuite.Views
             _clientRepository = clientRepository;
             _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
 
-            _allClients = _clientRepository.GetAll().ToList();
+            _allClients = [.. _clientRepository.GetAll()];
             FilterClients(); // Initialize FilteredClients
 
-            Appointment = new Appointment();
-            // Default to today if new
-            Appointment.DateTime = DateTime.Today;
+            Appointment = new Appointment
+            {
+                // Default to today if new
+                DateTime = DateTime.Today
+            };
 
             InitializeCollections();
             InitializeTimeDefaults();
@@ -124,7 +126,7 @@ namespace InfernalInkSteelSuite.Views
             _clientRepository = clientRepository;
             _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
 
-            _allClients = _clientRepository.GetAll().ToList();
+            _allClients = [.. _clientRepository.GetAll()];
             FilterClients();
 
             Appointment = appointment;
@@ -157,8 +159,8 @@ namespace InfernalInkSteelSuite.Views
 
         private void InitializeCollections()
         {
-            ServiceTypes = new ObservableCollection<string> { "Tattoo", "Piercing" };
-            PriceTypes = new ObservableCollection<string> { "Regular", "Promo" };
+            ServiceTypes = ["Tattoo", "Piercing"];
+            PriceTypes = ["Regular", "Promo"];
 
             for (int i = 1; i <= 12; i++) Hours.Add(i);
             Minutes.Clear();
@@ -204,9 +206,9 @@ namespace InfernalInkSteelSuite.Views
             {
                 var search = ClientSearchText.ToLower();
                 var matches = _allClients.Where(c =>
-                    c.FirstName.ToLower().Contains(search) ||
-                    c.LastName.ToLower().Contains(search) ||
-                    c.FullName.ToLower().Contains(search));
+                    c.FirstName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    c.LastName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                    c.FullName.Contains(search, StringComparison.OrdinalIgnoreCase));
 
                 foreach (var client in matches) FilteredClients.Add(client);
             }

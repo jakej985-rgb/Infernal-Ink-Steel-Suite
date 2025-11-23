@@ -75,7 +75,7 @@ namespace InfernalInkSteelSuite.Repositories
             return settings;
         }
 
-        private void EnsureColumnExists(SqliteConnection connection, string columnName, string columnType)
+        private static void EnsureColumnExists(SqliteConnection connection, string columnName, string columnType)
         {
             var command = connection.CreateCommand();
             command.CommandText = $"PRAGMA table_info(shopsettings)";
