@@ -14,10 +14,13 @@ namespace InfernalInkSteelSuite.Converters
             {
                 return status.ToLower() switch
                 {
-                    "confirmed" => new SolidColorBrush(Colors.Green),
-                    "pending" => new SolidColorBrush(Colors.Orange),
-                    "cancelled" => new SolidColorBrush(Colors.Red),
-                    _ => new SolidColorBrush(Colors.Gray),
+                    "scheduled" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50")), // Green
+                    "confirmed" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4CAF50")), // Green
+                    "pending" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFC107")),   // Amber
+                    "completed" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9E9E9E")), // Gray
+                    "cancelled" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336")), // Red
+                    "no show" => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F44336")),   // Red
+                    _ => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#2196F3")),           // Blue
                 };
             }
             return Brushes.Transparent;

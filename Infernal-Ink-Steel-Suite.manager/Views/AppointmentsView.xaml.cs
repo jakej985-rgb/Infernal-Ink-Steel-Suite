@@ -18,12 +18,12 @@ namespace InfernalInkSteelSuite.Views
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
 
-            UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository);
-            PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository);
-            CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository);
+            UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository, _clientRepository);
+            PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository, _clientRepository);
+            CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository, _clientRepository);
             var calendarTab = new CalendarTab
             {
-                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository)
+                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository, _clientRepository)
             };
             CalendarTab.Content = calendarTab;
 

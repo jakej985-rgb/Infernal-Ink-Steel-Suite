@@ -6,21 +6,26 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using InfernalInkSteelSuite.Views.Appointments;
+using InfernalInkSteelSuite.Views;
 
 namespace InfernalInkSteelSuite.ViewModels.Appointments
 {
     public class CalendarTabViewModel : BaseViewModel
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IClientRepository _clientRepository;
         private DateTime _currentDate = DateTime.Today;
         private ObservableCollection<CalendarDay> _days = [];
 
-        public CalendarTabViewModel(IAppointmentRepository appointmentRepository)
+        public CalendarTabViewModel(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
         {
             _appointmentRepository = appointmentRepository;
+            _clientRepository = clientRepository;
             PreviousMonthCommand = new RelayCommand(_ => PreviousMonth());
             NextMonthCommand = new RelayCommand(_ => NextMonth());
+            TodayCommand = new RelayCommand(_ => GoToToday());
             DayClickedCommand = new RelayCommand(DayClicked);
+            AddAppointmentCommand = new RelayCommand(AddAppointment);
             GenerateCalendar();
         }
 
@@ -50,7 +55,9 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
 
         public ICommand PreviousMonthCommand { get; }
         public ICommand NextMonthCommand { get; }
+        public ICommand TodayCommand { get; }
         public ICommand DayClickedCommand { get; }
+        public ICommand AddAppointmentCommand { get; }
 
         private void PreviousMonth()
         {
@@ -60,6 +67,28 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
         private void NextMonth()
         {
             CurrentDate = CurrentDate.AddMonths(1);
+        }
+
+        private void GoToToday()
+        {
+            CurrentDate = DateTime.Today;
+        }
+
+        private void AddAppointment(object? parameter)
+        {
+            if (parameter is DateTime date)
+            {
+                var newAppointment = new Appointment
+                {
+                    DateTime = date.Date.AddHours(12) // Default to noon
+                };
+                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, newAppointment);
+
+                if (dialog.ShowDialog() == true)
+                {
+                    GenerateCalendar();
+                }
+            }
         }
 
         private void DayClicked(object? parameter)

@@ -1,6 +1,6 @@
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Repositories.dll
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Repositories.dll.config
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Repositories.deps.json
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Repositories.dll
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Repositories.pdb
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Data.dll
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\InfernalInkSteelSuite.Repositories\bin\Debug\net8.0\InfernalInkSteelSuite.Domain.dll
