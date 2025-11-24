@@ -77,12 +77,13 @@
                 <DataTemplate>
                     <Button Command="{Binding DataContext.DayClickedCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                             CommandParameter="{Binding}"
-                            Style="{StaticResource DayButtonStyle}">
+                            Style="{StaticResource DayButtonStyle}"
+                            Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Add Appointment" 
-                                          Command="{Binding DataContext.AddAppointmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                          CommandParameter="{Binding Date}"/>
+                                          Command="{Binding PlacementTarget.Tag.AddAppointmentCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                          CommandParameter="{Binding PlacementTarget.DataContext.Date, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                         <StackPanel>
