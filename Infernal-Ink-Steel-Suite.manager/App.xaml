@@ -6,12 +6,24 @@
         <!-- Base styles & shared resources -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+<Application x:Class="InfernalInkSteelSuite.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Login.xaml">
+    <Application.Resources>
+        <!-- Base styles & shared resources -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Base.xaml" />
                 <!-- ThemeManager will add Dark/Light/InfernalNeon at runtime -->
             </ResourceDictionary.MergedDictionaries>
             
             <!-- Global Converters -->
             <converters:EyeIconConverter x:Key="EyeIconConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
+            <converters:HeaderIconConverter x:Key="HeaderIconConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
+            <converters:ImagePreviewConverter x:Key="ImagePreviewConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
+            <converters:ValidationResultConverter x:Key="ValidationResultConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
+            <converters:FileSizeConverter x:Key="FileSizeConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

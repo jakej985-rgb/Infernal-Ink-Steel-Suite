@@ -15,6 +15,16 @@ namespace InfernalInkSteelSuite.Domain
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        // New Properties - Phase 1
+        public DateTime? LastLoginAt { get; set; } = null;
+        public bool IsActive { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; } = null;
+        public string Department { get; set; } = string.Empty;
+        public decimal CommissionRate { get; set; } = 0m;
+        public int FontSize { get; set; } = 14;
+        public string KeyboardShortcutsJson { get; set; } = string.Empty;
+
         public bool IsAdmin()
         {
             return string.Equals(Role?.Trim(), "Admin", StringComparison.OrdinalIgnoreCase);

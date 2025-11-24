@@ -23,6 +23,18 @@ namespace InfernalInkSteelSuite.Domain
         public bool EnableAutomaticHolidayThemes { get; set; } = false;
         public bool IsSpecialMessageEnabled { get; set; } = true;
         public string ShopHoursJson { get; set; } = string.Empty;
+
+        // New Settings - Phase 1
+        public double TaxRate { get; set; } = 0.0;
+        public string DepositType { get; set; } = "Percentage"; // "Percentage" or "Fixed"
+        public double DepositAmount { get; set; } = 0.0;
+        public int BookingBufferMinutes { get; set; } = 0;
+        public string CancellationPolicy { get; set; } = string.Empty;
+        public string AppointmentDurationPresetsJson { get; set; } = string.Empty;
+        public string SpecialHoursJson { get; set; } = string.Empty;
+        public string NotificationSettingsJson { get; set; } = string.Empty;
+        public string BackupSettingsJson { get; set; } = string.Empty;
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }

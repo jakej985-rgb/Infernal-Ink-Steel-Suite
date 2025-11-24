@@ -10,13 +10,15 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public class UserRepository(string connectionString) : IUserRepository
     {
-        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor";
+        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor, LastLoginAt, IsActive, IsDeleted, DeletedAt, Department, CommissionRate, FontSize, KeyboardShortcutsJson";
         private readonly string _connectionString = connectionString;
 
         private static User MapReaderToUser(SqliteDataReader reader)
         {
             var createdAtString = reader.IsDBNull(6) ? null : reader.GetString(6);
             var updatedAtString = reader.IsDBNull(7) ? null : reader.GetString(7);
+            var lastLoginAtString = reader.IsDBNull(10) ? null : reader.GetString(10);
+            var deletedAtString = reader.IsDBNull(13) ? null : reader.GetString(13);
 
             return new User
             {
@@ -29,7 +31,15 @@ namespace InfernalInkSteelSuite.Repositories
                 CreatedAt = string.IsNullOrEmpty(createdAtString) ? DateTime.MinValue : DateTime.Parse(createdAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                 UpdatedAt = string.IsNullOrEmpty(updatedAtString) ? DateTime.MinValue : DateTime.Parse(updatedAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
                 HourlyRate = reader.GetDecimal(8),
-                SpeedFactor = reader.GetDouble(9)
+                SpeedFactor = reader.GetDouble(9),
+                LastLoginAt = string.IsNullOrEmpty(lastLoginAtString) ? null : DateTime.Parse(lastLoginAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                IsActive = !reader.IsDBNull(11) && reader.GetInt32(11) == 1,
+                IsDeleted = !reader.IsDBNull(12) && reader.GetInt32(12) == 1,
+                DeletedAt = string.IsNullOrEmpty(deletedAtString) ? null : DateTime.Parse(deletedAtString, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
+                Department = reader.IsDBNull(14) ? string.Empty : reader.GetString(14),
+                CommissionRate = reader.IsDBNull(15) ? 0m : reader.GetDecimal(15),
+                FontSize = reader.IsDBNull(16) ? 14 : reader.GetInt32(16),
+                KeyboardShortcutsJson = reader.IsDBNull(17) ? string.Empty : reader.GetString(17)
             };
         }
 
@@ -209,6 +219,17 @@ namespace InfernalInkSteelSuite.Repositories
             var users = new List<User>();
             using var connection = new SqliteConnection(_connectionString);
             connection.Open();
+
+            // Ensure new columns exist
+            EnsureColumnExists(connection, "LastLoginAt", "TEXT");
+            EnsureColumnExists(connection, "IsActive", "INTEGER", "1");
+            EnsureColumnExists(connection, "IsDeleted", "INTEGER", "0");
+            EnsureColumnExists(connection, "DeletedAt", "TEXT");
+            EnsureColumnExists(connection, "Department", "TEXT", "''");
+            EnsureColumnExists(connection, "CommissionRate", "REAL", "0");
+            EnsureColumnExists(connection, "FontSize", "INTEGER", "14");
+            EnsureColumnExists(connection, "KeyboardShortcutsJson", "TEXT", "''");
+
             var command = connection.CreateCommand();
             command.CommandText = $"SELECT {UserColumns} FROM users";
 
@@ -260,6 +281,98 @@ namespace InfernalInkSteelSuite.Repositories
                 return DateTime.MinValue;
             }
             return parsedDate;
+        }
+
+        // New methods for Phase 1
+        public List<User> GetActiveUsers()
+        {
+            var users = new List<User>();
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+
+            EnsureColumnExists(connection, "IsActive", "INTEGER", "1");
+            EnsureColumnExists(connection, "IsDeleted", "INTEGER", "0");
+
+            var command = connection.CreateCommand();
+            command.CommandText = $"SELECT {UserColumns} FROM users WHERE IsActive = 1 AND IsDeleted = 0";
+
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                users.Add(MapReaderToUser(reader));
+            }
+            return users;
+        }
+
+        public bool UpdateLastLogin(string username)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "LastLogin At", "TEXT");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET LastLoginAt = @lastLoginAt, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@lastLoginAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool SetUserActiveStatus(string username, bool isActive)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "IsActive", "INTEGER", "1");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET IsActive = @isActive, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@isActive", isActive ? 1 : 0);
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool SoftDeleteUser(string username)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "IsDeleted", "INTEGER", "0");
+            EnsureColumnExists(connection, "DeletedAt", "TEXT");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET IsDeleted = 1, DeletedAt = @deletedAt, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@deletedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        private static void EnsureColumnExists(SqliteConnection connection, string columnName, string columnType, string defaultValue = "''")
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "PRAGMA table_info(users)";
+            bool exists = false;
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    if (reader["name"]?.ToString()?.Equals(columnName, StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!exists)
+            {
+                var alter = connection.CreateCommand();
+                alter.CommandText = $"ALTER TABLE users ADD COLUMN {columnName} {columnType} DEFAULT {defaultValue}";
+                alter.ExecuteNonQuery();
+            }
         }
     }
 }
