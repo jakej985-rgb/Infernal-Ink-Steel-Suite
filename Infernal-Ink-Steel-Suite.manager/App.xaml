@@ -6,14 +6,6 @@
         <!-- Base styles & shared resources -->
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-<Application x:Class="InfernalInkSteelSuite.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Login.xaml">
-    <Application.Resources>
-        <!-- Base styles & shared resources -->
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/Base.xaml" />
                 <!-- ThemeManager will add Dark/Light/InfernalNeon at runtime -->
             </ResourceDictionary.MergedDictionaries>

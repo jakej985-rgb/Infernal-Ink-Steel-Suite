@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.Converters
                     var fileInfo = new FileInfo(path);
                     long bytes = fileInfo.Length;
 
-                    string[] sizes = { "B", "KB", "MB", "GB" };
+                    string[] sizes = ["B", "KB", "MB", "GB"];
                     double len = bytes;
                     int order = 0;
 

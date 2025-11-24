@@ -7,16 +7,16 @@ namespace InfernalInkSteelSuite.Services
 {
     public class SettingsExportService
     {
+        private static readonly JsonSerializerOptions _options = new()
+        {
+            WriteIndented = true
+        };
+
         public static bool ExportSettings(ShopSettings settings, string filePath)
         {
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                };
-
-                var json = JsonSerializer.Serialize(settings, options);
+                var json = JsonSerializer.Serialize(settings, _options);
                 File.WriteAllText(filePath, json);
                 return true;
             }
