@@ -107,7 +107,6 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
                 <Button Content="Reset to Role Defaults" 
                         Command="{Binding ResetPermissionsCommand}"
-                        Style="{StaticResource OutlinedButtonStyle}"
                         Margin="0,0,10,0"/>
                 <Button Content="Save Settings" 
                         Command="{Binding SaveUserSettingsCommand}"

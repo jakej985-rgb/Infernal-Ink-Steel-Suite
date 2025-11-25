@@ -230,6 +230,7 @@ namespace InfernalInkSteelSuite.Repositories
             EnsureColumnExists(connection, "CommissionRate", "REAL", "0");
             EnsureColumnExists(connection, "FontSize", "INTEGER", "14");
             EnsureColumnExists(connection, "KeyboardShortcutsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "PermissionsJson", "TEXT", "''");
 
             var command = connection.CreateCommand();
             command.CommandText = $"SELECT {UserColumns} FROM users";

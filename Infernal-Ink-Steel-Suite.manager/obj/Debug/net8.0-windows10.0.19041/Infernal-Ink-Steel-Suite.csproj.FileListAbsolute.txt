@@ -133,6 +133,9 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\DashboardWindow.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\EditAppointmentDialog.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\HomeView.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AccessibilityTabView.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\BackupDataTabView.baml
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\NotificationSettingsTabView.baml
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Controls\PasswordBoxWithToggle.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Login.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\AddEditClientView.g.cs
@@ -153,12 +156,15 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\QuoteCreateView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\QuotesView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\SettingsView.g.cs
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AccessibilityTabView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AddUserDialog.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AdminTabView.g.cs
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\BackupDataTabView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\ChangeAvatarDialog.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\ChangePasswordDialog.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\LinkedAccountsTabView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\ManagerTabView.g.cs
+C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\NotificationSettingsTabView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\ResetPasswordDialog.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\UserTabView.g.cs
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\StatsView.g.cs
@@ -205,9 +211,3 @@ C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suit
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.pdb
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Infernal-Ink-Steel-Suite.genruntimeconfig.cache
 C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\ref\Infernal-Ink-Steel-Suite.dll
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AccessibilityTabView.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\BackupDataTabView.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\NotificationSettingsTabView.baml
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\AccessibilityTabView.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\BackupDataTabView.g.cs
-C:\Users\jakej\Documents\GitHub\Infernal-Ink-Steel-Suite\Infernal-Ink-Steel-Suite.manager\obj\Debug\net8.0-windows10.0.19041\Views\Settings\NotificationSettingsTabView.g.cs

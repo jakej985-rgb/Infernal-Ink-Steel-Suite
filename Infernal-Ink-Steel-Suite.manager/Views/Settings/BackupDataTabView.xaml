@@ -24,7 +24,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Column="0" Text="{Binding BackupPath}" IsReadOnly="True" Margin="0,0,10,0"/>
-                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseBackupPathCommand}" Style="{StaticResource OutlinedButtonStyle}"/>
+                        <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseBackupPathCommand}"/>
                     </Grid>
 
                     <CheckBox Content="Enable Automatic Backups" IsChecked="{Binding AutoBackupEnabled}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
@@ -46,7 +46,7 @@
                 </Expander.Header>
                 <StackPanel Margin="10">
                     <Button Content="Create Backup Now" Command="{Binding CreateBackupCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,5"/>
-                    <Button Content="Export Data (JSON/CSV)" Command="{Binding ExportDataCommand}" Style="{StaticResource OutlinedButtonStyle}" Margin="0,5"/>
+                    <Button Content="Export Data (JSON/CSV)" Command="{Binding ExportDataCommand}" Margin="0,5"/>
                 </StackPanel>
             </Expander>
 
