@@ -34,6 +34,7 @@ namespace InfernalInkSteelSuite.Domain
         public string SpecialHoursJson { get; set; } = string.Empty;
         public string NotificationSettingsJson { get; set; } = string.Empty;
         public string BackupSettingsJson { get; set; } = string.Empty;
+        public string LinkedAccountsJson { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

@@ -57,7 +57,7 @@
                         <Label Content="Department" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
                         <ComboBox ItemsSource="{Binding Departments}" 
                                   SelectedItem="{Binding SelectedDepartment}"
-                                  IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                                  IsEnabled="{Binding HasUserSelected}"
                                   Margin="0,0,0,10"/>
                     </StackPanel>
 
@@ -65,7 +65,7 @@
                     <StackPanel Grid.Column="2">
                         <Label Content="Commission Rate (%)" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
                         <TextBox Text="{Binding CommissionRate, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                                 IsEnabled="{Binding HasUserSelected}"
                                  Margin="0,0,0,10"/>
                     </StackPanel>
                 </Grid>
@@ -82,22 +82,22 @@
                 <StackPanel Margin="10">
                     <CheckBox Content="Can View Reports" 
                               IsChecked="{Binding CanViewReports}"
-                              IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                              IsEnabled="{Binding HasUserSelected}"
                               Foreground="{DynamicResource TextColor}"
                               Margin="0,5"/>
                     <CheckBox Content="Can Manage Schedule" 
                               IsChecked="{Binding CanManageSchedule}"
-                              IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                              IsEnabled="{Binding HasUserSelected}"
                               Foreground="{DynamicResource TextColor}"
                               Margin="0,5"/>
                     <CheckBox Content="Can View Financials" 
                               IsChecked="{Binding CanViewFinancials}"
-                              IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                              IsEnabled="{Binding HasUserSelected}"
                               Foreground="{DynamicResource TextColor}"
                               Margin="0,5"/>
                     <CheckBox Content="Can Manage Inventory" 
                               IsChecked="{Binding CanManageInventory}"
-                              IsEnabled="{Binding SelectedUser, Converter={StaticResource NullToBooleanConverter}}"
+                              IsEnabled="{Binding HasUserSelected}"
                               Foreground="{DynamicResource TextColor}"
                               Margin="0,5"/>
                 </StackPanel>

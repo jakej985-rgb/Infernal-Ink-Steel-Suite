@@ -41,9 +41,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             {
                 _selectedUser = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(HasUserSelected));
                 LoadUserSettings();
             }
         }
+
+        public bool HasUserSelected => SelectedUser != null;
 
         private ObservableCollection<string> _departments = [];
         public ObservableCollection<string> Departments

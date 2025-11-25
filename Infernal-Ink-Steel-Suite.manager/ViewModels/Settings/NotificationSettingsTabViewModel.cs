@@ -1,8 +1,18 @@
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Domain;
 
+using System.Text.Json;
+
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
+    public class NotificationSettings
+    {
+        public bool EmailAppointmentReminders { get; set; }
+        public bool SmsAppointmentReminders { get; set; }
+        public bool DesktopNotifications { get; set; }
+        public string ReminderTiming { get; set; } = "1 day before";
+    }
+
     public class NotificationSettingsTabViewModel : SettingsTabViewModel
     {
         private readonly IShopSettingsRepository _shopSettingsRepository;
@@ -73,17 +83,44 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadSettings()
         {
-            // Load from shop settings - these would be stored in JSON
-            // For now, using defaults
+            var settings = _shopSettingsRepository.LoadSettings();
+            if (!string.IsNullOrEmpty(settings.NotificationSettingsJson))
+            {
+                try
+                {
+                    var notificationSettings = JsonSerializer.Deserialize<NotificationSettings>(settings.NotificationSettingsJson);
+                    if (notificationSettings != null)
+                    {
+                        EmailAppointmentReminders = notificationSettings.EmailAppointmentReminders;
+                        SmsAppointmentReminders = notificationSettings.SmsAppointmentReminders;
+                        DesktopNotifications = notificationSettings.DesktopNotifications;
+                        ReminderTiming = notificationSettings.ReminderTiming;
+                        return;
+                    }
+                }
+                catch { }
+            }
+
+            // Defaults if load fails or empty
             EmailAppointmentReminders = true;
             SmsAppointmentReminders = false;
             DesktopNotifications = true;
+            ReminderTiming = "1 day before";
         }
 
         private void SaveSettings(object? parameter)
         {
-            // Save to shop settings
-            // Would serialize these to JSON and store in NotificationSettingsJson
+            var notificationSettings = new NotificationSettings
+            {
+                EmailAppointmentReminders = EmailAppointmentReminders,
+                SmsAppointmentReminders = SmsAppointmentReminders,
+                DesktopNotifications = DesktopNotifications,
+                ReminderTiming = ReminderTiming
+            };
+
+            var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
+            latestSettings.NotificationSettingsJson = JsonSerializer.Serialize(notificationSettings);
+            _shopSettingsRepository.SaveSettings(latestSettings);
         }
     }
 }

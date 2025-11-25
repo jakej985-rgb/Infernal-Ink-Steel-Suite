@@ -2,8 +2,19 @@ using InfernalInkSteelSuite.Repositories;
 using Microsoft.Win32;
 using System.Windows;
 
+using InfernalInkSteelSuite.Domain;
+using System.Text.Json;
+
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
+    public class BackupSettings
+    {
+        public string BackupPath { get; set; } = @"C:\Backups\InfernalInk";
+        public bool AutoBackupEnabled { get; set; }
+        public string BackupFrequency { get; set; } = "Daily";
+        public int RetentionDays { get; set; } = 30;
+    }
+
     public class BackupDataTabViewModel : SettingsTabViewModel
     {
         private readonly IShopSettingsRepository _shopSettingsRepository;
@@ -69,6 +80,34 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             CreateBackupCommand = new RelayCommand(CreateBackup);
             ExportDataCommand = new RelayCommand(ExportData);
             SaveBackupSettingsCommand = new RelayCommand(SaveSettings);
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            if (!string.IsNullOrEmpty(settings.BackupSettingsJson))
+            {
+                try
+                {
+                    var backupSettings = JsonSerializer.Deserialize<BackupSettings>(settings.BackupSettingsJson);
+                    if (backupSettings != null)
+                    {
+                        BackupPath = backupSettings.BackupPath;
+                        AutoBackupEnabled = backupSettings.AutoBackupEnabled;
+                        BackupFrequency = backupSettings.BackupFrequency;
+                        RetentionDays = backupSettings.RetentionDays;
+                        return;
+                    }
+                }
+                catch { }
+            }
+
+            // Defaults
+            BackupPath = @"C:\Backups\InfernalInk";
+            AutoBackupEnabled = false;
+            BackupFrequency = "Daily";
+            RetentionDays = 30;
         }
 
         private void BrowseBackupPath(object? parameter)
@@ -105,7 +144,17 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void SaveSettings(object? parameter)
         {
-            // Save backup settings
+            var backupSettings = new BackupSettings
+            {
+                BackupPath = BackupPath,
+                AutoBackupEnabled = AutoBackupEnabled,
+                BackupFrequency = BackupFrequency,
+                RetentionDays = RetentionDays
+            };
+
+            var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
+            latestSettings.BackupSettingsJson = JsonSerializer.Serialize(backupSettings);
+            _shopSettingsRepository.SaveSettings(latestSettings);
         }
     }
 }

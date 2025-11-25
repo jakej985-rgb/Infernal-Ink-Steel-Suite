@@ -728,6 +728,25 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void SaveSettings(object? obj)
         {
+            // Reload latest settings to ensure we don't overwrite changes from other tabs
+            var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
+
+            // Apply Admin Tab changes to the latest settings
+            latestSettings.ShopName = ShopName;
+            latestSettings.IsSpecialMessageEnabled = IsSpecialMessageEnabled;
+            latestSettings.SpecialMessageText = SpecialMessageText;
+            latestSettings.LoginBackgroundPath = LoginBackgroundPath;
+            latestSettings.TattooPerHour = TattooRate;
+            latestSettings.PiercingSingle = PiercingSingle;
+            latestSettings.ShopMinimumRate = ShopMinimumRate;
+            latestSettings.TaxRate = TaxRate;
+            latestSettings.DepositType = DepositType;
+            latestSettings.DepositAmount = DepositAmount;
+            latestSettings.BookingBufferMinutes = BookingBufferMinutes;
+            latestSettings.CancellationPolicy = CancellationPolicy;
+            latestSettings.SidebarArtworkPath = SidebarArtworkPath;
+            latestSettings.EnableAutomaticHolidayThemes = EnableHolidayThemes;
+
             // Serialize Shop Hours
             var settings = ShopHours.Select(vm => new ShopDaySetting
             {
@@ -737,10 +756,18 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 EndTime = vm.EndTime.TimeOfDay
             }).ToList();
 
-            _shopSettings.ShopHoursJson = JsonSerializer.Serialize(settings);
-            _shopSettings.AppointmentDurationPresetsJson = JsonSerializer.Serialize(AppointmentDurationPresets);
+            latestSettings.ShopHoursJson = JsonSerializer.Serialize(settings);
+            latestSettings.AppointmentDurationPresetsJson = JsonSerializer.Serialize(AppointmentDurationPresets);
 
-            _shopSettingsRepository.SaveSettings(_shopSettings);
+            // Save the updated settings object
+            _shopSettingsRepository.SaveSettings(latestSettings);
+
+            // Update local reference (optional, but good for consistency)
+            // Note: We don't replace _shopSettings entirely to avoid breaking bindings if they were bound directly,
+            // but here we are binding to ViewModel properties which wrap _shopSettings, so we should update the backing fields if we want to reflect external changes?
+            // Actually, for this specific bug fix, we just want to ensure OUTGOING save is correct.
+            // INCOMING changes from other tabs won't be reflected in UI until reload, but that's acceptable for now.
+
             SettingsUpdateService.NotifySettingsChanged();
             HasUnsavedChanges = false;
             LastSavedTimestamp = DateTime.Now;

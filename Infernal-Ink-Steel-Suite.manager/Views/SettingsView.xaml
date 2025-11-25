@@ -20,6 +20,15 @@
         <DataTemplate DataType="{x:Type viewmodels:LinkedAccountsTabViewModel}">
             <views:LinkedAccountsTabView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:NotificationSettingsTabViewModel}">
+            <views:NotificationSettingsTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:BackupDataTabViewModel}">
+            <views:BackupDataTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:AccessibilityTabViewModel}">
+            <views:AccessibilityTabView/>
+        </DataTemplate>
         <Style TargetType="TabItem">
             <Setter Property="Template">
                 <Setter.Value>

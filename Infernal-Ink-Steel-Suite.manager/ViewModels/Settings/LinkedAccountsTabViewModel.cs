@@ -1,7 +1,17 @@
+using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
+using System.Text.Json;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
+    public class LinkedAccountsSettings
+    {
+        public string InstagramUrl { get; set; } = string.Empty;
+        public string FacebookUrl { get; set; } = string.Empty;
+        public string TwitterUrl { get; set; } = string.Empty;
+        public string WebsiteUrl { get; set; } = string.Empty;
+    }
+
     public class LinkedAccountsTabViewModel : SettingsTabViewModel
     {
         private readonly IShopSettingsRepository _shopSettingsRepository;
@@ -63,12 +73,37 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadSettings()
         {
-            // Load from shop settings
+            var settings = _shopSettingsRepository.LoadSettings();
+            if (!string.IsNullOrEmpty(settings.LinkedAccountsJson))
+            {
+                try
+                {
+                    var linkedAccounts = JsonSerializer.Deserialize<LinkedAccountsSettings>(settings.LinkedAccountsJson);
+                    if (linkedAccounts != null)
+                    {
+                        InstagramUrl = linkedAccounts.InstagramUrl;
+                        FacebookUrl = linkedAccounts.FacebookUrl;
+                        TwitterUrl = linkedAccounts.TwitterUrl;
+                        WebsiteUrl = linkedAccounts.WebsiteUrl;
+                    }
+                }
+                catch { }
+            }
         }
 
         private void SaveSettings(object? parameter)
         {
-            // Save to shop settings
+            var linkedAccounts = new LinkedAccountsSettings
+            {
+                InstagramUrl = InstagramUrl,
+                FacebookUrl = FacebookUrl,
+                TwitterUrl = TwitterUrl,
+                WebsiteUrl = WebsiteUrl
+            };
+
+            var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
+            latestSettings.LinkedAccountsJson = JsonSerializer.Serialize(linkedAccounts);
+            _shopSettingsRepository.SaveSettings(latestSettings);
         }
     }
 }
