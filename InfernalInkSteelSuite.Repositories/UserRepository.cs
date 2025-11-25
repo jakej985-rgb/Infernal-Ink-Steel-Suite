@@ -10,7 +10,7 @@ namespace InfernalInkSteelSuite.Repositories
 {
     public class UserRepository(string connectionString) : IUserRepository
     {
-        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor, LastLoginAt, IsActive, IsDeleted, DeletedAt, Department, CommissionRate, FontSize, KeyboardShortcutsJson";
+        private const string UserColumns = "id, username, passwordHash, role, ThemeKey, avatarPath, createdAt, updatedAt, HourlyRate, SpeedFactor, LastLoginAt, IsActive, IsDeleted, DeletedAt, Department, CommissionRate, FontSize, KeyboardShortcutsJson, PermissionsJson";
         private readonly string _connectionString = connectionString;
 
         private static User MapReaderToUser(SqliteDataReader reader)
@@ -39,7 +39,8 @@ namespace InfernalInkSteelSuite.Repositories
                 Department = reader.IsDBNull(14) ? string.Empty : reader.GetString(14),
                 CommissionRate = reader.IsDBNull(15) ? 0m : reader.GetDecimal(15),
                 FontSize = reader.IsDBNull(16) ? 14 : reader.GetInt32(16),
-                KeyboardShortcutsJson = reader.IsDBNull(17) ? string.Empty : reader.GetString(17)
+                KeyboardShortcutsJson = reader.IsDBNull(17) ? string.Empty : reader.GetString(17),
+                PermissionsJson = reader.IsDBNull(18) ? string.Empty : reader.GetString(18)
             };
         }
 
@@ -344,6 +345,66 @@ namespace InfernalInkSteelSuite.Repositories
             var command = connection.CreateCommand();
             command.CommandText = "UPDATE users SET IsDeleted = 1, DeletedAt = @deletedAt, updatedAt = @updatedAt WHERE username = @username";
             command.Parameters.AddWithValue("@deletedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool UpdateUserPermissions(string username, string permissionsJson)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "PermissionsJson", "TEXT", "''");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET PermissionsJson = @permissionsJson, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@permissionsJson", permissionsJson);
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool UpdateUserDepartment(string username, string department)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "Department", "TEXT", "''");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET Department = @department, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@department", department);
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool UpdateUserCommissionRate(string username, decimal rate)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "CommissionRate", "REAL", "0");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET CommissionRate = @rate, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@rate", rate);
+            command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
+            command.Parameters.AddWithValue("@username", username);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool UpdateUserFontSize(string username, int fontSize)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            connection.Open();
+            EnsureColumnExists(connection, "FontSize", "INTEGER", "14");
+
+            var command = connection.CreateCommand();
+            command.CommandText = "UPDATE users SET FontSize = @fontSize, updatedAt = @updatedAt WHERE username = @username";
+            command.Parameters.AddWithValue("@fontSize", fontSize);
             command.Parameters.AddWithValue("@updatedAt", DateTime.UtcNow.ToString("o"));
             command.Parameters.AddWithValue("@username", username);
 

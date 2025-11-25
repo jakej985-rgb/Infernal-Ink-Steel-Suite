@@ -22,5 +22,9 @@ namespace InfernalInkSteelSuite.Repositories
         bool UpdateLastLogin(string username);
         bool SetUserActiveStatus(string username, bool isActive);
         bool SoftDeleteUser(string username);
+        bool UpdateUserPermissions(string username, string permissionsJson);
+        bool UpdateUserDepartment(string username, string department);
+        bool UpdateUserCommissionRate(string username, decimal rate);
+        bool UpdateUserFontSize(string username, int fontSize);
     }
 }

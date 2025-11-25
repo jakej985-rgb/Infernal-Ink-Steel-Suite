@@ -37,7 +37,10 @@ namespace InfernalInkSteelSuite.ViewModels
             var userRepository = new UserRepository(connectionString);
 
             Tabs.Add(new UserTabViewModel(userRepository, shopSettingsRepository, currentUser));
-            Tabs.Add(new LinkedAccountsTabViewModel());
+            Tabs.Add(new LinkedAccountsTabViewModel(shopSettingsRepository));
+            Tabs.Add(new NotificationSettingsTabViewModel(shopSettingsRepository));
+            Tabs.Add(new BackupDataTabViewModel(shopSettingsRepository));
+            Tabs.Add(new AccessibilityTabViewModel(userRepository, currentUser));
 
             if (currentUser.Role.Contains("Manager") || currentUser.Role.Contains("Admin"))
             {

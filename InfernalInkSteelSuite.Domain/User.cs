@@ -24,6 +24,7 @@ namespace InfernalInkSteelSuite.Domain
         public decimal CommissionRate { get; set; } = 0m;
         public int FontSize { get; set; } = 14;
         public string KeyboardShortcutsJson { get; set; } = string.Empty;
+        public string PermissionsJson { get; set; } = string.Empty;
 
         public bool IsAdmin()
         {
