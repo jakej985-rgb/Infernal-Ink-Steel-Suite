@@ -1,11 +1,7 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\jakej\\Documents\\GitHub\\Infernal-Ink-Steel-Suite\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\jakej\\AppData\\Local\\SourceServer\\b99f54c0c72a279000c725811b75ec343977cb0439dc68912ad49953e9f4d9bb\\InfernalInkSteelSuite.Repositories\\UserRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -13,7 +9,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": -1,
           "Children": [
             {
               "$type": "Bookmark",
@@ -26,19 +22,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\jakej\\AppData\\Local\\SourceServer\\b99f54c0c72a279000c725811b75ec343977cb0439dc68912ad49953e9f4d9bb\\InfernalInkSteelSuite.Repositories\\UserRepository.cs",
-              "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\SourceServer\\b99f54c0c72a279000c725811b75ec343977cb0439dc68912ad49953e9f4d9bb\\InfernalInkSteelSuite.Repositories\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\jakej\\AppData\\Local\\SourceServer\\b99f54c0c72a279000c725811b75ec343977cb0439dc68912ad49953e9f4d9bb\\InfernalInkSteelSuite.Repositories\\UserRepository.cs",
-              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\SourceServer\\b99f54c0c72a279000c725811b75ec343977cb0439dc68912ad49953e9f4d9bb\\InfernalInkSteelSuite.Repositories\\UserRepository.cs",
-              "ViewState": "AgIAAOIAAAAAAAAAAAAcwPEAAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-25T06:24:59.422Z",
-              "EditorCaption": ""
             }
           ]
         },

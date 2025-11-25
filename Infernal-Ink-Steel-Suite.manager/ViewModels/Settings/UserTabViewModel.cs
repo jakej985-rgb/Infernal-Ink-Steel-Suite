@@ -4,6 +4,7 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Views.Settings;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
@@ -68,6 +69,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 _fontSize = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(FontSizeLabel));
+
+                // Update application resource for real-time preview
+                if (Application.Current != null)
+                {
+                    Application.Current.Resources["StandardFontSize"] = (double)value;
+                }
             }
         }
 
@@ -137,6 +144,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             _role = _currentUser.Role;
             _department = _currentUser.Department;
             _fontSize = _currentUser.FontSize;
+
+            // Set initial font size
+            if (Application.Current != null)
+            {
+                Application.Current.Resources["StandardFontSize"] = (double)_fontSize;
+            }
 
             _selectedTheme = ThemeManager.CurrentTheme;
             LoadShopSettings();

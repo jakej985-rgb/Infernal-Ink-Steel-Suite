@@ -4,6 +4,7 @@
 
     <!-- Shared fonts -->
     <FontFamily x:Key="AppFont">Segoe UI</FontFamily>
+    <sys:Double x:Key="StandardFontSize">14</sys:Double>
 
     <!-- Base sizes -->
     <CornerRadius x:Key="ControlCornerRadius">8</CornerRadius>
@@ -15,6 +16,7 @@
     <!-- Example global button style -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource StandardFontSize}" />
         <Setter Property="Padding" Value="12,6" />
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}" />
@@ -53,6 +55,7 @@
     <!-- Style for PasswordBox -->
     <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
         <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource StandardFontSize}" />
         <Setter Property="Padding" Value="{StaticResource ControlPadding}" />
         <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
@@ -92,6 +95,7 @@
     <!-- Style for TextBox -->
     <Style x:Key="TextBoxStyle" TargetType="TextBox">
         <Setter Property="FontFamily" Value="{StaticResource AppFont}" />
+        <Setter Property="FontSize" Value="{DynamicResource StandardFontSize}" />
         <Setter Property="Padding" Value="{StaticResource ControlPadding}" />
         <Setter Property="Background" Value="{DynamicResource InputBackgroundBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextColor}" />
