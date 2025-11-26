@@ -1,0 +1,30 @@
+<Window x:Class="InfernalInkSteelSuite.UI.Views.Appointments.AppointmentDetailsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:InfernalInkSteelSuite.UI.ViewModels.Appointments"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModels:AppointmentDetailsDialogViewModel}"
+        Title="Appointment Details" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="{Binding Date, StringFormat='Appointments for {0:MMMM dd, yyyy}'}" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Appointments}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Client" Binding="{Binding ClientName}" />
+                <DataGridTextColumn Header="Time" Binding="{Binding DateTime, StringFormat='{}{0:hh:mm tt}'}" />
+                <DataGridTextColumn Header="Service" Binding="{Binding ServiceType}" />
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="2" Content="Close" Click="CloseButton_Click" HorizontalAlignment="Right" Margin="10"/>
+    </Grid>
+</Window>

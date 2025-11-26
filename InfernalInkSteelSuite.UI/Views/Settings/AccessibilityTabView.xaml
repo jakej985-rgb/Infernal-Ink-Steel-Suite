@@ -1,0 +1,48 @@
+<UserControl x:Class="InfernalInkSteelSuite.UI.Views.Settings.AccessibilityTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Accessibility Settings" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,20"/>
+
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="♿" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock Text="Display Options" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel Margin="10">
+                    <Label Content="Font Size" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
+                    <Slider Minimum="10" Maximum="24" Value="{Binding FontSize}" TickFrequency="2" IsSnapToTickEnabled="True" Margin="0,5,0,15"/>
+                    
+                    <CheckBox Content="High Contrast Mode" IsChecked="{Binding HighContrastMode}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                    <CheckBox Content="Screen Reader Friendly Mode" IsChecked="{Binding ScreenReaderMode}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                    <CheckBox Content="Reduced Motion" IsChecked="{Binding ReducedMotion}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                </StackPanel>
+            </Expander>
+
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⌨️" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock Text="Keyboard Navigation" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel Margin="10">
+                    <TextBlock Text="Keyboard shortcuts are enabled by default" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                    <TextBlock Text="• Ctrl+S: Save" Foreground="{DynamicResource TextColor}" Margin="10,5,0,0"/>
+                    <TextBlock Text="• Ctrl+F: Find" Foreground="{DynamicResource TextColor}" Margin="10,5,0,0"/>
+                    <TextBlock Text="• Tab: Navigate forward" Foreground="{DynamicResource TextColor}" Margin="10,5,0,0"/>
+                    <TextBlock Text="• Shift+Tab: Navigate backward" Foreground="{DynamicResource TextColor}" Margin="10,5,0,0"/>
+                </StackPanel>
+            </Expander>
+
+            <Button Content="Save Settings" Command="{Binding SaveAccessibilitySettingsCommand}" HorizontalAlignment="Right" Style="{StaticResource PrimaryButtonStyle}" Margin="0,20,0,0"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

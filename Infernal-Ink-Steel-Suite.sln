@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernal-Ink-Steel-Suite", "Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.csproj", "{4F13DE96-BF67-401B-B6A6-3D43DEF95691}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.UI", "InfernalInkSteelSuite.UI\InfernalInkSteelSuite.UI.csproj", "{4F13DE96-BF67-401B-B6A6-3D43DEF95691}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Repositories", "InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj", "{A8B220B6-662C-45A5-9260-3135C7A52223}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Repositories", "Core\InfernalInkSteelSuite.Repositories\InfernalInkSteelSuite.Repositories.csproj", "{A8B220B6-662C-45A5-9260-3135C7A52223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Data", "InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj", "{A5E689E6-562D-4C94-9113-2BA6E8E6F52B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Data", "Core\InfernalInkSteelSuite.Data\InfernalInkSteelSuite.Data.csproj", "{A5E689E6-562D-4C94-9113-2BA6E8E6F52B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Domain", "InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj", "{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Domain", "Core\InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj", "{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
