@@ -1,0 +1,74 @@
+<UserControl x:Class="InfernalInkSteelSuite.UI.Views.ClientsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="{DynamicResource AppBackgroundBrush}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Clients"
+                       Foreground="{DynamicResource AccentBrush}"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+            <Button Content="Add Client"
+                    Margin="20,0,0,0"
+                    Padding="10,4"
+                    Click="AddClient_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="ClientsGrid"
+                  Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeRows="False"
+                  SelectionMode="Single"
+                  GridLinesVisibility="None"
+                  MouseDoubleClick="ClientsGrid_MouseDoubleClick"
+                  PreviewKeyDown="ClientsGrid_PreviewKeyDown">
+            <DataGrid.Resources>
+                <!-- Style to make all column content use TextBlock (labels) instead of TextBox -->
+                <Style x:Key="ReadOnlyCellTextStyle" TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Padding" Value="4,0"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="DataGridCell">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderThickness="0"
+                                        Padding="8,4">
+                                    <ContentPresenter VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding FullName}" Width="*" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="150" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="200" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+                <DataGridTextColumn Header="Visits" Binding="{Binding Visits}" Width="80" IsReadOnly="True" ElementStyle="{StaticResource ReadOnlyCellTextStyle}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

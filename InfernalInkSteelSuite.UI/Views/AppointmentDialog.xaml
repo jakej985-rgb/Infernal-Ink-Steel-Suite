@@ -1,0 +1,78 @@
+<Window x:Class="InfernalInkSteelSuite.UI.Views.AppointmentDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Appointment" Height="450" Width="400">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Client:"/>
+        <StackPanel Grid.Row="0" Grid.Column="1">
+            <ComboBox x:Name="ClientComboBox" 
+                      IsEditable="True" 
+                      IsTextSearchEnabled="False"
+                      TextSearch.TextPath="FullName"
+                      Text="{Binding ClientSearchText, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding FilteredClients}" 
+                      SelectedItem="{Binding SelectedClient}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding FullName}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                <TextBlock Text="{Binding SelectedClient.Phone}" Margin="0,0,10,0" FontStyle="Italic" Foreground="Gray"/>
+                <TextBlock Text="{Binding SelectedClient.Email}" FontStyle="Italic" Foreground="Gray"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Date:"/>
+        <DatePicker Grid.Row="1" Grid.Column="1" x:Name="DatePicker" SelectedDate="{Binding Appointment.DateTime}"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Time:"/>
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" Width="50" Margin="0,0,5,0"/>
+            <Label Content=":" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" Width="50" Margin="5,0,5,0"/>
+            <ComboBox ItemsSource="{Binding AmPmOptions}" SelectedItem="{Binding SelectedAmPm}" Width="60" Margin="5,0,0,0"/>
+            <CheckBox Content="Block Off Time" IsChecked="{Binding Appointment.IsBlockOff}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        </StackPanel>
+
+        <Label Grid.Row="3" Grid.Column="0" Content="Duration (mins):"/>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="DurationTextBox" Text="{Binding Appointment.DurationMinutes}"/>
+
+        <Label Grid.Row="4" Grid.Column="0" Content="Service Type:"/>
+        <ComboBox Grid.Row="4" Grid.Column="1" x:Name="ServiceTypeComboBox" ItemsSource="{Binding ServiceTypes}" SelectedItem="{Binding SelectedServiceType}"/>
+
+        <Label Grid.Row="5" Grid.Column="0" Content="Service Category:"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" x:Name="ServiceCategoryComboBox" ItemsSource="{Binding ServiceCategories}" SelectedItem="{Binding Appointment.ServiceCategory}"/>
+
+        <Label Grid.Row="6" Grid.Column="0" Content="Price Type:"/>
+        <ComboBox Grid.Row="6" Grid.Column="1" x:Name="PriceTypeComboBox" ItemsSource="{Binding PriceTypes}" SelectedItem="{Binding Appointment.PriceType}"/>
+
+
+
+        <Label Grid.Row="8" Grid.Column="0" Content="Notes:"/>
+        <TextBox Grid.Row="8" Grid.Column="1" x:Name="NotesTextBox" Text="{Binding Appointment.Notes}" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+        <StackPanel Grid.Row="9" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Save" x:Name="SaveButton" Click="SaveButton_Click" Margin="5"/>
+            <Button Content="Cancel" IsCancel="True" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

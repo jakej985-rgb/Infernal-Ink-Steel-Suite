@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="InfernalInkSteelSuite.UI.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#111111">
+    <Grid>
+        <TextBlock Text="Welcome to Infernal Ink &amp; Steel Suite"
+                   Foreground="{DynamicResource TextColor}"
+                   FontSize="24"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

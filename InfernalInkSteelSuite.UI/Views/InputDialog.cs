@@ -1,0 +1,30 @@
+using System.Windows;
+using System.Windows.Controls;
+
+namespace InfernalInkSteelSuite.UI.Views
+{
+    public class InputDialog : Window
+    {
+        private readonly TextBox inputTextBox;
+        private readonly Button okButton;
+
+        public string InputText => inputTextBox.Text;
+
+        public InputDialog(string title, string prompt)
+        {
+            Title = title;
+
+            var promptLabel = new Label { Content = prompt };
+            inputTextBox = new TextBox();
+            okButton = new Button { Content = "OK" };
+            okButton.Click += (sender, e) => DialogResult = true;
+
+            var stackPanel = new StackPanel();
+            stackPanel.Children.Add(promptLabel);
+            stackPanel.Children.Add(inputTextBox);
+            stackPanel.Children.Add(okButton);
+
+            Content = stackPanel;
+        }
+    }
+}

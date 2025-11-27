@@ -1,0 +1,37 @@
+<UserControl x:Class="InfernalInkSteelSuite.UI.Views.DocumentsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:InfernalInkSteelSuite.UI.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Button Content="Add Document" Command="{Binding AddDocumentCommand}" Margin="5" />
+            <Button Content="Refresh" Command="{Binding RefreshDocumentsCommand}" Margin="5" />
+            <TextBox Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" />
+            <Button Content="Filter" Command="{Binding FilterDocumentsCommand}" Margin="5" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Documents}" AutoGenerateColumns="False" CanUserAddRows="False" SelectedItem="{Binding SelectedDocument}">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Open" Command="{Binding OpenDocumentCommand}" />
+                    <MenuItem Header="Rename" Command="{Binding RenameDocumentCommand}" />
+                    <MenuItem Header="Delete" Command="{Binding DeleteDocumentCommand}" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="File Name" Binding="{Binding Title}" Width="*" />
+                <DataGridTextColumn Header="Client Name" Binding="{Binding ClientName}" Width="*" />
+                <DataGridTextColumn Header="Date Added" Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd}}" Width="Auto" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

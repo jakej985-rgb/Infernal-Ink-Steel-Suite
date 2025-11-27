@@ -1,0 +1,247 @@
+<UserControl x:Class="InfernalInkSteelSuite.UI.Views.Dashboard.HomeDashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:InfernalInkSteelSuite.UI.Controls"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.UI.Converters"
+             xmlns:dashboard="clr-namespace:InfernalInkSteelSuite.UI.ViewModels.Dashboard"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance dashboard:HomeDashboardViewModel, IsDesignTimeCreatable=True}"
+             d:DesignHeight="800" d:DesignWidth="1200"
+             Background="{DynamicResource AppBackgroundBrush}">
+    <UserControl.Resources>
+        <converters:BooleanToThicknessConverter x:Key="BooleanToThicknessConverter"/>
+        <converters:StatusToBrushConverter x:Key="StatusToBrushConverter"/>
+        <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" CornerRadius="5"/>
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                            <TextBlock Text="Search clients, appointments..." Foreground="Gray" VerticalAlignment="Center" Margin="5,0,0,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource TemplatedParent}}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Top Strip -->
+            <Border Grid.Row="0" Background="{DynamicResource SurfaceBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="20,0">
+                        <TextBlock Text="{Binding Greeting}" Foreground="{DynamicResource TextColor}" FontSize="18"/>
+                        <TextBlock Text="Here’s what’s on deck for today." Foreground="{DynamicResource TextColorSubtle}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="1" Text="{Binding CurrentDate}" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0">
+                        <TextBox Width="200" Margin="0,0,10,0" VerticalContentAlignment="Center" Style="{StaticResource SearchBoxStyle}"/>
+                        <controls:NeonButton Content="+ New Appointment" Margin="5,0" Command="{Binding CreateNewAppointmentCommand}"/>
+                        <controls:NeonButton Content="+ New Client" Margin="5,0" Command="{Binding CreateNewClientCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Main Content -->
+            <Grid Grid.Row="1" Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1.5*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Today's Flow -->
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <!-- Today's Appointments -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Today’s Appointments" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="18" FontWeight="ExtraBold"/>
+                            <TextBlock Text="{Binding AppointmentSummary}" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,0,0,10"/>
+                            <ListView ItemsSource="{Binding TodayAppointments}" Background="Transparent" BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border BorderBrush="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" BorderThickness="3,0,0,0" Padding="5,0,0,0">
+                                                <TextBlock Text="{Binding TimeRange}" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Text="{Binding ClientName}" Grid.Column="1" Foreground="{DynamicResource PrimaryTextBrush}" FontWeight="Bold" Margin="10,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding Service}" Grid.Column="2" Foreground="{DynamicResource SecondaryTextBrush}" Margin="10,0" VerticalAlignment="Center"/>
+                                            <Border Grid.Column="3" Background="{DynamicResource DashboardAccentBrush}" CornerRadius="5" Padding="7,4" Margin="5,0">
+                                                <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource AppBackgroundBrush}" FontSize="11" FontWeight="Bold"/>
+                                            </Border>
+                                            <Border Grid.Column="4" Background="{Binding Status, Converter={StaticResource StatusToBrushConverter}}" CornerRadius="5" Padding="7,4">
+                                                <TextBlock Text="{Binding Status}" Foreground="{DynamicResource AppBackgroundBrush}" FontSize="11" FontWeight="Bold"/>
+                                            </Border>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Mini Week Strip -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="10" Margin="0,10,0,0">
+                        <ItemsControl ItemsSource="{Binding WeekDays}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="5" Padding="10" Margin="2">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource DashboardAccentBrush}"/>
+                                                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+                                                        <Setter Property="Effect">
+                                                            <Setter.Value>
+                                                                <DropShadowEffect Color="{DynamicResource AccentColor}" BlurRadius="10" Opacity="0.5" ShadowDepth="0"/>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="{Binding DayLabel}" Foreground="{DynamicResource PrimaryTextBrush}" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DateNumber}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.SelectDayCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
+                                        </Border.InputBindings>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </StackPanel>
+
+                <!-- Studio Snapshot -->
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <!-- KPI Tiles -->
+                    <!-- Today's Revenue -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Today's Revenue" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            <TextBlock Text="{Binding TodayRevenue, StringFormat={}{0:C}}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                            <TextBlock Text="5 completed · 1 pending" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Combined Weekly Stats -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- This Week's Bookings -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="This Week's Bookings" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding ThisWeekBookings}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                                <TextBlock Text="+4 vs last week" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                            </StackPanel>
+
+                            <!-- New Clients -->
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="New Clients" Foreground="{DynamicResource SecondaryTextBrush}"/>
+                                <TextBlock Text="{Binding NewClients}" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="24" FontWeight="Bold"/>
+                                <TextBlock Text="Tap to open client list" Foreground="{DynamicResource DashboardAccentBrush}" Cursor="Hand">
+                                    <TextBlock.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" Command="{Binding OpenClientsListCommand}"/>
+                                    </TextBlock.InputBindings>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Action Inbox -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Action Inbox" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold"/>
+                            <ListView ItemsSource="{Binding ActionInboxItems}" Background="Transparent" BorderThickness="0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Icon}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{Binding Description}" Grid.Column="1" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center"/>
+                                            <controls:NeonButton Grid.Column="2" Content="Resolve" Padding="5,2" FontSize="10" Command="{Binding DataContext.ResolveActionItemCommand, RelativeSource={RelativeSource AncestorType=ListView}}" CommandParameter="{Binding}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Quick Links -->
+                    <Border Background="{DynamicResource DashboardCardBrush}" CornerRadius="5" Padding="15" Margin="0,10,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Quick Links" Foreground="{DynamicResource PrimaryTextBrush}" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                            <!-- Primary Actions -->
+                            <WrapPanel Margin="0,0,0,10">
+                                <controls:NeonButton Content="New Appointment (Today)" Margin="2" Command="{Binding CreateNewAppointmentCommand}" IsGlowing="True"/>
+                                <controls:NeonButton Content="Add New Client" Margin="2" Command="{Binding CreateNewClientCommand}" IsGlowing="True"/>
+                                <controls:NeonButton Content="Daily Summary" Margin="2" Command="{Binding OpenDailySummaryCommand}" IsGlowing="True"/>
+                            </WrapPanel>
+
+                            <!-- Secondary Actions -->
+                            <WrapPanel>
+                                <controls:NeonButton Content="Open Full Calendar" Margin="2" Command="{Binding OpenFullCalendarCommand}"/>
+                                <controls:NeonButton Content="View All Clients" Margin="2" Command="{Binding OpenClientsListCommand}"/>
+                                <controls:NeonButton Content="Inventory / Supplies" Margin="2" Command="{Binding OpenInventoryCommand}"/>
+                                <controls:NeonButton Content="Shop Settings &amp; Branding" Margin="2" Command="{Binding OpenShopSettingsCommand}"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>
