@@ -1,0 +1,257 @@
+using InfernalInkSteelSuite.Api.Data;
+using InfernalInkSteelSuite.Api.Dtos;
+using InfernalInkSteelSuite.Api.Models;
+using InfernalInkSteelSuite.Api.Services;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+var app = builder.Build();
+
+app.UseCors();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseHttpsRedirection();
+
+// Simple health check
+app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+
+// ---- Clients ----
+app.MapGet("/clients", async (AppDbContext db) =>
+    await db.Clients.ToListAsync());
+
+app.MapGet("/clients/{id:int}", async (int id, AppDbContext db) =>
+    await db.Clients.FindAsync(id) is { } client
+        ? Results.Ok(client)
+        : Results.NotFound());
+
+app.MapPost("/clients", async (Client client, AppDbContext db) =>
+{
+    db.Clients.Add(client);
+    await db.SaveChangesAsync();
+    return Results.Created($"/clients/{client.Id}", client);
+});
+
+app.MapPut("/clients/{id:int}", async (int id, Client update, AppDbContext db) =>
+{
+    var existing = await db.Clients.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    existing.FirstName = update.FirstName;
+    existing.LastName = update.LastName;
+    existing.Phone = update.Phone;
+    existing.Email = update.Email;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(existing);
+});
+
+app.MapDelete("/clients/{id:int}", async (int id, AppDbContext db) =>
+{
+    var existing = await db.Clients.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    db.Clients.Remove(existing);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+// ---- Users ----
+app.MapGet("/users", async (AppDbContext db) =>
+    await db.Users.Select(u => new { u.Id, u.Username, u.DisplayName, u.Role, u.IsActive }).ToListAsync());
+
+app.MapGet("/users/{id:int}", async (int id, AppDbContext db) =>
+    await db.Users.FindAsync(id) is { } user
+        ? Results.Ok(new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive })
+        : Results.NotFound());
+
+app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
+{
+    var user = new User
+    {
+        Username = newUser.Username,
+        PasswordHash = hasher.HashPassword(newUser.Password),
+        DisplayName = newUser.DisplayName,
+        Role = newUser.Role,
+        IsActive = true
+    };
+    db.Users.Add(user);
+    await db.SaveChangesAsync();
+    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive });
+});
+
+app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
+{
+    var existing = await db.Users.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    existing.Username = updateDto.Username;
+    existing.DisplayName = updateDto.DisplayName;
+    existing.Role = updateDto.Role;
+    existing.IsActive = updateDto.IsActive;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(new { existing.Id, existing.Username, existing.DisplayName, existing.Role, existing.IsActive });
+});
+
+app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
+{
+    var existing = await db.Users.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    existing.PasswordHash = hasher.HashPassword(passwordDto.NewPassword);
+
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+});
+
+
+app.MapDelete("/users/{id:int}", async (int id, AppDbContext db) =>
+{
+    var existing = await db.Users.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    db.Users.Remove(existing);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+
+// ---- Appointments (simple listing by date/artist) ----
+app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext db) =>
+{
+    var query = db.Appointments
+        .Include(a => a.Client)
+        .Include(a => a.Artist)
+        .AsQueryable();
+
+    if (date.HasValue)
+    {
+        var dayStart = date.Value.Date;
+        var dayEnd = dayStart.AddDays(1);
+        query = query.Where(a => a.StartTime >= dayStart && a.StartTime < dayEnd);
+    }
+
+    if (artistId.HasValue)
+        query = query.Where(a => a.ArtistId == artistId.Value);
+
+    var results = await query.ToListAsync();
+    return Results.Ok(results);
+});
+
+app.MapPost("/appointments", async (Appointment appt, AppDbContext db) =>
+{
+    db.Appointments.Add(appt);
+    await db.SaveChangesAsync();
+    return Results.Created($"/appointments/{appt.Id}", appt);
+});
+
+app.MapPut("/appointments/{id:int}", async (int id, Appointment update, AppDbContext db) =>
+{
+    var existing = await db.Appointments.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    existing.StartTime = update.StartTime;
+    existing.EndTime = update.EndTime;
+    existing.ServiceType = update.ServiceType;
+    existing.ServiceCategory = update.ServiceCategory;
+    existing.Status = update.Status;
+    existing.QuotedPrice = update.QuotedPrice;
+    existing.FinalPrice = update.FinalPrice;
+    existing.Notes = update.Notes;
+    existing.ClientId = update.ClientId;
+    existing.ArtistId = update.ArtistId;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(existing);
+});
+
+app.MapDelete("/appointments/{id:int}", async (int id, AppDbContext db) =>
+{
+    var existing = await db.Appointments.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    db.Appointments.Remove(existing);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+// ---- Documents ----
+app.MapGet("/documents", async (int? clientId, AppDbContext db) =>
+{
+    var query = db.Documents.AsQueryable();
+    if(clientId.HasValue)
+    {
+        query = query.Where(d => d.ClientId == clientId.Value);
+    }
+    return await query.ToListAsync();
+});
+
+app.MapGet("/documents/{id:int}", async (int id, AppDbContext db) =>
+    await db.Documents.FindAsync(id) is { } document
+        ? Results.Ok(document)
+        : Results.NotFound());
+
+app.MapPost("/documents", async (Document document, AppDbContext db) =>
+{
+    db.Documents.Add(document);
+    await db.SaveChangesAsync();
+    return Results.Created($"/documents/{document.Id}", document);
+});
+
+app.MapPut("/documents/{id:int}", async (int id, Document update, AppDbContext db) =>
+{
+    var existing = await db.Documents.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    existing.Title = update.Title;
+    existing.FilePath = update.FilePath;
+    existing.ClientId = update.ClientId;
+    existing.UploadedByUserId = update.UploadedByUserId;
+
+    await db.SaveChangesAsync();
+    return Results.Ok(existing);
+});
+
+app.MapDelete("/documents/{id:int}", async (int id, AppDbContext db) =>
+{
+    var existing = await db.Documents.FindAsync(id);
+    if (existing is null) return Results.NotFound();
+
+    db.Documents.Remove(existing);
+    await db.SaveChangesAsync();
+
+    return Results.NoContent();
+});
+
+
+// ---- Database migration & startup ----
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+app.Run();
