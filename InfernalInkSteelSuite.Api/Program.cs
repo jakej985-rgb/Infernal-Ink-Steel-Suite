@@ -3,8 +3,14 @@ using InfernalInkSteelSuite.Api.Dtos;
 using InfernalInkSteelSuite.Api.Models;
 using InfernalInkSteelSuite.Api.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -31,6 +37,27 @@ app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+
+// ---- Auth (temporary simple login) ----
+app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db) =>
+{
+    var user = await db.Users
+        .FirstOrDefaultAsync(u => u.Username == request.Username && u.PasswordHash == request.Password);
+
+    if (user is null)
+        return Results.Unauthorized();
+
+    var response = new LoginResponse
+    {
+        UserId = user.Id,
+        Username = user.Username,
+        DisplayName = user.DisplayName,
+        Role = user.Role,
+        Token = Guid.NewGuid().ToString() // placeholder
+    };
+
+    return Results.Ok(response);
+});
 
 // Simple health check
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
@@ -156,7 +183,24 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
     if (artistId.HasValue)
         query = query.Where(a => a.ArtistId == artistId.Value);
 
-    var results = await query.ToListAsync();
+    var results = await query
+        .Select(a => new AppointmentDto(
+            a.Id,
+            a.ClientId,
+            a.ArtistId,
+            a.StartTime,
+            a.EndTime,
+            a.ServiceType,
+            a.ServiceCategory,
+            a.Status,
+            a.QuotedPrice,
+            a.FinalPrice,
+            a.Notes,
+            new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email),
+            a.Artist.DisplayName
+        ))
+        .ToListAsync();
+
     return Results.Ok(results);
 });
 
@@ -252,6 +296,28 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+
+    if (!db.Users.Any())
+    {
+        db.Users.AddRange(
+            new User
+            {
+                Username = "admin",
+                PasswordHash = "admin123", // TODO: replace with real hashing
+                DisplayName = "Shop Admin",
+                Role = UserRole.Admin
+            },
+            new User
+            {
+                Username = "artist1",
+                PasswordHash = "artist123",
+                DisplayName = "Artist One",
+                Role = UserRole.Artist
+            }
+        );
+
+        db.SaveChanges();
+    }
 }
 
 app.Run();

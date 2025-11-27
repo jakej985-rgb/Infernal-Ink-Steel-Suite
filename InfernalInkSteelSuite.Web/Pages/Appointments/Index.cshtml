@@ -1,0 +1,37 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Appointments.IndexModel
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+<h2>Appointments for @Model.Day.ToShortDateString()</h2>
+
+<form method="get">
+    <label>Date:</label>
+    <input type="date" name="day" value="@Model.Day.ToString("yyyy-MM-dd")" />
+    <button type="submit">Go</button>
+</form>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Time</th>
+        <th>Client</th>
+        <th>Service</th>
+        <th>Status</th>
+        <th>Notes</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var appt in Model.Appointments)
+    {
+        <tr>
+            <td>@appt.StartTime.ToShortTimeString() - @appt.EndTime.ToShortTimeString()</td>
+            <td>@(appt.Client is null ? "Unknown" : $"{appt.Client.FirstName} {appt.Client.LastName}")</td>
+            <td>@appt.ServiceType - @appt.ServiceCategory</td>
+            <td>@appt.Status</td>
+            <td>@appt.Notes</td>
+        </tr>
+    }
+    </tbody>
+</table>
