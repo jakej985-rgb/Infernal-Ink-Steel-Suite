@@ -146,7 +146,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadDepartments()
         {
-            Departments = ["Tattoo", "Piercing", "Front Desk", "Management", "Other"];
+            Departments = ["Piercer", "Tattoo", "Both"];
         }
 
         private void LoadUserSettings()

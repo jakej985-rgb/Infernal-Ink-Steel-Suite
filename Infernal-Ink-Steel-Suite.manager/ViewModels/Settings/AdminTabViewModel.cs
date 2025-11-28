@@ -347,6 +347,20 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        public double AppFontSize
+        {
+            get => _shopSettings.AppFontSize;
+            set
+            {
+                if (Math.Abs(_shopSettings.AppFontSize - value) > 0.01)
+                {
+                    _shopSettings.AppFontSize = value;
+                    OnPropertyChanged();
+                    OnSettingChanged();
+                }
+            }
+        }
+
         public ObservableCollection<ShopDaySettingViewModel> ShopHours { get; set; } = [];
 
         private void LoadShopHours()
@@ -745,7 +759,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             latestSettings.BookingBufferMinutes = BookingBufferMinutes;
             latestSettings.CancellationPolicy = CancellationPolicy;
             latestSettings.SidebarArtworkPath = SidebarArtworkPath;
+            latestSettings.SidebarArtworkPath = SidebarArtworkPath;
             latestSettings.EnableAutomaticHolidayThemes = EnableHolidayThemes;
+            latestSettings.AppFontSize = AppFontSize;
 
             // Serialize Shop Hours
             var settings = ShopHours.Select(vm => new ShopDaySetting

@@ -40,6 +40,24 @@ namespace InfernalInkSteelSuite
                 MessageBox.Show($"An error occurred during application startup: {ex.Message}", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown();
             }
+
+            // Initialize font size
+            ApplyFontSize();
+            SettingsUpdateService.OnSettingsChanged += () => ApplyFontSize();
+        }
+
+        private void ApplyFontSize()
+        {
+            try
+            {
+                var repo = new ShopSettingsRepository(ConnectionString);
+                var settings = repo.LoadSettings();
+                if (settings != null)
+                {
+                    Application.Current.Resources["StandardFontSize"] = settings.AppFontSize;
+                }
+            }
+            catch { }
         }
     }
 }

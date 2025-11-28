@@ -4,14 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:InfernalInkSteelSuite.Views.Settings"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         
-        <local:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
-        <local:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+        <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <converters:StringToDoubleConverter x:Key="StringToDoubleConverter"/>
+        <converters:StringToIntConverter x:Key="StringToIntConverter"/>
         
         <Style x:Key="OutlinedButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
             <Setter Property="Background" Value="Transparent"/>
@@ -187,16 +190,16 @@
                         <!-- Left Column -->
                         <StackPanel Grid.Column="0">
                             <Label Content="Tattoo Rate ($/hr)" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding TattooRate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding TattooRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                             <Label Content="Piercing Rate (Single)" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding PiercingSingle, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding PiercingSingle, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                             <Label Content="Shop Minimum Rate ($)" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding ShopMinimumRate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding ShopMinimumRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                             
                             <Label Content="Tax Rate (%)" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding TaxRate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding TaxRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                         </StackPanel>
                         
                         <!-- Right Column -->
@@ -208,10 +211,10 @@
                             </ComboBox>
 
                             <Label Content="Deposit Amount" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding DepositAmount, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding DepositAmount, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
 
                             <Label Content="Booking Buffer (Minutes)" Style="{StaticResource SettingLabelStyle}"/>
-                            <TextBox Text="{Binding BookingBufferMinutes, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                            <TextBox Text="{Binding BookingBufferMinutes, Converter={StaticResource StringToIntConverter}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
                             
                             <Label Content="Appointment Duration Presets (Minutes)" Style="{StaticResource SettingLabelStyle}"/>
                             <ItemsControl ItemsSource="{Binding AppointmentDurationPresets}">
@@ -237,7 +240,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0" Text="{Binding NewDurationPreset, UpdateSourceTrigger=PropertyChanged}" Tag="Add preset (min)..."/>
+                                <TextBox Grid.Column="0" Text="{Binding NewDurationPreset, Converter={StaticResource StringToIntConverter}, UpdateSourceTrigger=PropertyChanged}" Tag="Add preset (min)..."/>
                                 <Button Grid.Column="1" Content="+" Command="{Binding AddDurationPresetCommand}" Margin="5,0,0,0" Width="30"/>
                             </Grid>
                         </StackPanel>
@@ -354,6 +357,18 @@
                 </Expander.Header>
                 <StackPanel Margin="10">
                     <CheckBox IsChecked="{Binding EnableHolidayThemes}" Content="Enable automatic holiday themes"/>
+                    
+                    <Label Content="Application Font Size" Style="{StaticResource SettingLabelStyle}" Margin="0,15,0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Smaller" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <Slider Grid.Column="1" Minimum="10" Maximum="24" Value="{Binding AppFontSize}" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft"/>
+                        <TextBlock Grid.Column="2" Text="Bigger" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    </Grid>
                 </StackPanel>
             </Expander>
 

@@ -25,6 +25,7 @@ namespace InfernalInkSteelSuite.Repositories
             EnsureColumnExists(connection, "NotificationSettingsJson", "TEXT", "''");
             EnsureColumnExists(connection, "BackupSettingsJson", "TEXT", "''");
             EnsureColumnExists(connection, "LinkedAccountsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "AppFontSize", "REAL", "14.0");
 
             using var transaction = connection.BeginTransaction();
             var command = connection.CreateCommand();
@@ -32,8 +33,8 @@ namespace InfernalInkSteelSuite.Repositories
             command.ExecuteNonQuery();
 
             command.CommandText =
-                @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson)
-                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $shopMinimumRate, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText, $ShopHoursJson, $TaxRate, $DepositType, $DepositAmount, $BookingBufferMinutes, $CancellationPolicy, $AppointmentDurationPresetsJson, $SpecialHoursJson, $NotificationSettingsJson, $BackupSettingsJson, $LinkedAccountsJson)";
+                @"INSERT INTO shopsettings (shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, IsSpecialMessageEnabled, SpecialMessageText, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson, AppFontSize)
+                        VALUES ($shopName, $logoPath, $accentColor, $sidebarArtworkPath, $loginBackgroundPath, $loginHeadlineFontFamily, $loginTaglineFontFamily, $loginTextColor, $tattooPerHour, $piercingSingle, $piercingMulti, $shopMinimumRate, $EnableAutomaticHolidayThemes, $IsSpecialMessageEnabled, $SpecialMessageText, $ShopHoursJson, $TaxRate, $DepositType, $DepositAmount, $BookingBufferMinutes, $CancellationPolicy, $AppointmentDurationPresetsJson, $SpecialHoursJson, $NotificationSettingsJson, $BackupSettingsJson, $LinkedAccountsJson, $AppFontSize)";
 
             command.Parameters.AddWithValue("$shopName", settings.ShopName);
             command.Parameters.AddWithValue("$logoPath", settings.LogoPath);
@@ -61,6 +62,7 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("$NotificationSettingsJson", settings.NotificationSettingsJson ?? string.Empty);
             command.Parameters.AddWithValue("$BackupSettingsJson", settings.BackupSettingsJson ?? string.Empty);
             command.Parameters.AddWithValue("$LinkedAccountsJson", settings.LinkedAccountsJson ?? string.Empty);
+            command.Parameters.AddWithValue("$AppFontSize", settings.AppFontSize);
 
             command.ExecuteNonQuery();
             transaction.Commit();
@@ -84,9 +86,10 @@ namespace InfernalInkSteelSuite.Repositories
             EnsureColumnExists(connection, "NotificationSettingsJson", "TEXT", "''");
             EnsureColumnExists(connection, "BackupSettingsJson", "TEXT", "''");
             EnsureColumnExists(connection, "LinkedAccountsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "AppFontSize", "REAL", "14.0");
 
             var command = connection.CreateCommand();
-            command.CommandText = @"SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson FROM shopsettings LIMIT 1";
+            command.CommandText = @"SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson, AppFontSize FROM shopsettings LIMIT 1";
             using var reader = command.ExecuteReader();
             if (reader.Read())
             {
@@ -118,6 +121,8 @@ namespace InfernalInkSteelSuite.Repositories
                 settings.NotificationSettingsJson = reader["NotificationSettingsJson"]?.ToString() ?? string.Empty;
                 settings.BackupSettingsJson = reader["BackupSettingsJson"]?.ToString() ?? string.Empty;
                 settings.LinkedAccountsJson = reader["LinkedAccountsJson"]?.ToString() ?? string.Empty;
+                settings.AppFontSize = SafeToDouble(reader["AppFontSize"]);
+                if (settings.AppFontSize < 10) settings.AppFontSize = 14.0; // Default if invalid
             }
             return settings;
         }
