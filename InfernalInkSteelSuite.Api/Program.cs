@@ -2,9 +2,12 @@ using InfernalInkSteelSuite.Api.Data;
 using InfernalInkSteelSuite.Api.Dtos;
 using InfernalInkSteelSuite.Api.Models;
 using InfernalInkSteelSuite.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
+using Microsoft.IdentityModel.Tokens;
 using System.IO;
+using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,8 +23,36 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddScoped<TokenService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtKey = builder.Configuration["JWT_KEY"] ?? builder.Configuration["Jwt:Key"];
+        if (string.IsNullOrEmpty(jwtKey))
+        {
+            throw new InvalidOperationException("JWT Key is not configured.");
+        }
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsArtist", policy => policy.RequireRole(UserRole.Artist.ToString(), UserRole.Admin.ToString()));
+    options.AddPolicy("IsAdmin", policy => policy.RequireRole(UserRole.Admin.ToString()));
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -36,17 +67,19 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 // ---- Auth (temporary simple login) ----
-app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db) =>
+app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db, PasswordHasher hasher, TokenService tokenService) =>
 {
     var user = await db.Users
-        .FirstOrDefaultAsync(u => u.Username == request.Username && u.PasswordHash == request.Password);
+        .FirstOrDefaultAsync(u => u.Username == request.Username);
 
-    if (user is null)
+    if (user is null || !hasher.VerifyPassword(user.PasswordHash, request.Password))
         return Results.Unauthorized();
 
     var response = new LoginResponse
@@ -55,30 +88,32 @@ app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db) =>
         Username = user.Username,
         DisplayName = user.DisplayName,
         Role = user.Role,
-        Token = Guid.NewGuid().ToString() // placeholder
+        Token = tokenService.GenerateToken(user)
     };
 
     return Results.Ok(response);
-});
+}).AllowAnonymous();
 
 // Simple health check
-app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
+app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
 // ---- Clients ----
 app.MapGet("/clients", async (AppDbContext db) =>
-    await db.Clients.ToListAsync());
+    await db.Clients.ToListAsync())
+    .RequireAuthorization("IsArtist");
 
 app.MapGet("/clients/{id:int}", async (int id, AppDbContext db) =>
     await db.Clients.FindAsync(id) is { } client
         ? Results.Ok(client)
-        : Results.NotFound());
+        : Results.NotFound())
+    .RequireAuthorization("IsArtist");
 
 app.MapPost("/clients", async (Client client, AppDbContext db) =>
 {
     db.Clients.Add(client);
     await db.SaveChangesAsync();
     return Results.Created($"/clients/{client.Id}", client);
-});
+}).RequireAuthorization("IsArtist");
 
 app.MapPut("/clients/{id:int}", async (int id, Client update, AppDbContext db) =>
 {
@@ -92,7 +127,7 @@ app.MapPut("/clients/{id:int}", async (int id, Client update, AppDbContext db) =
 
     await db.SaveChangesAsync();
     return Results.Ok(existing);
-});
+}).RequireAuthorization("IsArtist");
 
 app.MapDelete("/clients/{id:int}", async (int id, AppDbContext db) =>
 {
@@ -103,16 +138,18 @@ app.MapDelete("/clients/{id:int}", async (int id, AppDbContext db) =>
     await db.SaveChangesAsync();
 
     return Results.NoContent();
-});
+}).RequireAuthorization("IsAdmin");
 
 // ---- Users ----
 app.MapGet("/users", async (AppDbContext db) =>
-    await db.Users.Select(u => new { u.Id, u.Username, u.DisplayName, u.Role, u.IsActive }).ToListAsync());
+    await db.Users.Select(u => new { u.Id, u.Username, u.DisplayName, u.Role, u.IsActive }).ToListAsync())
+    .RequireAuthorization("IsAdmin");
 
 app.MapGet("/users/{id:int}", async (int id, AppDbContext db) =>
     await db.Users.FindAsync(id) is { } user
         ? Results.Ok(new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive })
-        : Results.NotFound());
+        : Results.NotFound())
+    .RequireAuthorization("IsAdmin");
 
 app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
 {
@@ -127,7 +164,7 @@ app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDb
     db.Users.Add(user);
     await db.SaveChangesAsync();
     return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive });
-});
+}).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
 {
@@ -141,7 +178,7 @@ app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbConte
 
     await db.SaveChangesAsync();
     return Results.Ok(new { existing.Id, existing.Username, existing.DisplayName, existing.Role, existing.IsActive });
-});
+}).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
 {
@@ -152,7 +189,7 @@ app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto pass
 
     await db.SaveChangesAsync();
     return Results.NoContent();
-});
+}).RequireAuthorization("IsAdmin");
 
 
 app.MapDelete("/users/{id:int}", async (int id, AppDbContext db) =>
@@ -164,11 +201,11 @@ app.MapDelete("/users/{id:int}", async (int id, AppDbContext db) =>
     await db.SaveChangesAsync();
 
     return Results.NoContent();
-});
+}).RequireAuthorization("IsAdmin");
 
 
 // ---- Appointments (simple listing by date/artist) ----
-app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext db) =>
+app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext db, HttpContext httpContext) =>
 {
     var query = db.Appointments
         .Include(a => a.Client)
@@ -182,8 +219,17 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
         query = query.Where(a => a.StartTime >= dayStart && a.StartTime < dayEnd);
     }
 
-    if (artistId.HasValue)
+    var user = httpContext.User;
+    if (user.IsInRole(UserRole.Artist.ToString()))
+    {
+        var userId = int.Parse(user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+        query = query.Where(a => a.ArtistId == userId);
+    }
+    else if (artistId.HasValue)
+    {
         query = query.Where(a => a.ArtistId == artistId.Value);
+    }
+
 
     var results = await query
         .Select(a => new AppointmentDto(
@@ -204,14 +250,14 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
         .ToListAsync();
 
     return Results.Ok(results);
-});
+}).RequireAuthorization("IsArtist");
 
 app.MapPost("/appointments", async (Appointment appt, AppDbContext db) =>
 {
     db.Appointments.Add(appt);
     await db.SaveChangesAsync();
     return Results.Created($"/appointments/{appt.Id}", appt);
-});
+}).RequireAuthorization("IsArtist");
 
 app.MapPut("/appointments/{id:int}", async (int id, Appointment update, AppDbContext db) =>
 {
@@ -231,7 +277,7 @@ app.MapPut("/appointments/{id:int}", async (int id, Appointment update, AppDbCon
 
     await db.SaveChangesAsync();
     return Results.Ok(existing);
-});
+}).RequireAuthorization("IsArtist");
 
 app.MapDelete("/appointments/{id:int}", async (int id, AppDbContext db) =>
 {
@@ -242,7 +288,7 @@ app.MapDelete("/appointments/{id:int}", async (int id, AppDbContext db) =>
     await db.SaveChangesAsync();
 
     return Results.NoContent();
-});
+}).RequireAuthorization("IsAdmin");
 
 // ---- Documents: list by client ----
 app.MapGet("/documents/by-client/{clientId:int}", async (int clientId, AppDbContext db) =>
@@ -253,17 +299,17 @@ app.MapGet("/documents/by-client/{clientId:int}", async (int clientId, AppDbCont
         .ToListAsync();
 
     return Results.Ok(docs);
-});
+}).RequireAuthorization("IsArtist");
 
 
 // ---- Documents: upload ----
 app.MapPost("/documents", async (
     int clientId,
-    int uploadedByUserId,
     string? title,
     IFormFile file,
     AppDbContext db,
-    IConfiguration config) =>
+    IConfiguration config,
+    HttpContext httpContext) =>
 {
     if (file == null || file.Length == 0)
         return Results.BadRequest("No file uploaded.");
@@ -283,10 +329,12 @@ app.MapPost("/documents", async (
         await file.CopyToAsync(stream);
     }
 
+    var userId = int.Parse(httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+
     var doc = new Document
     {
         ClientId = clientId,
-        UploadedByUserId = uploadedByUserId,
+        UploadedByUserId = userId,
         Title = string.IsNullOrWhiteSpace(title) ? safeFileName : title,
         FilePath = fullPath,
         CreatedAt = DateTime.UtcNow
@@ -296,7 +344,7 @@ app.MapPost("/documents", async (
     await db.SaveChangesAsync();
 
     return Results.Created($"/documents/{doc.Id}", doc);
-});
+}).RequireAuthorization("IsArtist");
 
 
 // ---- Documents: download ----
@@ -314,13 +362,15 @@ app.MapGet("/documents/{id:int}/download", async (int id, AppDbContext db) =>
 
     // Simple generic content-type for now
     return Results.File(stream, "application/octet-stream", fileName);
-});
+}).RequireAuthorization("IsArtist");
 
 
 // ---- Database migration & startup ----
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<AppDbContext>();
+    var hasher = services.GetRequiredService<PasswordHasher>();
     db.Database.Migrate();
 
     if (!db.Users.Any())
@@ -329,14 +379,14 @@ using (var scope = app.Services.CreateScope())
             new User
             {
                 Username = "admin",
-                PasswordHash = "admin123", // TODO: replace with real hashing
+                PasswordHash = hasher.HashPassword("admin123"),
                 DisplayName = "Shop Admin",
                 Role = UserRole.Admin
             },
             new User
             {
                 Username = "artist1",
-                PasswordHash = "artist123",
+                PasswordHash = hasher.HashPassword("artist123"),
                 DisplayName = "Artist One",
                 Role = UserRole.Artist
             }
