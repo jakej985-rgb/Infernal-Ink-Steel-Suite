@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace InfernalInkSteelSuite.Web.Services;
@@ -42,6 +44,15 @@ public class ApiClient
         string? ArtistName
     );
 
+    public record DocumentDto(
+        int Id,
+        int ClientId,
+        int UploadedByUserId,
+        string Title,
+        string FilePath,
+        DateTime CreatedAt
+    );
+
     public async Task<LoginResponse?> LoginAsync(string username, string password)
     {
         var resp = await _http.PostAsJsonAsync("/auth/login", new LoginRequest(username, password));
@@ -56,6 +67,11 @@ public class ApiClient
         return result ?? new List<ClientDto>();
     }
 
+    public async Task<ClientDto?> GetClientAsync(int id)
+    {
+        return await _http.GetFromJsonAsync<ClientDto>($"/clients/{id}");
+    }
+
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date, int? artistId)
     {
         var query = new List<string>();
@@ -65,5 +81,36 @@ public class ApiClient
 
         var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"/appointments{qs}");
         return result ?? new List<AppointmentDto>();
+    }
+
+    public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
+    {
+        var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"/documents/by-client/{clientId}");
+        return result ?? new List<DocumentDto>();
+    }
+
+    public async Task<DocumentDto?> UploadDocumentAsync(
+        int clientId,
+        int uploadedByUserId,
+        string? title,
+        IFormFile file)
+    {
+        using var content = new MultipartFormDataContent();
+
+        content.Add(new StringContent(clientId.ToString()), "clientId");
+        content.Add(new StringContent(uploadedByUserId.ToString()), "uploadedByUserId");
+
+        if (!string.IsNullOrWhiteSpace(title))
+            content.Add(new StringContent(title), "title");
+
+        await using var stream = file.OpenReadStream();
+        var streamContent = new StreamContent(stream);
+        content.Add(streamContent, "file", file.FileName);
+
+        var response = await _http.PostAsync("/documents", content);
+        if (!response.IsSuccessStatusCode)
+            return null;
+
+        return await response.Content.ReadFromJsonAsync<DocumentDto>();
     }
 }

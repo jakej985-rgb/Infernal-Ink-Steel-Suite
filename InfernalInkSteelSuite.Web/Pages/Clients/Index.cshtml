@@ -12,6 +12,7 @@
         <th>Name</th>
         <th>Phone</th>
         <th>Email</th>
+        <th>Documents</th>
     </tr>
     </thead>
     <tbody>
@@ -21,6 +22,9 @@
             <td>@c.FirstName @c.LastName</td>
             <td>@c.Phone</td>
             <td>@c.Email</td>
+            <td>
+                <a asp-page="/Clients/Documents" asp-route-ClientId="@c.Id">View / Upload</a>
+            </td>
         </tr>
     }
     </tbody>
