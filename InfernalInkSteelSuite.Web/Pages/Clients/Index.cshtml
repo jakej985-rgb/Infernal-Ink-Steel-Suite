@@ -1,0 +1,31 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Clients.IndexModel
+@{
+    ViewData["Title"] = "Clients";
+}
+
+<h2>Clients</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Documents</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model.Clients)
+    {
+        <tr>
+            <td>@c.FirstName @c.LastName</td>
+            <td>@c.Phone</td>
+            <td>@c.Email</td>
+            <td>
+                <a asp-page="/Clients/Documents" asp-route-ClientId="@c.Id">View / Upload</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,4 +1,37 @@
-[Bb]in/
-[Oo]bj/
-/.vs
-/.vs
+# Visual Studio Code
+.vscode/
+.vs/
+
+# .NET
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet
+packages/
+project.assets.json
+*.nuget.props
+*.nuget.targets
+
+# User-specific files
+*.suo
+*.user
+*.userprefs
+*.DS_Store
+
+# Build artifacts
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.zip
+*.tar.gz
+
+# Environment files
+.env
+appsettings.local.json
+
+# Other
+dotnet-install.sh

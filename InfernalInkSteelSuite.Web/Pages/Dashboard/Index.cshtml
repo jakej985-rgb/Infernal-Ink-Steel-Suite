@@ -1,0 +1,12 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2>Welcome, @Model.DisplayName</h2>
+
+<p>
+    <a asp-page="/Appointments/Index">View Today's Appointments</a> |
+    <a asp-page="/Clients/Index">View Clients</a>
+</p>
