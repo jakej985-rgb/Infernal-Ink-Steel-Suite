@@ -40,7 +40,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(d => d.ClientId);
 
         modelBuilder.Entity<Document>()
-            .HasOne(d => d.UploadedBy)
+            .HasOne(d => d.UploadedByUser)
             .WithMany()
             .HasForeignKey(d => d.UploadedByUserId);
     }
