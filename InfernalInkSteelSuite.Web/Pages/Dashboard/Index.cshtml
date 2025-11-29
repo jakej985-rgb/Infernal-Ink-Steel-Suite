@@ -2,11 +2,85 @@
 @model InfernalInkSteelSuite.Web.Pages.Dashboard.IndexModel
 @{
     ViewData["Title"] = "Dashboard";
+    Layout = "_DashboardLayout";
 }
 
-<h2>Welcome, @Model.DisplayName</h2>
+<h1 class="mb-4">Dashboard</h1>
 
-<p>
-    <a asp-page="/Appointments/Index">View Today's Appointments</a> |
-    <a asp-page="/Clients/Index">View Clients</a>
-</p>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Today's Appointments</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TodayAppointments.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var appt in Model.TodayAppointments)
+                        {
+                            <li class="list-group-item bg-transparent text-white border-secondary">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@appt.DateTime.ToShortTimeString()</strong>
+                                        <span class="ms-2">@appt.ClientName</span>
+                                    </div>
+                                    <span class="badge bg-primary">@appt.Status</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="card-text text-muted">No appointments scheduled for today.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Clients</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentClients.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var client in Model.RecentClients)
+                        {
+                            <li class="list-group-item bg-transparent text-white border-secondary">
+                                <div class="d-flex justify-content-between">
+                                    <span>@client.FirstName @client.LastName</span>
+                                    <small class="text-muted">@client.Email</small>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="card-text text-muted">No recent clients.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Shop Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Open:</span>
+                    <span class="@(Model.IsShopOpen ? "text-success" : "text-danger")">@(Model.IsShopOpen ? "Yes" :
+                        "No")</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Active Artists:</span>
+                    <span>@Model.ActiveArtistsCount</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

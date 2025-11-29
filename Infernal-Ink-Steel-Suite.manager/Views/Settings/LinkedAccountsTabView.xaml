@@ -32,6 +32,25 @@
                 </StackPanel>
             </Expander>
 
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔗" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock Text="Web Application Link" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                    </StackPanel>
+                </Expander.Header>
+                <StackPanel Margin="10">
+                    <TextBlock Text="Connect your desktop application to the web portal to enable remote dashboard access." 
+                               Foreground="{DynamicResource TextColor}" Margin="0,0,0,10" TextWrapping="Wrap"/>
+
+                    <Label Content="Web Portal URL" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
+                    <TextBox Text="{Binding WebAppUrl, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10"/>
+
+                    <Label Content="API Key" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
+                    <TextBox Text="{Binding ApiKey, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10"/>
+                </StackPanel>
+            </Expander>
+
             <Expander IsExpanded="False" Margin="0,0,0,10">
                 <Expander.Header>
                     <StackPanel Orientation="Horizontal">

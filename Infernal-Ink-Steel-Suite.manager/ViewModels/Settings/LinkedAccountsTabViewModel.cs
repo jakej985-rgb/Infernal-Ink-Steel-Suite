@@ -10,6 +10,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public string FacebookUrl { get; set; } = string.Empty;
         public string TwitterUrl { get; set; } = string.Empty;
         public string WebsiteUrl { get; set; } = string.Empty;
+        public string WebAppUrl { get; set; } = string.Empty;
+        public string ApiKey { get; set; } = string.Empty;
     }
 
     public class LinkedAccountsTabViewModel : SettingsTabViewModel
@@ -62,6 +64,28 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        private string _webAppUrl = string.Empty;
+        public string WebAppUrl
+        {
+            get => _webAppUrl;
+            set
+            {
+                _webAppUrl = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _apiKey = string.Empty;
+        public string ApiKey
+        {
+            get => _apiKey;
+            set
+            {
+                _apiKey = value;
+                OnPropertyChanged();
+            }
+        }
+
         public RelayCommand SaveIntegrationsCommand { get; }
 
         public LinkedAccountsTabViewModel(IShopSettingsRepository shopSettingsRepository)
@@ -85,6 +109,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                         FacebookUrl = linkedAccounts.FacebookUrl;
                         TwitterUrl = linkedAccounts.TwitterUrl;
                         WebsiteUrl = linkedAccounts.WebsiteUrl;
+                        WebAppUrl = linkedAccounts.WebAppUrl;
+                        ApiKey = linkedAccounts.ApiKey;
                     }
                 }
                 catch { }
@@ -98,7 +124,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 InstagramUrl = InstagramUrl,
                 FacebookUrl = FacebookUrl,
                 TwitterUrl = TwitterUrl,
-                WebsiteUrl = WebsiteUrl
+                WebsiteUrl = WebsiteUrl,
+                WebAppUrl = WebAppUrl,
+                ApiKey = ApiKey
             };
 
             var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
