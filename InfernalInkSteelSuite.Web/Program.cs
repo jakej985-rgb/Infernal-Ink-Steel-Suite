@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Razor Pages
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpContextAccessor();
+
 // Sessions to track logged-in user
 builder.Services.AddSession(options =>
 {
