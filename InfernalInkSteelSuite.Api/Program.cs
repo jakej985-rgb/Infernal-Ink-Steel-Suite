@@ -24,6 +24,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ISyncService, SyncService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
