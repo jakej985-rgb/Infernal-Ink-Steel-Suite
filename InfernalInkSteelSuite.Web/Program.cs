@@ -29,7 +29,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 if (string.IsNullOrEmpty(connectionString))
 {
     // Fallback or throw
-    connectionString = "Data Source=shop_manager.db";
+    connectionString = "Data Source=infernalinksteelsuite.db";
 }
 
 // Ensure database is initialized (optional for web app if desktop app does it, but good for safety)

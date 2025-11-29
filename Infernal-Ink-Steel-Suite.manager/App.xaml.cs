@@ -19,7 +19,7 @@ namespace InfernalInkSteelSuite
             {
                 SQLitePCL.Batteries.Init();
 
-                var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "shop_manager.db");
+                var dbPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "infernalinksteelsuite.db");
                 ConnectionString = $"Data Source={dbPath}";
 
                 var databaseManager = new DatabaseManager(ConnectionString);
@@ -46,7 +46,7 @@ namespace InfernalInkSteelSuite
             SettingsUpdateService.OnSettingsChanged += () => ApplyFontSize();
         }
 
-        private void ApplyFontSize()
+        private static void ApplyFontSize()
         {
             try
             {
