@@ -108,6 +108,7 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@notes", appointment.Notes);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
+            cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
             cmd.ExecuteNonQuery();
         }
 

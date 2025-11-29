@@ -169,6 +169,15 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "shopsettings", "ShopMinimumRate", "REAL NOT NULL DEFAULT 0");
             EnsureColumnExists(connection, "users", "HourlyRate", "DECIMAL NOT NULL DEFAULT 150");
             EnsureColumnExists(connection, "users", "SpeedFactor", "DOUBLE NOT NULL DEFAULT 1.0");
+            EnsureColumnExists(connection, "users", "LastLoginAt", "TEXT");
+            EnsureColumnExists(connection, "users", "IsActive", "INTEGER", "1");
+            EnsureColumnExists(connection, "users", "IsDeleted", "INTEGER", "0");
+            EnsureColumnExists(connection, "users", "DeletedAt", "TEXT");
+            EnsureColumnExists(connection, "users", "Department", "TEXT", "''");
+            EnsureColumnExists(connection, "users", "CommissionRate", "REAL", "0");
+            EnsureColumnExists(connection, "users", "FontSize", "INTEGER", "14");
+            EnsureColumnExists(connection, "users", "KeyboardShortcutsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "users", "PermissionsJson", "TEXT", "''");
             EnsureColumnExists(connection, "clients", "photoPath", "TEXT DEFAULT ''");
         }
 
@@ -202,12 +211,13 @@ namespace InfernalInkSteelSuite.Data
             return false;
         }
 
-        private static void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition)
+        private static void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition = "TEXT", string defaultValue = "")
         {
             if (!TableHasColumn(connection, tableName, columnName))
             {
                 var command = connection.CreateCommand();
-                command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}";
+                var defaultClause = string.IsNullOrEmpty(defaultValue) ? "" : $" DEFAULT {defaultValue}";
+                command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}{defaultClause}";
                 command.ExecuteNonQuery();
             }
         }
