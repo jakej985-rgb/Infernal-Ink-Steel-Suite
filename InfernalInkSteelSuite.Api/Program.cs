@@ -224,7 +224,7 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
     var user = httpContext.User;
     if (user.IsInRole(UserRole.Artist.ToString()))
     {
-        var userId = int.Parse(user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+        var userId = int.Parse(user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
         query = query.Where(a => a.ArtistId == userId);
     }
     else if (artistId.HasValue)
@@ -331,7 +331,7 @@ app.MapPost("/documents", async (
         await file.CopyToAsync(stream);
     }
 
-    var userId = int.Parse(httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+    var userId = int.Parse(httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
 
     var doc = new Document
     {
