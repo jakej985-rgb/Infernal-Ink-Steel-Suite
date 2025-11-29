@@ -7,10 +7,20 @@ namespace InfernalInkSteelSuite.Web.Services;
 public class ApiClient
 {
     private readonly HttpClient _http;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ApiClient(HttpClient http)
+    public ApiClient(HttpClient http, IHttpContextAccessor httpContextAccessor)
     {
         _http = http;
+        _httpContextAccessor = httpContextAccessor;
+
+        // Add the JWT token to the request headers for every request
+        var token = _httpContextAccessor.HttpContext?.Session.GetString("Token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            _http.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
     }
 
     // DTOs matching the API responses
