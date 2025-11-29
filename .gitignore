@@ -35,3 +35,11 @@ appsettings.local.json
 
 # Other
 dotnet-install.sh
+
+# Databases
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log

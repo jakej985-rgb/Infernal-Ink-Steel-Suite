@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Razor Pages
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpContextAccessor();
+
 // Sessions to track logged-in user
 builder.Services.AddSession(options =>
 {
@@ -35,6 +37,9 @@ app.UseRouting();
 app.UseSession();
 
 app.UseAuthorization();
+
+// 👇 add this line BEFORE MapRazorPages
+app.MapGet("/", () => Results.Redirect("/Account/Login"));
 
 app.MapRazorPages();
 

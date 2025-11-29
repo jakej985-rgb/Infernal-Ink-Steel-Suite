@@ -45,6 +45,7 @@ public class LoginModel : PageModel
         HttpContext.Session.SetString("Username", result.Username);
         HttpContext.Session.SetString("DisplayName", result.DisplayName);
         HttpContext.Session.SetString("Role", result.Role);
+        HttpContext.Session.SetString("Token", result.Token);
 
         return RedirectToPage("/Dashboard/Index");
     }
