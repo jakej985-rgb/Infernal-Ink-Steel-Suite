@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfernalInkSteelSuite.Domain
 {
@@ -12,12 +13,22 @@ namespace InfernalInkSteelSuite.Domain
             set { _id = value; OnPropertyChanged(nameof(Id)); }
         }
 
+        // Sync Properties
+        public Guid SyncId { get; set; } = Guid.NewGuid();
+        public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
+        public string LastModifiedBy { get; set; } = "";
+        public bool IsDeleted { get; set; }
+        public byte[]? RowVersion { get; set; }
+
         private int _clientId;
         public int ClientId
         {
             get { return _clientId; }
             set { _clientId = value; OnPropertyChanged(nameof(ClientId)); }
         }
+
+        [NotMapped]
+        public Guid? ClientSyncId { get; set; }
 
         private int _userId;
         public int UserId
