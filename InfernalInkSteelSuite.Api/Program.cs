@@ -19,7 +19,17 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    if (!string.IsNullOrEmpty(connectionString))
+    {
+        var dbPath = connectionString.Replace("Data Source=", "");
+        var dbDir = Path.GetDirectoryName(dbPath);
+        if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
+        {
+            Directory.CreateDirectory(dbDir);
+        }
+    }
+    options.UseSqlite(connectionString);
 });
 
 builder.Services.AddSingleton<PasswordHasher>();

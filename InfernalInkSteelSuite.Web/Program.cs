@@ -32,9 +32,17 @@ if (string.IsNullOrEmpty(connectionString))
     connectionString = "Data Source=C:\\InfernalInkSteelSuite\\infernalinksteelsuite.db";
 }
 
-// Ensure database is initialized (optional for web app if desktop app does it, but good for safety)
-// var dbManager = new DatabaseManager(connectionString);
-// dbManager.InitializeDatabase();
+// Ensure database directory exists
+var dbPath = connectionString.Replace("Data Source=", "");
+var dbDir = Path.GetDirectoryName(dbPath);
+if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
+{
+    Directory.CreateDirectory(dbDir);
+}
+
+// Ensure database is initialized
+var dbManager = new DatabaseManager(connectionString);
+dbManager.InitializeDatabase();
 
 builder.Services.AddScoped<IUserRepository>(sp => new UserRepository(connectionString));
 builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
