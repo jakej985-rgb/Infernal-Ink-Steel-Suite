@@ -36,6 +36,9 @@ app.UseSession();
 
 app.UseAuthorization();
 
+// 👇 add this line BEFORE MapRazorPages
+app.MapGet("/", () => Results.Redirect("/Account/Login"));
+
 app.MapRazorPages();
 
 app.Run();
