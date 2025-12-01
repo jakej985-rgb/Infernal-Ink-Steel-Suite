@@ -1,0 +1,16 @@
+[Unit]
+Description=Infernal Ink & Steel Suite Web
+After=network.target infernal-api.service
+
+[Service]
+WorkingDirectory=/opt/infernal-publish/Web
+ExecStart=/usr/bin/dotnet InfernalInkSteelSuite.Web.dll
+Restart=always
+RestartSec=10
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5002
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

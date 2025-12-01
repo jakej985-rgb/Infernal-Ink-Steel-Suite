@@ -4,6 +4,11 @@ using InfernalInkSteelSuite.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
 // Razor Pages
 builder.Services.AddRazorPages();
 
@@ -28,8 +33,7 @@ builder.Services.AddHttpClient<ApiClient>((sp, http) =>
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
 {
-    // Fallback or throw
-    connectionString = "Data Source=C:\\InfernalInkSteelSuite\\infernalinksteelsuite.db";
+    throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 }
 
 // Ensure database directory exists

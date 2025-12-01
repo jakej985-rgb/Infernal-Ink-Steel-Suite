@@ -1,0 +1,19 @@
+[Unit]
+Description=Infernal Ink & Steel Suite API
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/infernal-publish/Api
+ExecStart=/usr/bin/dotnet InfernalInkSteelSuite.Api.dll
+Restart=always
+RestartSec=10
+# Environment variables
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DB_PATH=/opt/infernal-data/infernalinksteel.db
+Environment=FILE_ROOT=/opt/infernal-uploads
+Environment=ASPNETCORE_URLS=http://0.0.0.0:5001
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
