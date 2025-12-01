@@ -19,7 +19,7 @@ namespace InfernalInkSteelSuite
             {
                 SQLitePCL.Batteries.Init();
 
-                var dbPath = "C:\\InfernalInkSteelSuite\\infernalinksteelsuite.db";
+                var dbPath = "C:\\InfernalInkSteelSuite\\Data\\infernalinksteel.db";
                 var dbDir = System.IO.Path.GetDirectoryName(dbPath);
                 if (!string.IsNullOrEmpty(dbDir) && !System.IO.Directory.Exists(dbDir))
                 {
