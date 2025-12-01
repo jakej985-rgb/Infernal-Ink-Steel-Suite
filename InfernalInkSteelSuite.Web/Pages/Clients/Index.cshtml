@@ -6,26 +6,31 @@
 
 <h2>Clients</h2>
 
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+</p>
+
 <table class="table">
     <thead>
-    <tr>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Documents</th>
-    </tr>
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var c in Model.Clients)
-    {
-        <tr>
-            <td>@c.FirstName @c.LastName</td>
-            <td>@c.Phone</td>
-            <td>@c.Email</td>
-            <td>
-                <a asp-page="/Clients/Documents" asp-route-ClientId="@c.Id">View / Upload</a>
-            </td>
-        </tr>
-    }
+        @foreach (var c in Model.Clients)
+        {
+            <tr>
+                <td>@c.FirstName @c.LastName</td>
+                <td>@c.Phone</td>
+                <td>@c.Email</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@c.Id">Edit</a> |
+                    <a asp-page="/Clients/Documents" asp-route-ClientId="@c.Id">Documents</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
