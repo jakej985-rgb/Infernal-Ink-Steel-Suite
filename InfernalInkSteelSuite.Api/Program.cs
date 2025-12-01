@@ -1,7 +1,8 @@
-using InfernalInkSteelSuite.Api.Data;
+using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Api.Dtos;
 using InfernalInkSteelSuite.Api.Models;
 using InfernalInkSteelSuite.Api.Services;
+using InfernalInkSteelSuite.Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,16 +22,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    if (!string.IsNullOrEmpty(connectionString))
-    {
-        var dbPath = connectionString.Replace("Data Source=", "");
-        var dbDir = Path.GetDirectoryName(dbPath);
-        if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
-        {
-            Directory.CreateDirectory(dbDir);
-        }
-    }
-    options.UseSqlite(connectionString);
+    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddSingleton<PasswordHasher>();
@@ -94,12 +87,18 @@ app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db, Passwor
     if (user is null || !hasher.VerifyPassword(user.PasswordHash, request.Password))
         return Results.Unauthorized();
 
+    // Map string Role to Enum for response
+    if (!Enum.TryParse<UserRole>(user.Role, true, out var roleEnum))
+    {
+        roleEnum = UserRole.Artist; // Default fallback
+    }
+
     var response = new LoginResponse
     {
         UserId = user.Id,
         Username = user.Username,
-        DisplayName = user.DisplayName,
-        Role = user.Role,
+        DisplayName = user.DisplayName ?? user.Username, // Domain.User has DisplayName? No, it has Username. Wait, Domain.User doesn't have DisplayName!
+        Role = roleEnum,
         Token = tokenService.GenerateToken(user)
     };
 
@@ -154,14 +153,23 @@ app.MapDelete("/clients/{id:int}", async (int id, AppDbContext db) =>
 
 // ---- Users ----
 app.MapGet("/users", async (AppDbContext db) =>
-    await db.Users.Select(u => new { u.Id, u.Username, u.DisplayName, u.Role, u.IsActive }).ToListAsync())
-    .RequireAuthorization("IsAdmin");
+{
+    var users = await db.Users.ToListAsync();
+    return Results.Ok(users.Select(u =>
+    {
+        Enum.TryParse<UserRole>(u.Role, true, out var roleEnum);
+        return new { u.Id, u.Username, DisplayName = u.Username, Role = roleEnum, u.IsActive };
+    }));
+}).RequireAuthorization("IsAdmin");
 
 app.MapGet("/users/{id:int}", async (int id, AppDbContext db) =>
-    await db.Users.FindAsync(id) is { } user
-        ? Results.Ok(new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive })
-        : Results.NotFound())
-    .RequireAuthorization("IsAdmin");
+{
+    var user = await db.Users.FindAsync(id);
+    if (user is null) return Results.NotFound();
+
+    Enum.TryParse<UserRole>(user.Role, true, out var roleEnum);
+    return Results.Ok(new { user.Id, user.Username, DisplayName = user.Username, Role = roleEnum, user.IsActive });
+}).RequireAuthorization("IsAdmin");
 
 app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
 {
@@ -169,13 +177,13 @@ app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDb
     {
         Username = newUser.Username,
         PasswordHash = hasher.HashPassword(newUser.Password),
-        DisplayName = newUser.DisplayName,
-        Role = newUser.Role,
+        // Domain.User doesn't have DisplayName, use Username or ignore
+        Role = newUser.Role.ToString(),
         IsActive = true
     };
     db.Users.Add(user);
     await db.SaveChangesAsync();
-    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, user.DisplayName, user.Role, user.IsActive });
+    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, Role = newUser.Role, user.IsActive });
 }).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
@@ -184,12 +192,12 @@ app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbConte
     if (existing is null) return Results.NotFound();
 
     existing.Username = updateDto.Username;
-    existing.DisplayName = updateDto.DisplayName;
-    existing.Role = updateDto.Role;
+    // existing.DisplayName = updateDto.DisplayName; // Domain.User doesn't have DisplayName
+    existing.Role = updateDto.Role.ToString();
     existing.IsActive = updateDto.IsActive;
 
     await db.SaveChangesAsync();
-    return Results.Ok(new { existing.Id, existing.Username, existing.DisplayName, existing.Role, existing.IsActive });
+    return Results.Ok(new { existing.Id, existing.Username, DisplayName = existing.Username, Role = updateDto.Role, existing.IsActive });
 }).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
@@ -224,42 +232,47 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
         .Include(a => a.Artist)
         .AsQueryable();
 
+    // Domain.Appointment uses DateTime (Start)
     if (date.HasValue)
     {
         var dayStart = date.Value.Date;
         var dayEnd = dayStart.AddDays(1);
-        query = query.Where(a => a.StartTime >= dayStart && a.StartTime < dayEnd);
+        query = query.Where(a => a.DateTime >= dayStart && a.DateTime < dayEnd);
     }
 
     var user = httpContext.User;
     if (user.IsInRole(UserRole.Artist.ToString()))
     {
         var userId = int.Parse(user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
-        query = query.Where(a => a.ArtistId == userId);
+        query = query.Where(a => a.UserId == userId); // Domain uses UserId
     }
     else if (artistId.HasValue)
     {
-        query = query.Where(a => a.ArtistId == artistId.Value);
+        query = query.Where(a => a.UserId == artistId.Value);
     }
 
 
-    var results = await query
-        .Select(a => new AppointmentDto(
+    var appointments = await query.ToListAsync();
+
+    var results = appointments.Select(a =>
+    {
+        Enum.TryParse<AppointmentStatus>(a.Status, true, out var statusEnum);
+        return new AppointmentDto(
             a.Id,
             a.ClientId,
-            a.ArtistId,
-            a.StartTime,
-            a.EndTime,
+            a.ArtistId, // Alias
+            a.StartTime, // Alias
+            a.EndTime,   // Alias
             a.ServiceType,
             a.ServiceCategory,
-            a.Status,
+            statusEnum,
             a.QuotedPrice,
             a.FinalPrice,
             a.Notes,
             new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email),
-            a.Artist.DisplayName
-        ))
-        .ToListAsync();
+            a.Artist.Username // Domain.User doesn't have DisplayName
+        );
+    }).ToList();
 
     return Results.Ok(results);
 }).RequireAuthorization("IsArtist");
@@ -276,8 +289,8 @@ app.MapPut("/appointments/{id:int}", async (int id, Appointment update, AppDbCon
     var existing = await db.Appointments.FindAsync(id);
     if (existing is null) return Results.NotFound();
 
-    existing.StartTime = update.StartTime;
-    existing.EndTime = update.EndTime;
+    existing.StartTime = update.StartTime; // Alias updates DateTime
+    existing.EndTime = update.EndTime;     // Alias updates DurationMinutes
     existing.ServiceType = update.ServiceType;
     existing.ServiceCategory = update.ServiceCategory;
     existing.Status = update.Status;
@@ -285,7 +298,7 @@ app.MapPut("/appointments/{id:int}", async (int id, Appointment update, AppDbCon
     existing.FinalPrice = update.FinalPrice;
     existing.Notes = update.Notes;
     existing.ClientId = update.ClientId;
-    existing.ArtistId = update.ArtistId;
+    existing.ArtistId = update.ArtistId; // Alias updates UserId
 
     await db.SaveChangesAsync();
     return Results.Ok(existing);
@@ -392,15 +405,15 @@ using (var scope = app.Services.CreateScope())
             {
                 Username = "admin",
                 PasswordHash = hasher.HashPassword("admin123"),
-                DisplayName = "Shop Admin",
-                Role = UserRole.Admin
+                // DisplayName = "Shop Admin", // Domain.User doesn't have DisplayName
+                Role = UserRole.Admin.ToString()
             },
             new User
             {
                 Username = "artist1",
                 PasswordHash = hasher.HashPassword("artist123"),
-                DisplayName = "Artist One",
-                Role = UserRole.Artist
+                // DisplayName = "Artist One",
+                Role = UserRole.Artist.ToString()
             }
         );
 

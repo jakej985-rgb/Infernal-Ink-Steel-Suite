@@ -1,6 +1,6 @@
 using System;
 
-namespace InfernalInkSteelSuite.Api.Models
+namespace InfernalInkSteelSuite.Domain
 {
     public interface ISyncEntity
     {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfernalInkSteelSuite.Domain
 {
-    public class Appointment : INotifyPropertyChanged
+    public class Appointment : INotifyPropertyChanged, ISyncEntity
     {
         private int _id;
         public int Id
@@ -79,6 +79,20 @@ namespace InfernalInkSteelSuite.Domain
             set { _priceCharged = value; OnPropertyChanged(nameof(PriceCharged)); }
         }
 
+        private decimal? _quotedPrice;
+        public decimal? QuotedPrice
+        {
+            get { return _quotedPrice; }
+            set { _quotedPrice = value; OnPropertyChanged(nameof(QuotedPrice)); }
+        }
+
+        private decimal? _finalPrice;
+        public decimal? FinalPrice
+        {
+            get { return _finalPrice; }
+            set { _finalPrice = value; OnPropertyChanged(nameof(FinalPrice)); }
+        }
+
         private string _notes = "";
         public string Notes
         {
@@ -114,10 +128,35 @@ namespace InfernalInkSteelSuite.Domain
             set { _isBlockOff = value; OnPropertyChanged(nameof(IsBlockOff)); }
         }
 
+        // Compatibility properties for API
+        [NotMapped]
+        public DateTime StartTime
+        {
+            get => DateTime;
+            set => DateTime = value;
+        }
+
+        [NotMapped]
+        public DateTime EndTime
+        {
+            get => DateTime.AddMinutes(DurationMinutes);
+            set => DurationMinutes = (int)(value - DateTime).TotalMinutes;
+        }
+
+        [NotMapped]
+        public int ArtistId
+        {
+            get => UserId;
+            set => UserId = value;
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public virtual Client Client { get; set; } = null!;
+        public virtual User Artist { get; set; } = null!;
     }
 }

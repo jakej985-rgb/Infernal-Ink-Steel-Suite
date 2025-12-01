@@ -5,6 +5,7 @@ using System.Security.Principal;
 
 namespace InfernalInkSteelSuite.Web.Pages
 {
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     public class DebugModel : PageModel
     {
         private readonly IConfiguration _configuration;
@@ -38,7 +39,7 @@ namespace InfernalInkSteelSuite.Web.Pages
             UserName = WindowsIdentity.GetCurrent().Name;
 
             ConnectionStringConfig = _configuration.GetConnectionString("DefaultConnection") ?? "Not Found";
-            
+
             if (ConnectionStringConfig.Contains("Data Source="))
             {
                 DbPath = ConnectionStringConfig.Replace("Data Source=", "").Trim();
@@ -84,7 +85,7 @@ namespace InfernalInkSteelSuite.Web.Pages
                 using var conn = new SqliteConnection(ConnectionStringConfig);
                 conn.Open();
                 ConnectionResult = "Success! State: " + conn.State;
-                
+
                 using var cmd = conn.CreateCommand();
                 cmd.CommandText = "SELECT sqlite_version()";
                 var version = cmd.ExecuteScalar()?.ToString();

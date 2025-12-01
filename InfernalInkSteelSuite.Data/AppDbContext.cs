@@ -1,9 +1,9 @@
-using InfernalInkSteelSuite.Api.Models;
+using InfernalInkSteelSuite.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace InfernalInkSteelSuite.Api.Data;
+namespace InfernalInkSteelSuite.Data;
 
 public class AppDbContext : DbContext
 {
@@ -59,6 +59,10 @@ public class AppDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<User>()
+            .Property(u => u.Username)
+            .HasMaxLength(256);
+
+        modelBuilder.Entity<User>()
             .HasIndex(u => u.Username)
             .IsUnique();
 
@@ -68,10 +72,12 @@ public class AppDbContext : DbContext
             .HasForeignKey(a => a.ClientId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        // Artist relationship might need adjustment if User doesn't have Appointments collection
+        // Domain.User doesn't have Appointments collection, so WithMany() is empty
         modelBuilder.Entity<Appointment>()
             .HasOne(a => a.Artist)
             .WithMany()
-            .HasForeignKey(a => a.ArtistId)
+            .HasForeignKey(a => a.UserId) // Domain.Appointment uses UserId for Artist
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Document>()
@@ -81,7 +87,27 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Document>()
             .HasOne(d => d.UploadedByUser)
-            .WithMany()
+            .WithMany(u => u.UploadedDocuments)
             .HasForeignKey(d => d.UploadedByUserId);
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.HourlyRate)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.CommissionRate)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Appointment>()
+            .Property(a => a.PriceCharged)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Appointment>()
+            .Property(a => a.QuotedPrice)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Appointment>()
+            .Property(a => a.FinalPrice)
+            .HasColumnType("decimal(18,2)");
     }
 }

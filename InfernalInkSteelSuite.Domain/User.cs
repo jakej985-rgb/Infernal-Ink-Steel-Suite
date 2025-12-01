@@ -6,6 +6,7 @@ namespace InfernalInkSteelSuite.Domain
     {
         public int Id { get; set; }
         public string Username { get; set; } = "";
+        public string DisplayName { get; set; } = "";
         public string PasswordHash { get; set; } = string.Empty;
         public string Role { get; set; } = "";
         public string ThemeKey { get; set; } = "InfernalNeon";
@@ -30,5 +31,7 @@ namespace InfernalInkSteelSuite.Domain
         {
             return string.Equals(Role?.Trim(), "Admin", StringComparison.OrdinalIgnoreCase);
         }
+
+        public virtual ICollection<Document> UploadedDocuments { get; set; } = new List<Document>();
     }
 }

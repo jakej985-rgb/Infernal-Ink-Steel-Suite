@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace InfernalInkSteelSuite.Domain
 {
-    public class Client : INotifyPropertyChanged
+    public class Client : INotifyPropertyChanged, ISyncEntity
     {
         private string _firstName = "";
         private string _lastName = "";
@@ -79,6 +79,9 @@ namespace InfernalInkSteelSuite.Domain
                 return string.Join(" ", nameParts);
             }
         }
+
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

@@ -1,5 +1,5 @@
-using InfernalInkSteelSuite.Api.Data;
-using InfernalInkSteelSuite.Api.Models;
+using InfernalInkSteelSuite.Data;
+using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Domain.Sync;
 using Microsoft.EntityFrameworkCore;
 
@@ -141,7 +141,7 @@ namespace InfernalInkSteelSuite.Api.Services
 
         public async Task ProcessDocumentBatchAsync(SyncBatchRequestDto<Document> batch)
         {
-             foreach (var change in batch.Changes)
+            foreach (var change in batch.Changes)
             {
                 var payload = change.Payload;
                 var existing = await _context.Documents
@@ -225,7 +225,7 @@ namespace InfernalInkSteelSuite.Api.Services
             existing.Title = payload.Title;
             existing.FilePath = payload.FilePath;
 
-             if (payload.ClientId > 0) existing.ClientId = payload.ClientId;
+            if (payload.ClientId > 0) existing.ClientId = payload.ClientId;
 
             existing.LastModifiedUtc = DateTime.UtcNow;
             existing.IsDeleted = payload.IsDeleted;

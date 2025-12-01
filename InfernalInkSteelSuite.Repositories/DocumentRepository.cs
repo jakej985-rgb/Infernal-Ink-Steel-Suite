@@ -24,7 +24,7 @@ namespace InfernalInkSteelSuite.Repositories
                 return new Document
                 {
                     Id = reader.GetInt32(0),
-                    UserId = reader.GetInt32(1),
+                    UploadedByUserId = reader.GetInt32(1),
                     ClientId = reader.GetInt32(2),
                     Title = reader.GetString(3),
                     FilePath = reader.GetString(4),
@@ -48,7 +48,7 @@ namespace InfernalInkSteelSuite.Repositories
                 result.Add(new Document
                 {
                     Id = reader.GetInt32(0),
-                    UserId = reader.GetInt32(1),
+                    UploadedByUserId = reader.GetInt32(1),
                     ClientId = reader.GetInt32(2),
                     Title = reader.GetString(3),
                     FilePath = reader.GetString(4),
@@ -92,7 +92,7 @@ namespace InfernalInkSteelSuite.Repositories
                 result.Add(new Document
                 {
                     Id = reader.GetInt32(0),
-                    UserId = reader.GetInt32(1),
+                    UploadedByUserId = reader.GetInt32(1),
                     ClientId = reader.GetInt32(2),
                     Title = reader.GetString(3),
                     FilePath = reader.GetString(4),
@@ -111,7 +111,7 @@ namespace InfernalInkSteelSuite.Repositories
                 @"INSERT INTO documents (userId, clientId, title, filePath, createdAt)
                   VALUES ($userId, $clientId, $title, $filePath, $createdAt);";
 
-            command.Parameters.AddWithValue("$userId", document.UserId);
+            command.Parameters.AddWithValue("$userId", document.UploadedByUserId);
             command.Parameters.AddWithValue("$clientId", document.ClientId);
             command.Parameters.AddWithValue("$title", document.Title);
             command.Parameters.AddWithValue("$filePath", document.FilePath);
@@ -137,7 +137,7 @@ namespace InfernalInkSteelSuite.Repositories
                       createdAt = $createdAt
                   WHERE id = $id;";
 
-            command.Parameters.AddWithValue("$userId", document.UserId);
+            command.Parameters.AddWithValue("$userId", document.UploadedByUserId);
             command.Parameters.AddWithValue("$clientId", document.ClientId);
             command.Parameters.AddWithValue("$title", document.Title);
             command.Parameters.AddWithValue("$filePath", document.FilePath);

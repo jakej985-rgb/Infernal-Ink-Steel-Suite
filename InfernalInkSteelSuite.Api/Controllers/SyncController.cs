@@ -1,5 +1,6 @@
 using InfernalInkSteelSuite.Api.Models;
 using InfernalInkSteelSuite.Api.Services;
+using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Domain.Sync;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
