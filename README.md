@@ -1,49 +1,73 @@
-# Infernal-Ink-Steel-Suite
-# ShopManager
+# Infernal Ink & Steel Suite
 
-Modern Windows tattoo shop manager for handling appointments, clients, artists, and day-to-day studio operations.
-
----
+A comprehensive management solution for tattoo and piercing studios, featuring a robust Desktop Manager and a modern Web Portal.
 
 ## Overview
 
-**ShopManager** is a **Windows desktop application** built with **C++** in **Visual Studio 2022** to help tattoo and piercing studios manage their business in one place. It focuses on a clean, themeable UI and workflows tailored specifically for studios instead of generic POS software.
+**Infernal Ink & Steel Suite** consists of three main components:
+1.  **Desktop Manager**: A WPF application for in-shop management (appointments, clients, point-of-sale).
+2.  **Web Portal**: A React-based web application for remote access (artists viewing schedules, clients booking).
+3.  **Backend API**: A .NET Core API that serves as the central hub, synchronizing data between Desktop and Web via a shared SQLite database.
 
----
+## Prerequisites
 
-## Features
+- **.NET 8.0 SDK**: [Download here](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+- **Node.js (v18+)**: [Download here](https://nodejs.org/)
+- **Visual Studio 2022** (Recommended for Desktop development) or **VS Code**.
 
-### 🗓 Appointment Management
-- Create, edit, and cancel appointments  
-- Link appointments to clients and artists  
-- Filter, search, and browse upcoming bookings  
-- Double-click or context actions for quick edits
+## Setup Instructions
 
-### 👤 Client & User Management
-- Store client details and visit history  
-- User accounts with admin / non-admin roles  
-- Database-backed user management via dedicated `UserDB` / `AppointmentDB` classes  
+### 1. Database Setup
+The application uses a shared SQLite database.
+1.  Create the directory: `C:\InfernalInkSteelSuite\Data`
+2.  The application will automatically create the database file (`infernalinksteel.db`) on first run.
 
-### 🎨 Theme & UI System
-- Centralized theme manager for consistent colors, fonts, and styles  
-- Accent color support for branding your studio  
-- Optional glow/shadow/highlight effects for important buttons and UI elements  
+### 2. Backend API
+The API handles data synchronization and business logic.
+1.  Navigate to `InfernalInkSteelSuite.Api`.
+2.  Run the API:
+    ```bash
+    dotnet run
+    ```
+    The API will start on `http://localhost:5000`.
 
-### 📅 Integrations (Work in Progress)
-- Integration layer for online calendars (e.g. Google Calendar, Apple ecosystem)  
-- HTTP clients built on **cpr** and **cpp-httplib**  
-- Xodo Sign client for handling digital document signing workflows  
+### 3. Web Application
+The Web Portal is a React SPA.
+1.  Navigate to `InfernalInkSteelSuite.Web/ClientApp`.
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+3.  Start the development server:
+    ```bash
+    npm run dev
+    ```
+    The Web App will start on `http://localhost:5173` (or similar, check console output).
+4.  **Production Build**:
+    ```bash
+    npm run build
+    ```
 
-### 🔐 Networking & Security
-- Uses **curl** and **OpenSSL** to talk to remote APIs over HTTPS  
-- **cpr** and **cpp-httplib** for higher-level HTTP(S) requests  
-- Designed with secure TLS communication in mind  
+### 4. Desktop Application
+The Desktop Manager is a WPF app.
+1.  Open `Infernal-Ink-Steel-Suite.sln` in Visual Studio.
+2.  Set `Infernal-Ink-Steel-Suite.manager` as the startup project.
+3.  Build and Run (F5).
 
----
+## Configuration
 
-## Building (Visual Studio 2022)
+### Shared Database Path
+Both the API and Desktop App are configured to use the same database file:
+- **Path**: `C:\InfernalInkSteelSuite\Data\infernalinksteel.db`
+- **Configuration**:
+    - **API**: `InfernalInkSteelSuite.Api/appsettings.json`
+    - **Desktop**: `Infernal-Ink-Steel-Suite.manager/App.xaml.cs`
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/<your-user>/<your-repo>.git
-   cd <your-repo>
+### Theme
+The application uses the "Infernal Neon" theme, characterized by dark backgrounds (`#050510`) and vibrant accents (Purple `#8A2BE2`, Cyan `#00E5FF`).
+
+## Troubleshooting
+
+- **Database Errors**: Ensure the `C:\InfernalInkSteelSuite\Data` directory exists and the user has write permissions.
+- **API Connection**: Ensure the API is running on port 5000 before starting the Web App.
+- **Build Errors**: Run `dotnet restore` and `npm install` to ensure all packages are downloaded.
