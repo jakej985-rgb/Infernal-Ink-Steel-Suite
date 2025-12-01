@@ -64,13 +64,13 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         }
 
         public string[] ReminderTimingOptions { get; } =
-        {
+        [
             "1 hour before",
             "2 hours before",
             "4 hours before",
             "1 day before",
             "2 days before"
-        };
+        ];
 
         public RelayCommand SaveNotificationSettingsCommand { get; }
 

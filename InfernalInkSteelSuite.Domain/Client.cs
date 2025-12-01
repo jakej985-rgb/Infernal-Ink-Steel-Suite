@@ -80,8 +80,8 @@ namespace InfernalInkSteelSuite.Domain
             }
         }
 
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-        public virtual ICollection<Document> Documents { get; set; } = new List<Document>();
+        public virtual ICollection<Appointment> Appointments { get; set; } = [];
+        public virtual ICollection<Document> Documents { get; set; } = [];
 
         protected virtual void OnPropertyChanged(string propertyName)
         {

@@ -4,16 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Clients;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient apiClient) : PageModel
 {
-    private readonly ApiClient _apiClient;
+    private readonly ApiClient _apiClient = apiClient;
 
-    public IndexModel(ApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
-
-    public List<ApiClient.ClientDto> Clients { get; set; } = new();
+    public List<ApiClient.ClientDto> Clients { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {

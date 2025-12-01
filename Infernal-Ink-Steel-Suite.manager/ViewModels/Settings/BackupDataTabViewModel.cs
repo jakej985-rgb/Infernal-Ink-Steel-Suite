@@ -54,7 +54,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        public string[] BackupFrequencyOptions { get; } = { "Daily", "Weekly", "Monthly" };
+        public string[] BackupFrequencyOptions { get; } = ["Daily", "Weekly", "Monthly"];
 
         private int _retentionDays = 30;
         public int RetentionDays

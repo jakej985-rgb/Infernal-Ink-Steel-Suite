@@ -5,21 +5,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Clients;
 
-public class DocumentsModel : PageModel
+public class DocumentsModel(ApiClient apiClient) : PageModel
 {
-    private readonly ApiClient _apiClient;
-
-    public DocumentsModel(ApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
+    private readonly ApiClient _apiClient = apiClient;
 
     [BindProperty(SupportsGet = true)]
     public int ClientId { get; set; }
 
     public ApiClient.ClientDto? Client { get; set; }
 
-    public List<ApiClient.DocumentDto> Documents { get; set; } = new();
+    public List<ApiClient.DocumentDto> Documents { get; set; } = [];
 
     [BindProperty]
     [Display(Name = "File")]

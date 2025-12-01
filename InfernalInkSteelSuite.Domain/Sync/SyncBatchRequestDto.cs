@@ -4,6 +4,6 @@ namespace InfernalInkSteelSuite.Domain.Sync
 {
     public class SyncBatchRequestDto<T>
     {
-        public List<SyncChangeDto<T>> Changes { get; set; } = new();
+        public List<SyncChangeDto<T>> Changes { get; set; } = [];
     }
 }

@@ -485,7 +485,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 catch { }
             }
 
-            if (settings == null) settings = [];
+            settings ??= [];
 
             SpecialHours.Clear();
             foreach (var s in settings.OrderBy(x => x.Date))
@@ -672,8 +672,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             {
                 var lowerSearch = SearchText.ToLower();
                 FilteredUsers = new ObservableCollection<User>(Users.Where(u =>
-                    u.Username.ToLower().Contains(lowerSearch) ||
-                    u.Role.ToLower().Contains(lowerSearch)));
+                    u.Username.Contains(lowerSearch, StringComparison.OrdinalIgnoreCase) ||
+                    u.Role.Contains(lowerSearch, StringComparison.OrdinalIgnoreCase)));
             }
         }
 

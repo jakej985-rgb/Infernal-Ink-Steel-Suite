@@ -4,19 +4,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Appointments;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient apiClient) : PageModel
 {
-    private readonly ApiClient _apiClient;
-
-    public IndexModel(ApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
+    private readonly ApiClient _apiClient = apiClient;
 
     [BindProperty(SupportsGet = true)]
     public DateTime Day { get; set; } = DateTime.Today;
 
-    public List<ApiClient.AppointmentDto> Appointments { get; set; } = new();
+    public List<ApiClient.AppointmentDto> Appointments { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {

@@ -74,7 +74,7 @@ public class ApiClient
     public async Task<List<ClientDto>> GetClientsAsync()
     {
         var result = await _http.GetFromJsonAsync<List<ClientDto>>("/clients");
-        return result ?? new List<ClientDto>();
+        return result ?? [];
     }
 
     public async Task<ClientDto?> GetClientAsync(int id)
@@ -90,13 +90,13 @@ public class ApiClient
         var qs = query.Count > 0 ? "?" + string.Join("&", query) : string.Empty;
 
         var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"/appointments{qs}");
-        return result ?? new List<AppointmentDto>();
+        return result ?? [];
     }
 
     public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
     {
         var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"/documents/by-client/{clientId}");
-        return result ?? new List<DocumentDto>();
+        return result ?? [];
     }
 
     public async Task<DocumentDto?> UploadDocumentAsync(
@@ -105,10 +105,11 @@ public class ApiClient
         string? title,
         IFormFile file)
     {
-        using var content = new MultipartFormDataContent();
-
-        content.Add(new StringContent(clientId.ToString()), "clientId");
-        content.Add(new StringContent(uploadedByUserId.ToString()), "uploadedByUserId");
+        using var content = new MultipartFormDataContent
+        {
+            { new StringContent(clientId.ToString()), "clientId" },
+            { new StringContent(uploadedByUserId.ToString()), "uploadedByUserId" }
+        };
 
         if (!string.IsNullOrWhiteSpace(title))
             content.Add(new StringContent(title), "title");

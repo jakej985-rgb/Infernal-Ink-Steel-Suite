@@ -6,10 +6,10 @@ using System.Security.Principal;
 namespace InfernalInkSteelSuite.Web.Pages
 {
     [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-    public class DebugModel : PageModel
+    public class DebugModel(IConfiguration configuration, IWebHostEnvironment env) : PageModel
     {
-        private readonly IConfiguration _configuration;
-        private readonly IWebHostEnvironment _env;
+        private readonly IConfiguration _configuration = configuration;
+        private readonly IWebHostEnvironment _env = env;
 
         public string ContentRootPath { get; set; } = "";
         public string WebRootPath { get; set; } = "";
@@ -25,18 +25,19 @@ namespace InfernalInkSteelSuite.Web.Pages
         public string ConnectionResult { get; set; } = "";
         public string ConnectionError { get; set; } = "";
 
-        public DebugModel(IConfiguration configuration, IWebHostEnvironment env)
-        {
-            _configuration = configuration;
-            _env = env;
-        }
-
         public void OnGet()
         {
             ContentRootPath = _env.ContentRootPath;
             WebRootPath = _env.WebRootPath;
             ProcessName = Process.GetCurrentProcess().ProcessName;
-            UserName = WindowsIdentity.GetCurrent().Name;
+            if (OperatingSystem.IsWindows())
+            {
+                UserName = WindowsIdentity.GetCurrent().Name;
+            }
+            else
+            {
+                UserName = "Non-Windows Environment";
+            }
 
             ConnectionStringConfig = _configuration.GetConnectionString("DefaultConnection") ?? "Not Found";
 

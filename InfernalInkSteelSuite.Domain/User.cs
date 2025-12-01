@@ -32,6 +32,6 @@ namespace InfernalInkSteelSuite.Domain
             return string.Equals(Role?.Trim(), "Admin", StringComparison.OrdinalIgnoreCase);
         }
 
-        public virtual ICollection<Document> UploadedDocuments { get; set; } = new List<Document>();
+        public virtual ICollection<Document> UploadedDocuments { get; set; } = [];
     }
 }

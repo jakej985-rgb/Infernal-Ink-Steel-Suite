@@ -5,14 +5,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Account;
 
-public class LoginModel : PageModel
+public class LoginModel(ApiClient apiClient) : PageModel
 {
-    private readonly ApiClient _apiClient;
-
-    public LoginModel(ApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
+    private readonly ApiClient _apiClient = apiClient;
 
     [BindProperty]
     [Required]

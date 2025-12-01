@@ -5,14 +5,9 @@ using System.Security.Claims;
 
 namespace InfernalInkSteelSuite.Data;
 
-public class AppDbContext : DbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor? httpContextAccessor = null) : DbContext(options)
 {
-    private readonly IHttpContextAccessor? _httpContextAccessor;
-
-    public AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor? httpContextAccessor = null) : base(options)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private readonly IHttpContextAccessor? _httpContextAccessor = httpContextAccessor;
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Client> Clients => Set<Client>();

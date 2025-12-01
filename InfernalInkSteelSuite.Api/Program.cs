@@ -22,7 +22,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connectionString);
+    options.UseSqlite(connectionString);
 });
 
 builder.Services.AddSingleton<PasswordHasher>();
@@ -52,11 +52,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("IsArtist", policy => policy.RequireRole(UserRole.Artist.ToString(), UserRole.Admin.ToString()));
-    options.AddPolicy("IsAdmin", policy => policy.RequireRole(UserRole.Admin.ToString()));
-});
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsArtist", policy => policy.RequireRole(UserRole.Artist.ToString(), UserRole.Admin.ToString()))
+    .AddPolicy("IsAdmin", policy => policy.RequireRole(UserRole.Admin.ToString()));
 
 builder.Services.AddCors(options =>
 {
@@ -183,7 +181,7 @@ app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDb
     };
     db.Users.Add(user);
     await db.SaveChangesAsync();
-    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, Role = newUser.Role, user.IsActive });
+    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, newUser.Role, user.IsActive });
 }).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
@@ -197,7 +195,7 @@ app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbConte
     existing.IsActive = updateDto.IsActive;
 
     await db.SaveChangesAsync();
-    return Results.Ok(new { existing.Id, existing.Username, DisplayName = existing.Username, Role = updateDto.Role, existing.IsActive });
+    return Results.Ok(new { existing.Id, existing.Username, DisplayName = existing.Username, updateDto.Role, existing.IsActive });
 }).RequireAuthorization("IsAdmin");
 
 app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>

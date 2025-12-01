@@ -16,32 +16,26 @@ namespace InfernalInkSteelSuite.Api.Services
         Task ProcessDocumentBatchAsync(SyncBatchRequestDto<Document> batch);
     }
 
-    public class SyncService : ISyncService
+    public class SyncService(AppDbContext context) : ISyncService
     {
-        private readonly AppDbContext _context;
-
-        public SyncService(AppDbContext context)
-        {
-            _context = context;
-        }
 
         public async Task<List<Client>> GetClientsChangedSinceAsync(DateTime sinceUtc)
         {
-            return await _context.Clients
+            return await context.Clients
                 .Where(c => c.LastModifiedUtc > sinceUtc)
                 .ToListAsync();
         }
 
         public async Task<List<Appointment>> GetAppointmentsChangedSinceAsync(DateTime sinceUtc)
         {
-            return await _context.Appointments
+            return await context.Appointments
                 .Where(a => a.LastModifiedUtc > sinceUtc)
                 .ToListAsync();
         }
 
         public async Task<List<Document>> GetDocumentsChangedSinceAsync(DateTime sinceUtc)
         {
-            return await _context.Documents
+            return await context.Documents
                 .Where(d => d.LastModifiedUtc > sinceUtc)
                 .ToListAsync();
         }
@@ -51,7 +45,7 @@ namespace InfernalInkSteelSuite.Api.Services
             foreach (var change in batch.Changes)
             {
                 var payload = change.Payload;
-                var existing = await _context.Clients
+                var existing = await context.Clients
                     .FirstOrDefaultAsync(c => c.SyncId == change.EntityId);
 
                 if (change.Operation == "Create")
@@ -60,7 +54,7 @@ namespace InfernalInkSteelSuite.Api.Services
                     {
                         payload.SyncId = change.EntityId;
                         payload.Id = 0; // Let DB generate ID
-                        _context.Clients.Add(payload);
+                        context.Clients.Add(payload);
                     }
                     else
                     {
@@ -83,7 +77,7 @@ namespace InfernalInkSteelSuite.Api.Services
                     }
                 }
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task ProcessAppointmentBatchAsync(SyncBatchRequestDto<Appointment> batch)
@@ -91,13 +85,13 @@ namespace InfernalInkSteelSuite.Api.Services
             foreach (var change in batch.Changes)
             {
                 var payload = change.Payload;
-                var existing = await _context.Appointments
+                var existing = await context.Appointments
                     .FirstOrDefaultAsync(a => a.SyncId == change.EntityId);
 
                 // Resolve Foreign Key for Client if possible
                 if (payload.ClientSyncId.HasValue && payload.ClientSyncId != Guid.Empty)
                 {
-                    var client = await _context.Clients
+                    var client = await context.Clients
                         .AsNoTracking() // Just need ID
                         .FirstOrDefaultAsync(c => c.SyncId == payload.ClientSyncId.Value);
 
@@ -113,7 +107,7 @@ namespace InfernalInkSteelSuite.Api.Services
                     {
                         payload.SyncId = change.EntityId;
                         payload.Id = 0;
-                        _context.Appointments.Add(payload);
+                        context.Appointments.Add(payload);
                     }
                     else
                     {
@@ -136,7 +130,7 @@ namespace InfernalInkSteelSuite.Api.Services
                     }
                 }
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task ProcessDocumentBatchAsync(SyncBatchRequestDto<Document> batch)
@@ -144,13 +138,13 @@ namespace InfernalInkSteelSuite.Api.Services
             foreach (var change in batch.Changes)
             {
                 var payload = change.Payload;
-                var existing = await _context.Documents
+                var existing = await context.Documents
                     .FirstOrDefaultAsync(d => d.SyncId == change.EntityId);
 
                 // Resolve Foreign Key for Client if possible
                 if (payload.ClientSyncId.HasValue && payload.ClientSyncId != Guid.Empty)
                 {
-                    var client = await _context.Clients
+                    var client = await context.Clients
                         .AsNoTracking()
                         .FirstOrDefaultAsync(c => c.SyncId == payload.ClientSyncId.Value);
 
@@ -166,7 +160,7 @@ namespace InfernalInkSteelSuite.Api.Services
                     {
                         payload.SyncId = change.EntityId;
                         payload.Id = 0;
-                        _context.Documents.Add(payload);
+                        context.Documents.Add(payload);
                     }
                     else
                     {
@@ -189,10 +183,10 @@ namespace InfernalInkSteelSuite.Api.Services
                     }
                 }
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
-        private void UpdateClient(Client existing, Client payload)
+        private static void UpdateClient(Client existing, Client payload)
         {
             existing.FirstName = payload.FirstName;
             existing.LastName = payload.LastName;
@@ -203,7 +197,7 @@ namespace InfernalInkSteelSuite.Api.Services
             existing.IsDeleted = payload.IsDeleted;
         }
 
-        private void UpdateAppointment(Appointment existing, Appointment payload)
+        private static void UpdateAppointment(Appointment existing, Appointment payload)
         {
             existing.StartTime = payload.StartTime;
             existing.EndTime = payload.EndTime;
@@ -220,7 +214,7 @@ namespace InfernalInkSteelSuite.Api.Services
             existing.IsDeleted = payload.IsDeleted;
         }
 
-        private void UpdateDocument(Document existing, Document payload)
+        private static void UpdateDocument(Document existing, Document payload)
         {
             existing.Title = payload.Title;
             existing.FilePath = payload.FilePath;

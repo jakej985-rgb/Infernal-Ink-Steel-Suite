@@ -10,14 +10,9 @@ namespace InfernalInkSteelSuite.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class SyncController : ControllerBase
+    public class SyncController(ISyncService syncService) : ControllerBase
     {
-        private readonly ISyncService _syncService;
-
-        public SyncController(ISyncService syncService)
-        {
-            _syncService = syncService;
-        }
+        private readonly ISyncService _syncService = syncService;
 
         [HttpGet("ping")]
         public ActionResult Ping()
@@ -49,22 +44,22 @@ namespace InfernalInkSteelSuite.Api.Controllers
         [HttpPost("clients/batch-sync")]
         public async Task<ActionResult> BatchSyncClients([FromBody] SyncBatchRequestDto<Client> batch)
         {
-             await _syncService.ProcessClientBatchAsync(batch);
-             return Ok();
+            await _syncService.ProcessClientBatchAsync(batch);
+            return Ok();
         }
 
         [HttpPost("appointments/batch-sync")]
         public async Task<ActionResult> BatchSyncAppointments([FromBody] SyncBatchRequestDto<Appointment> batch)
         {
-             await _syncService.ProcessAppointmentBatchAsync(batch);
-             return Ok();
+            await _syncService.ProcessAppointmentBatchAsync(batch);
+            return Ok();
         }
 
         [HttpPost("documents/batch-sync")]
         public async Task<ActionResult> BatchSyncDocuments([FromBody] SyncBatchRequestDto<Document> batch)
         {
-             await _syncService.ProcessDocumentBatchAsync(batch);
-             return Ok();
+            await _syncService.ProcessDocumentBatchAsync(batch);
+            return Ok();
         }
     }
 }

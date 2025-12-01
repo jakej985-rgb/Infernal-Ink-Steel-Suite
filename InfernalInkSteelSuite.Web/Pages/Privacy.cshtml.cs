@@ -3,16 +3,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages;
 
-public class PrivacyModel : PageModel
+public class PrivacyModel(ILogger<PrivacyModel> logger) : PageModel
 {
-    private readonly ILogger<PrivacyModel> _logger;
+    private readonly ILogger<PrivacyModel> _logger = logger;
 
-    public PrivacyModel(ILogger<PrivacyModel> logger)
-    {
-        _logger = logger;
-    }
-
-    public void OnGet()
+    public static void OnGet()
     {
     }
 }

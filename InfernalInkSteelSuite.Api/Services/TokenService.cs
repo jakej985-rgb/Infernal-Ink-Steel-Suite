@@ -7,14 +7,9 @@ using System.Text;
 
 namespace InfernalInkSteelSuite.Api.Services
 {
-    public class TokenService
+    public class TokenService(IConfiguration configuration)
     {
-        private readonly IConfiguration _configuration;
-
-        public TokenService(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public string GenerateToken(User user)
         {
