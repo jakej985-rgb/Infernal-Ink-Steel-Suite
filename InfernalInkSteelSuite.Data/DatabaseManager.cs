@@ -203,7 +203,8 @@ namespace InfernalInkSteelSuite.Data
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                if (reader.GetString(1) == columnName)
+                var existingName = reader.GetString(1);
+                if (string.Equals(existingName, columnName, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -213,12 +214,21 @@ namespace InfernalInkSteelSuite.Data
 
         private static void EnsureColumnExists(SqliteConnection connection, string tableName, string columnName, string columnDefinition = "TEXT", string defaultValue = "")
         {
-            if (!TableHasColumn(connection, tableName, columnName))
+            if (TableHasColumn(connection, tableName, columnName))
+            {
+                return;
+            }
+
+            try
             {
                 var command = connection.CreateCommand();
                 var defaultClause = string.IsNullOrEmpty(defaultValue) ? "" : $" DEFAULT {defaultValue}";
                 command.CommandText = $"ALTER TABLE {tableName} ADD COLUMN {columnName} {columnDefinition}{defaultClause}";
                 command.ExecuteNonQuery();
+            }
+            catch (SqliteException ex) when (ex.Message.Contains("duplicate column name", StringComparison.OrdinalIgnoreCase))
+            {
+                // Ignore duplicate column error
             }
         }
         private static void EnsureDefaultUserExists(SqliteConnection connection)
