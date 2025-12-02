@@ -5,7 +5,7 @@ REM Determine script directory
 set SCRIPT_DIR=%~dp0
 
 REM Call PowerShell script, capture exit code
-powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%start-web-dev.ps1" %*
+powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%publish-all.ps1" %*
 set EXITCODE=%ERRORLEVEL%
 
 if %EXITCODE% EQU 0 (

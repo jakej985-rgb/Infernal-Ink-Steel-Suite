@@ -1,38 +1,40 @@
-# Windows Deployment Guide
+# Windows Deployment
 
-## 1. Publish
+## Prerequisites
 
-Run the `publish-all.ps1` script to build the application for deployment.
+- .NET 8 SDK
+- PowerShell 5.1 or newer (default on Windows 10/11)
 
+## Scripts
+
+All scripts now show **PASS/FAIL** indicators and will wait for a key press before closing when run interactively.
+
+### `publish-all.bat` / `publish-all.ps1`
+
+Publishes both the API and Web projects to `C:\InfernalInkSteelSuite\publish`.
+
+**Usage:**
+Double-click `publish-all.bat` or run in PowerShell:
 ```powershell
-.\deploy\windows\publish-all.ps1
+.\publish-all.ps1
 ```
 
-This will create the following directories:
-- `C:\InfernalInkSteelSuite\publish\Api`
-- `C:\InfernalInkSteelSuite\publish\Web`
+### `start-api-dev.bat` / `start-api-dev.ps1`
 
-## 2. Start the Applications
+Starts the API in development mode.
 
-You can use the provided batch scripts to start the applications:
-
-- `deploy\windows\start-api-dev.bat` (Starts API on port 5001)
-- `deploy\windows\start-web-dev.bat` (Starts Web on port 5002)
-
-## 3. Firewall Configuration
-
-To allow other devices on your LAN to access the applications, you need to open ports 5001 and 5002 in the Windows Firewall.
-
-Run the following PowerShell commands as Administrator:
-
+**Usage:**
+Double-click `start-api-dev.bat` or run in PowerShell:
 ```powershell
-New-NetFirewallRule -DisplayName "Infernal API 5001" -Direction Inbound -Protocol TCP -LocalPort 5001 -Action Allow
-New-NetFirewallRule -DisplayName "Infernal Web 5002" -Direction Inbound -Protocol TCP -LocalPort 5002 -Action Allow
+.\start-api-dev.ps1
 ```
 
-## 4. Testing
+### `start-web-dev.bat` / `start-web-dev.ps1`
 
-Find your computer's IP address (run `ipconfig`). Then, from another device on the same network, try to access:
+Starts the Web app in development mode.
 
-- API: `http://<your-ip>:5001/swagger`
-- Web: `http://<your-ip>:5002/`
+**Usage:**
+Double-click `start-web-dev.bat` or run in PowerShell:
+```powershell
+.\start-web-dev.ps1
+```

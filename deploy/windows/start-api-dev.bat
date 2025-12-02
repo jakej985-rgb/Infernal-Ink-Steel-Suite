@@ -1,10 +1,24 @@
 @echo off
-cd /d C:\InfernalInkSteelSuite\publish\Api
+setlocal enabledelayedexpansion
 
-REM Dev environment
-set ASPNETCORE_ENVIRONMENT=Development
-set DB_PATH=C:\InfernalInkSteelSuite\Data\infernalinksteel.db
-set FILE_ROOT=C:\InfernalInkSteelSuite\Uploads
-set ASPNETCORE_URLS=http://0.0.0.0:5001
+REM Determine script directory
+set SCRIPT_DIR=%~dp0
 
-dotnet InfernalInkSteelSuite.Api.dll
+REM Call PowerShell script, capture exit code
+powershell -NoProfile -ExecutionPolicy Bypass -File "%SCRIPT_DIR%start-api-dev.ps1" %*
+set EXITCODE=%ERRORLEVEL%
+
+if %EXITCODE% EQU 0 (
+    echo.
+    echo [OK] Script completed successfully.
+) else (
+    echo.
+    echo [ERROR] Script failed with exit code %EXITCODE%.
+)
+
+echo.
+echo Press any key to close this window...
+pause >nul
+
+endlocal
+exit /b %EXITCODE%
