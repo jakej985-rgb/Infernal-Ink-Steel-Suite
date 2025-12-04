@@ -151,9 +151,11 @@ namespace InfernalInkSteelSuite.Repositories
             return null;
         }
 
+        private static readonly char[] NameSeparator = [' '];
+
         public int? GetClientIdByName(string name)
         {
-            var nameParts = name.Trim().Split([' '], StringSplitOptions.RemoveEmptyEntries);
+            var nameParts = name.Trim().Split(NameSeparator, StringSplitOptions.RemoveEmptyEntries);
             if (nameParts.Length < 2)
             {
                 return null; // Not enough parts for a first and last name
