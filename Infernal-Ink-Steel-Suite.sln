@@ -1,7 +1,6 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36623.8 d17.14
+VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernal-Ink-Steel-Suite", "Infernal-Ink-Steel-Suite.manager\Infernal-Ink-Steel-Suite.csproj", "{4F13DE96-BF67-401B-B6A6-3D43DEF95691}"
 EndProject
@@ -11,7 +10,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Data"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Domain", "InfernalInkSteelSuite.Domain\InfernalInkSteelSuite.Domain.csproj", "{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Web", "InfernalInkSteelSuite.Web\InfernalInkSteelSuite.Web.csproj", "{44BFE4D6-F647-4BC2-8A17-C58EB449A0F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Api", "InfernalInkSteelSuite.Api\InfernalInkSteelSuite.Api.csproj", "{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Web", "InfernalInkSteelSuite.Web\InfernalInkSteelSuite.Web.csproj", "{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +36,14 @@ Global
 		{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6E689E6-562D-4C94-9113-2BA6E8E6F52B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44BFE4D6-F647-4BC2-8A17-C58EB449A0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44BFE4D6-F647-4BC2-8A17-C58EB449A0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44BFE4D6-F647-4BC2-8A17-C58EB449A0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44BFE4D6-F647-4BC2-8A17-C58EB449A0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
