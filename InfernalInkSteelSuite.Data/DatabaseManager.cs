@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.Data
             return new SqliteConnection(_connectionString);
         }
 
-        public void InitializeDatabase()
+        public void InitializeDatabase_Legacy_DoNotUse()
         {
             using var connection = GetConnection();
             connection.Open();

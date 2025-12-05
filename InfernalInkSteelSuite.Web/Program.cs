@@ -45,8 +45,8 @@ if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
 }
 
 // Ensure database is initialized
-var dbManager = new DatabaseManager(connectionString);
-dbManager.InitializeDatabase();
+// var dbManager = new DatabaseManager(connectionString);
+// dbManager.InitializeDatabase();
 
 builder.Services.AddScoped<IUserRepository>(sp => new UserRepository(connectionString));
 builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
