@@ -1,0 +1,104 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Dashboard.IndexModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    // Layout is _DashboardLayout by default from _ViewStart
+}
+
+<section class="dashboard-root">
+    <!-- Summary cards -->
+    <div class="dashboard-cards row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Appointments Today</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats?.AppointmentsToday ?? 0</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Clients</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats?.TotalClients ?? 0</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Upcoming Appointments</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats?.UpcomingAppointments ?? 0</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Open Quotes</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats?.OpenQuotes ?? 0</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's appointments table -->
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Today's Appointments</h2>
+
+            @if (Model.TodaysAppointments.Count == 0)
+            {
+                <p>No appointments scheduled for today.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Client</th>
+                                <th>Artist</th>
+                                <th>Service</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var appt in Model.TodaysAppointments)
+                        {
+                            <tr>
+                                <td>@appt.StartTime.ToString("t")</td>
+                                <td>@(appt.Client?.FullName ?? "Unknown")</td>
+                                <td>@appt.ArtistName</td>
+                                <td>@appt.ServiceType</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-4">
+            <h2>Quick Actions</h2>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a asp-page="/Appointments/Index">View All Appointments</a>
+                </li>
+                <li class="list-group-item">
+                    <a asp-page="/Clients/Index">Manage Clients</a>
+                </li>
+                <li class="list-group-item">
+                    <a asp-page="/Quotes/Index">View Quotes</a>
+                </li>
+                <li class="list-group-item">
+                    <a asp-page="/Documents/Index">Browse Documents</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
