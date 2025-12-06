@@ -14,5 +14,12 @@ namespace InfernalInkSteelSuite.Repositories
         int? GetClientIdByName(string name);
         int? GetClientIdByEmail(string email);
         int? GetClientIdByPhone(string phone);
+
+        // Async methods for API
+        Task<List<Client>> GetAllAsync();
+        Task<Client?> GetByIdAsync(int id);
+        Task<Client> AddAsync(Client client);
+        Task UpdateAsync(Client client);
+        Task DeleteAsync(int id);
     }
 }

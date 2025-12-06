@@ -38,6 +38,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IShopSettingsRepository>(sp => new ShopSettingsRepository(connectionString));
 builder.Services.AddScoped<IAppointmentRepository>(sp => new AppointmentRepository(connectionString));
+builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

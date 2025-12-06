@@ -246,5 +246,130 @@ namespace InfernalInkSteelSuite.Repositories
             var result = command.ExecuteScalar();
             return result == null || result == DBNull.Value ? (int?)null : Convert.ToInt32(result);
         }
+
+        // Async Implementations
+
+        public async Task<List<Client>> GetAllAsync()
+        {
+            var result = new List<Client>();
+
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits, photoPath FROM clients ORDER BY firstName, lastName;";
+
+            using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var client = new Client
+                {
+                    Id = reader.GetInt32(0),
+                    FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                    MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    LastName = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                    Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                    Visits = reader.GetInt32(7),
+                    PhotoPath = reader.IsDBNull(8) ? "" : reader.GetString(8)
+                };
+                result.Add(client);
+            }
+
+            return result;
+        }
+
+        public async Task<Client?> GetByIdAsync(int id)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT id, firstName, middleName, lastName, phone, email, notes, visits, photoPath FROM clients WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+
+            using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return new Client
+                {
+                    Id = reader.GetInt32(0),
+                    FirstName = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                    MiddleName = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    LastName = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                    Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                    Email = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                    Notes = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                    Visits = reader.GetInt32(7),
+                    PhotoPath = reader.IsDBNull(8) ? "" : reader.GetString(8)
+                };
+            }
+            return null;
+        }
+
+        public async Task<Client> AddAsync(Client client)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"INSERT INTO clients (firstName, middleName, lastName, phone, email, notes, visits, photoPath)
+                  VALUES ($firstName, $middleName, $lastName, $phone, $email, $notes, $visits, $photoPath);";
+
+            command.Parameters.AddWithValue("$firstName", client.FirstName);
+            command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
+            command.Parameters.AddWithValue("$lastName", client.LastName);
+            command.Parameters.AddWithValue("$phone", client.Phone);
+            command.Parameters.AddWithValue("$email", client.Email);
+            command.Parameters.AddWithValue("$notes", client.Notes);
+            command.Parameters.AddWithValue("$visits", client.Visits);
+            command.Parameters.AddWithValue("$photoPath", client.PhotoPath ?? "");
+
+            await command.ExecuteNonQueryAsync();
+
+            command.CommandText = "SELECT last_insert_rowid();";
+            var result = await command.ExecuteScalarAsync();
+            client.Id = Convert.ToInt32(result);
+            return client;
+        }
+
+        public async Task UpdateAsync(Client client)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"UPDATE clients
+                  SET firstName = $firstName,
+                      middleName = $middleName,
+                      lastName = $lastName,
+                      phone = $phone,
+                      email = $email,
+                      notes = $notes,
+                      visits = $visits,
+                      photoPath = $photoPath
+                  WHERE id = $id;";
+
+            command.Parameters.AddWithValue("$firstName", client.FirstName);
+            command.Parameters.AddWithValue("$middleName", (object)client.MiddleName ?? DBNull.Value);
+            command.Parameters.AddWithValue("$lastName", client.LastName);
+            command.Parameters.AddWithValue("$phone", client.Phone);
+            command.Parameters.AddWithValue("$email", client.Email);
+            command.Parameters.AddWithValue("$notes", client.Notes);
+            command.Parameters.AddWithValue("$visits", client.Visits);
+            command.Parameters.AddWithValue("$photoPath", client.PhotoPath ?? "");
+            command.Parameters.AddWithValue("$id", client.Id);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            using var connection = new SqliteConnection(_connectionString);
+            await connection.OpenAsync();
+            var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM clients WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }

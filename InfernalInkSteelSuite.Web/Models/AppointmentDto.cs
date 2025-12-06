@@ -26,5 +26,6 @@ namespace InfernalInkSteelSuite.Web.Models
         public string? Email { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
+        public string Notes { get; set; } = "";
     }
 }

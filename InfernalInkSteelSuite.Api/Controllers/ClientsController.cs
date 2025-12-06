@@ -1,69 +1,64 @@
-using InfernalInkSteelSuite.Data;
-using InfernalInkSteelSuite.Domain;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using InfernalInkSteelSuite.Domain;
+using InfernalInkSteelSuite.Repositories;
 
-namespace InfernalInkSteelSuite.Api.Controllers
+namespace InfernalInkSteelSuite.Api.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class ClientsController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize(Policy = "IsArtist")]
-    public class ClientsController(AppDbContext context) : ControllerBase
+    private readonly IClientRepository _clients;
+
+    public ClientsController(IClientRepository clients)
     {
-        private readonly AppDbContext _context = context;
+        _clients = clients;
+    }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Client>>> GetClients()
-        {
-            return await _context.Clients.ToListAsync();
-        }
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Client>>> GetAll()
+    {
+        var items = await _clients.GetAllAsync();
+        return Ok(items);
+    }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Client>> GetClient(int id)
-        {
-            var client = await _context.Clients.FindAsync(id);
-            if (client == null) return NotFound();
-            return client;
-        }
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Client>> GetById(int id)
+    {
+        var client = await _clients.GetByIdAsync(id);
+        if (client == null) return NotFound();
+        return Ok(client);
+    }
 
-        [HttpPost]
-        public async Task<ActionResult<Client>> CreateClient(Client client)
-        {
-            _context.Clients.Add(client);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetClient), new { id = client.Id }, client);
-        }
+    [HttpPost]
+    public async Task<ActionResult<Client>> Create([FromBody] Client client)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Client>> UpdateClient(int id, Client update)
-        {
-            if (id != update.Id) return BadRequest();
+        var created = await _clients.AddAsync(client);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
 
-            var existing = await _context.Clients.FindAsync(id);
-            if (existing is null) return NotFound();
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, [FromBody] Client client)
+    {
+        if (id != client.Id) return BadRequest("ID mismatch.");
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            existing.FirstName = update.FirstName;
-            existing.LastName = update.LastName;
-            existing.Phone = update.Phone;
-            existing.Email = update.Email;
-            existing.Notes = update.Notes;
+        var existing = await _clients.GetByIdAsync(id);
+        if (existing == null) return NotFound();
 
-            await _context.SaveChangesAsync();
-            return Ok(existing);
-        }
+        await _clients.UpdateAsync(client);
+        return NoContent();
+    }
 
-        [HttpDelete("{id}")]
-        [Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> DeleteClient(int id)
-        {
-            var existing = await _context.Clients.FindAsync(id);
-            if (existing is null) return NotFound();
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var existing = await _clients.GetByIdAsync(id);
+        if (existing == null) return NotFound();
 
-            _context.Clients.Remove(existing);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+        await _clients.DeleteAsync(id);
+        return NoContent();
     }
 }
