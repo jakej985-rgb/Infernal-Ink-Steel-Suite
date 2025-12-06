@@ -39,6 +39,11 @@ builder.Services.AddScoped<ISyncService, SyncService>();
 builder.Services.AddScoped<IShopSettingsRepository>(sp => new ShopSettingsRepository(connectionString));
 builder.Services.AddScoped<IAppointmentRepository>(sp => new AppointmentRepository(connectionString));
 builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
+builder.Services.AddScoped<IDocumentRepository>(sp => new DocumentRepository(connectionString));
+builder.Services.AddScoped<DocumentService>();
+builder.Services.AddScoped<IQuoteRepository>(sp => new QuoteRepository(connectionString));
+builder.Services.AddScoped<QuoteService>();
+builder.Services.AddScoped<StatsService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -291,79 +296,7 @@ app.MapDelete("/appointments/{id:int}", async (int id, AppDbContext db) =>
     return Results.NoContent();
 }).RequireAuthorization("IsAdmin");
 
-// ---- Documents: list by client ----
-app.MapGet("/documents/by-client/{clientId:int}", async (int clientId, AppDbContext db) =>
-{
-    var docs = await db.Documents
-        .Where(d => d.ClientId == clientId)
-        .OrderByDescending(d => d.CreatedAt)
-        .ToListAsync();
-
-    return Results.Ok(docs);
-}).RequireAuthorization("IsArtist");
-
-
-// ---- Documents: upload ----
-app.MapPost("/documents", async (
-    int clientId,
-    string? title,
-    IFormFile file,
-    AppDbContext db,
-    IConfiguration config,
-    HttpContext httpContext) =>
-{
-    if (file == null || file.Length == 0)
-        return Results.BadRequest("No file uploaded.");
-
-    var rootPath = config["FileStorage:RootPath"] ??
-                   Path.Combine(AppContext.BaseDirectory, "Uploads");
-
-    var clientDir = Path.Combine(rootPath, clientId.ToString());
-    Directory.CreateDirectory(clientDir);
-
-    var safeFileName = Path.GetFileName(file.FileName);
-    var uniqueName = $"{Guid.NewGuid()}{Path.GetExtension(safeFileName)}";
-    var fullPath = Path.Combine(clientDir, uniqueName);
-
-    await using (var stream = File.Create(fullPath))
-    {
-        await file.CopyToAsync(stream);
-    }
-
-    var userId = int.Parse(httpContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
-
-    var doc = new Document
-    {
-        ClientId = clientId,
-        UploadedByUserId = userId,
-        Title = string.IsNullOrWhiteSpace(title) ? safeFileName : title,
-        FilePath = fullPath,
-        CreatedAt = DateTime.UtcNow
-    };
-
-    db.Documents.Add(doc);
-    await db.SaveChangesAsync();
-
-    return Results.Created($"/documents/{doc.Id}", doc);
-}).RequireAuthorization("IsArtist");
-
-
-// ---- Documents: download ----
-app.MapGet("/documents/{id:int}/download", async (int id, AppDbContext db) =>
-{
-    var doc = await db.Documents.FindAsync(id);
-    if (doc is null)
-        return Results.NotFound();
-
-    if (!File.Exists(doc.FilePath))
-        return Results.NotFound("File not found on disk.");
-
-    var stream = File.OpenRead(doc.FilePath);
-    var fileName = Path.GetFileName(doc.FilePath);
-
-    // Simple generic content-type for now
-    return Results.File(stream, "application/octet-stream", fileName);
-}).RequireAuthorization("IsArtist");
+// ---- Documents endpoints are handled by DocumentsController ----
 
 
 // ---- Database migration & startup ----
