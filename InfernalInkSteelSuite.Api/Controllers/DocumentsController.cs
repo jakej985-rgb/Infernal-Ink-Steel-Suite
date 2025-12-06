@@ -1,3 +1,4 @@
+using InfernalInkSteelSuite.Api.DTOs;
 using InfernalInkSteelSuite.Api.Services;
 using InfernalInkSteelSuite.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +25,28 @@ public class DocumentsController : ControllerBase
         try
         {
             var document = await _service.UploadDocumentAsync(clientId, uploadedByUserId, title ?? "", file);
-            return Ok(document);
+            var dto = new DocumentDto(document.Id, document.ClientId, document.UploadedByUserId, document.Title, document.FilePath, document.CreatedAt);
+            return Ok(dto);
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"Internal server error: {ex.Message}");
         }
+    }
+
+    [HttpGet]
+    public ActionResult<List<DocumentDto>> GetAll()
+    {
+        var docs = _service.GetAllDocuments();
+        var dtos = docs.Select(d => new DocumentDto(
+            d.Id,
+            d.ClientId,
+            d.UploadedByUserId,
+            d.Title,
+            d.FilePath,
+            d.CreatedAt
+        )).ToList();
+        return Ok(dtos);
     }
 
     [HttpGet("{id}")]

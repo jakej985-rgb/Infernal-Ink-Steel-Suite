@@ -1,0 +1,32 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Quotes.IndexModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Quotes";
+}
+
+<h2>Quotes</h2>
+
+<div class="table-responsive">
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>Placement</th>
+                <th>Style</th>
+                <th>Estimate</th>
+                <th>Confidence</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var q in Model.Quotes)
+        {
+            <tr>
+                <td>@q.Placement</td>
+                <td>@q.Style</td>
+                <td>$@q.PriceLow - $@q.PriceHigh</td>
+                <td>@(q.ConfidenceScore * 100)%</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

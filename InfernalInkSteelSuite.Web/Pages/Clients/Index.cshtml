@@ -1,0 +1,30 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Clients.IndexModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Clients";
+}
+
+<h2>Clients</h2>
+
+<div class="table-responsive">
+    <table class="table table-dark table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var c in Model.Clients)
+        {
+            <tr>
+                <td>@c.FullName</td>
+                <td>@c.Phone</td>
+                <td>@c.Email</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
