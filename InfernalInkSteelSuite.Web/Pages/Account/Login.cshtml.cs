@@ -40,7 +40,7 @@ public class LoginModel(ApiClient apiClient) : PageModel
         HttpContext.Session.SetString("Username", result.Username);
         HttpContext.Session.SetString("DisplayName", result.DisplayName);
         HttpContext.Session.SetString("Role", result.Role);
-        HttpContext.Session.SetString("Token", result.Token);
+        HttpContext.Session.SetString("ApiToken", result.Token);
 
         return RedirectToPage("/Dashboard/Index");
     }

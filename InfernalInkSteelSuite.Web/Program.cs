@@ -21,14 +21,11 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(8);
 });
 
-// HttpClient for API
-builder.Services.AddHttpClient<ApiClient>((sp, http) =>
-{
-    var config = sp.GetRequiredService<IConfiguration>();
-    var baseUrl = config["ApiBaseUrl"] ?? "http://localhost:5000";
+// Configure ApiOptions
+builder.Services.Configure<ApiOptions>(builder.Configuration);
 
-    http.BaseAddress = new Uri(baseUrl);
-});
+// HttpClient for API
+builder.Services.AddHttpClient<ApiClient>();
 
 // Database & Repositories
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

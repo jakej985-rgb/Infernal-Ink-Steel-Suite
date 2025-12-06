@@ -1,26 +1,54 @@
 using InfernalInkSteelSuite.Web.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace InfernalInkSteelSuite.Web.Services;
+
+public class ApiOptions
+{
+    public string ApiBaseUrl { get; set; } = "";
+}
 
 public class ApiClient
 {
     private readonly HttpClient _http;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ApiOptions _options;
 
-    public ApiClient(HttpClient http, IHttpContextAccessor httpContextAccessor)
+    public ApiClient(HttpClient http, IOptions<ApiOptions> options, IHttpContextAccessor httpContextAccessor)
     {
         _http = http;
         _httpContextAccessor = httpContextAccessor;
+        _options = options.Value;
 
-        // Add the JWT token to the request headers for every request
-        var token = _httpContextAccessor.HttpContext?.Session.GetString("Token");
-        if (!string.IsNullOrEmpty(token))
+        if (!string.IsNullOrWhiteSpace(_options.ApiBaseUrl))
+        {
+            _http.BaseAddress = new Uri(_options.ApiBaseUrl);
+        }
+    }
+
+    private void ApplyAuthHeader()
+    {
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext == null)
+        {
+            _http.DefaultRequestHeaders.Authorization = null;
+            return;
+        }
+
+        var token = httpContext.Session.GetString("ApiToken");
+
+        if (!string.IsNullOrWhiteSpace(token))
         {
             _http.DefaultRequestHeaders.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                new AuthenticationHeaderValue("Bearer", token);
+        }
+        else
+        {
+            _http.DefaultRequestHeaders.Authorization = null;
         }
     }
 
@@ -47,17 +75,20 @@ public class ApiClient
 
     public async Task<List<ClientDto>> GetClientsAsync()
     {
+        ApplyAuthHeader();
         var result = await _http.GetFromJsonAsync<List<ClientDto>>("api/clients");
         return result ?? [];
     }
 
     public async Task<ClientDto?> GetClientAsync(int id)
     {
+        ApplyAuthHeader();
         return await _http.GetFromJsonAsync<ClientDto>($"api/clients/{id}");
     }
 
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
     {
+        ApplyAuthHeader();
         var query = new List<string>();
         if (date.HasValue) query.Add($"date={date.Value:O}");
         if (artistId.HasValue) query.Add($"artistId={artistId.Value}");
@@ -69,6 +100,7 @@ public class ApiClient
 
     public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
     {
+        ApplyAuthHeader();
         var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"/documents/by-client/{clientId}");
         return result ?? [];
     }
@@ -79,6 +111,7 @@ public class ApiClient
         string? title,
         IFormFile file)
     {
+        ApplyAuthHeader();
         using var content = new MultipartFormDataContent
         {
             { new StringContent(clientId.ToString()), "clientId" },
