@@ -65,6 +65,59 @@ public class ApiClient
         DateTime CreatedAt
     );
 
+    // Stats DTOs
+    public record DashboardStatsDto(int AppointmentsToday, int TotalClients, List<ClientSummaryDto> RecentClients, bool IsShopOpen, int ActiveArtistsCount);
+    public record ClientSummaryDto(int Id, string Name, string Email);
+    public record AppointmentStatDto(DateTime Date, int Count);
+
+    // Quote DTOs
+    public class QuoteInput
+    {
+        public int? ClientId { get; set; }
+        public string Placement { get; set; } = string.Empty;
+        public string Style { get; set; } = string.Empty;
+        public bool IsCoverUp { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public int CoverageLevel { get; set; }
+        public int LineComplexity { get; set; }
+        public int ShadingComplexity { get; set; }
+        public int ColorComplexity { get; set; }
+        public int Difficulty { get; set; }
+        public int ArtistId { get; set; }
+    }
+
+    public class QuoteEstimate
+    {
+        public double EstimatedHoursLow { get; set; }
+        public double EstimatedHoursHigh { get; set; }
+        public decimal PriceLow { get; set; }
+        public decimal PriceHigh { get; set; }
+        public decimal ShopMinimum { get; set; }
+        public decimal RecommendedDeposit { get; set; }
+        public double ConfidenceScore { get; set; }
+        public int SimilarJobsCount { get; set; }
+    }
+
+    public class QuoteDto : QuoteEstimate
+    {
+        public int Id { get; set; }
+        public int? ClientId { get; set; }
+        public int ArtistId { get; set; }
+        public string Placement { get; set; } = string.Empty;
+        public string Style { get; set; } = string.Empty;
+        public bool IsCoverUp { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public int CoverageLevel { get; set; }
+        public int LineComplexity { get; set; }
+        public int ShadingComplexity { get; set; }
+        public int ColorComplexity { get; set; }
+        public int Difficulty { get; set; }
+        public DateTime CreatedAt { get; set; }
+    }
+
+
     public async Task<LoginResponse?> LoginAsync(string username, string password)
     {
         var resp = await _http.PostAsJsonAsync("/auth/login", new LoginRequest(username, password));
@@ -98,10 +151,13 @@ public class ApiClient
         return result ?? [];
     }
 
+    // DOCUMENTS
+
     public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
     {
         ApplyAuthHeader();
-        var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"/documents/by-client/{clientId}");
+        // Updated endpoint to match new controller if needed, but the new controller exposes "api/Documents/by-client/{clientId}"
+        var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"api/Documents/by-client/{clientId}");
         return result ?? [];
     }
 
@@ -125,10 +181,63 @@ public class ApiClient
         var streamContent = new StreamContent(stream);
         content.Add(streamContent, "file", file.FileName);
 
-        var response = await _http.PostAsync("/documents", content);
+        var response = await _http.PostAsync("api/Documents", content);
         if (!response.IsSuccessStatusCode)
             return null;
 
         return await response.Content.ReadFromJsonAsync<DocumentDto>();
+    }
+
+    // QUOTES
+
+    public async Task<QuoteEstimate?> CalculateQuoteAsync(QuoteInput input)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PostAsJsonAsync("api/Quotes/preview", input);
+        if (!response.IsSuccessStatusCode) return null;
+        return await response.Content.ReadFromJsonAsync<QuoteEstimate>();
+    }
+
+    public async Task<QuoteDto?> CreateQuoteAsync(QuoteInput input)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PostAsJsonAsync("api/Quotes", input);
+        if (!response.IsSuccessStatusCode) return null;
+        return await response.Content.ReadFromJsonAsync<QuoteDto>();
+    }
+
+    public async Task<List<QuoteDto>> GetAllQuotesAsync()
+    {
+        ApplyAuthHeader();
+        var result = await _http.GetFromJsonAsync<List<QuoteDto>>("api/Quotes");
+        return result ?? [];
+    }
+
+    // STATS
+
+    public async Task<DashboardStatsDto?> GetDashboardStatsAsync()
+    {
+        ApplyAuthHeader();
+        try
+        {
+            return await _http.GetFromJsonAsync<DashboardStatsDto>("api/Stats/overview");
+        }
+        catch (HttpRequestException)
+        {
+             // Fallback if API down or empty
+             return new DashboardStatsDto(0, 0, new List<ClientSummaryDto>(), false, 0);
+        }
+    }
+
+    public async Task<List<AppointmentStatDto>> GetAppointmentStatsAsync(DateTime? from, DateTime? to)
+    {
+        ApplyAuthHeader();
+        var query = new List<string>();
+        if (from.HasValue) query.Add($"from={from.Value:O}");
+        if (to.HasValue) query.Add($"to={to.Value:O}");
+        var qs = query.Count > 0 ? "?" + string.Join("&", query) : string.Empty;
+
+        var result = await _http.GetFromJsonAsync<List<AppointmentStatDto>>($"api/Stats/appointments-by-day{qs}");
+        return result ?? [];
     }
 }
