@@ -45,6 +45,11 @@ public class DocumentService
         return document;
     }
 
+    public List<Document> GetAllDocuments()
+    {
+        return _repository.GetAll();
+    }
+
     public (Stream? fileStream, string contentType, string fileName) GetFile(int documentId)
     {
         var doc = _repository.Get(documentId);

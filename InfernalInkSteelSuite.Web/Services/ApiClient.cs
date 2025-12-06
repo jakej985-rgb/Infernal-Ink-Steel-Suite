@@ -147,11 +147,17 @@ public class ApiClient
         if (artistId.HasValue) query.Add($"artistId={artistId.Value}");
         var qs = query.Count > 0 ? "?" + string.Join("&", query) : string.Empty;
 
-        var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"/appointments{qs}");
+        var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"api/appointments{qs}");
         return result ?? [];
     }
 
     // DOCUMENTS
+
+    public Task<List<DocumentDto>?> GetDocumentsAsync()
+    {
+        ApplyAuthHeader();
+        return _http.GetFromJsonAsync<List<DocumentDto>>("api/Documents");
+    }
 
     public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
     {

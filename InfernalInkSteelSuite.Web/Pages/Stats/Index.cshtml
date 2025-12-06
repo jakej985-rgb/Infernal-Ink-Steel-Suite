@@ -1,0 +1,42 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Stats.IndexModel
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Statistics";
+}
+
+<h2>Statistics</h2>
+
+@if (Model.Stats is null)
+{
+    <p>No statistics available.</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Appointments Today</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats.AppointmentsToday</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Clients</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats.TotalClients</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Active Artists</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.Stats.ActiveArtistsCount</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+}

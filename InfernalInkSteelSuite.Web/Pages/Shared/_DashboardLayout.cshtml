@@ -1,3 +1,9 @@
+
+@using Microsoft.AspNetCore.Http
+@{
+    var role = Context.Session.GetString("Role");
+    bool isAdminOrManager = role == "Admin" || role == "Manager";
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -88,13 +94,27 @@
             <nav class="sidebar-nav">
                 <a asp-page="/Dashboard/Index"
                     class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Dashboard/Index" ? "active" : "")">Dashboard</a>
-                <a href="#" class="nav-item-link">Clients</a>
-                <a href="#" class="nav-item-link">Appointments</a>
-                <a href="#" class="nav-item-link">Quotes</a>
-                <a href="#" class="nav-item-link">Documents</a>
-                <a href="#" class="nav-item-link">Statistics</a>
-                <a asp-page="/Settings/Index"
-                    class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Settings/Index" ? "active" : "")">Settings</a>
+
+                <a asp-page="/Clients/Index"
+                   class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Clients/Index" ? "active" : "")">Clients</a>
+
+                <a asp-page="/Appointments/Index"
+                   class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Appointments/Index" ? "active" : "")">Appointments</a>
+
+                <a asp-page="/Quotes/Index"
+                   class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Quotes/Index" ? "active" : "")">Quotes</a>
+
+                <a asp-page="/Documents/Index"
+                   class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Documents/Index" ? "active" : "")">Documents</a>
+
+                @if (isAdminOrManager)
+                {
+                    <a asp-page="/Stats/Index"
+                       class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Stats/Index" ? "active" : "")">Statistics</a>
+
+                    <a asp-page="/Settings/Index"
+                       class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Settings/Index" ? "active" : "")">Settings</a>
+                }
             </nav>
             <div class="sidebar-footer">
                 <a href="/" class="nav-item-link">Exit to Site</a>
