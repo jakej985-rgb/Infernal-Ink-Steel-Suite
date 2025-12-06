@@ -1,3 +1,4 @@
+using InfernalInkSteelSuite.Web.Models;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -27,33 +28,6 @@ public class ApiClient
     public record LoginRequest(string Username, string Password);
     public record LoginResponse(int UserId, string Username, string DisplayName, string Role, string Token);
 
-    public record ClientDto(int Id, string FirstName, string LastName, string? Phone, string? Email);
-
-    public enum AppointmentStatus
-    {
-        Pending,
-        Confirmed,
-        Completed,
-        Cancelled,
-        Blocked
-    }
-
-    public record AppointmentDto(
-        int Id,
-        int ClientId,
-        int ArtistId,
-        DateTime StartTime,
-        DateTime EndTime,
-        string ServiceType,
-        string ServiceCategory,
-        AppointmentStatus Status,
-        decimal? QuotedPrice,
-        decimal? FinalPrice,
-        string? Notes,
-        ClientDto? Client,
-        string? ArtistName
-    );
-
     public record DocumentDto(
         int Id,
         int ClientId,
@@ -82,7 +56,7 @@ public class ApiClient
         return await _http.GetFromJsonAsync<ClientDto>($"/clients/{id}");
     }
 
-    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date, int? artistId)
+    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
     {
         var query = new List<string>();
         if (date.HasValue) query.Add($"date={date.Value:O}");

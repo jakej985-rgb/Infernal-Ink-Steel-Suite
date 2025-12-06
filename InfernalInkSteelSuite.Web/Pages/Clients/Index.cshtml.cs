@@ -1,3 +1,4 @@
+using InfernalInkSteelSuite.Web.Models;
 using InfernalInkSteelSuite.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -8,7 +9,7 @@ public class IndexModel(ApiClient apiClient) : PageModel
 {
     private readonly ApiClient _apiClient = apiClient;
 
-    public List<ApiClient.ClientDto> Clients { get; set; } = [];
+    public List<ClientDto> Clients { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {

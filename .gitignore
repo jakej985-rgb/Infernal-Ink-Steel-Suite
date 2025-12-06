@@ -43,3 +43,6 @@ dotnet-install.sh
 
 # Logs
 *.log
+
+# Publish output
+publish/

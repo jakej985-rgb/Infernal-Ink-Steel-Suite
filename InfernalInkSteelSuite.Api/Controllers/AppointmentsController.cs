@@ -1,10 +1,9 @@
 using InfernalInkSteelSuite.Api.Dtos;
 using InfernalInkSteelSuite.Api.Models;
-using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Domain;
+using InfernalInkSteelSuite.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace InfernalInkSteelSuite.Api.Controllers
@@ -12,45 +11,62 @@ namespace InfernalInkSteelSuite.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Policy = "IsArtist")]
-    public class AppointmentsController(AppDbContext context) : ControllerBase
+    public class AppointmentsController(IAppointmentRepository appointments) : ControllerBase
     {
-        private readonly AppDbContext _context = context;
+        private readonly IAppointmentRepository _appointments = appointments;
 
         [HttpGet]
-        public async Task<ActionResult<List<AppointmentDto>>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId)
+        public ActionResult<List<AppointmentDto>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId)
         {
-            var query = _context.Appointments
-                .Include(a => a.Client)
-                .Include(a => a.Artist)
-                .AsQueryable();
+            List<Appointment> appointments;
 
             if (date.HasValue)
             {
-                var dayStart = date.Value.Date;
-                var dayEnd = dayStart.AddDays(1);
-                query = query.Where(a => a.DateTime >= dayStart && a.DateTime < dayEnd);
-            }
-
-            var user = HttpContext.User;
-            if (user.IsInRole(UserRole.Artist.ToString()))
-            {
-                var userId = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-                query = query.Where(a => a.UserId == userId);
+                appointments = _appointments.GetAppointmentsByDate(date.Value);
             }
             else if (artistId.HasValue)
             {
-                query = query.Where(a => a.UserId == artistId.Value);
+                appointments = _appointments.GetAppointmentsByUserId(artistId.Value);
+            }
+            else
+            {
+                appointments = _appointments.GetAll();
             }
 
-            var appointments = await query.ToListAsync();
+            var user = HttpContext.User;
+            if (user.IsInRole(UserRole.Artist.ToString()) && !user.IsInRole(UserRole.Admin.ToString()))
+            {
+                var userId = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+                if (artistId.HasValue && artistId.Value != userId)
+                {
+                    return Forbid();
+                }
+
+                if (!artistId.HasValue)
+                {
+                    appointments = appointments.Where(a => a.UserId == userId).ToList();
+                }
+            }
 
             var results = appointments.Select(a =>
             {
                 Enum.TryParse<AppointmentStatus>(a.Status, true, out var statusEnum);
+
+                ClientDto? clientDto = null;
+                if (a.Client != null)
+                {
+                    clientDto = new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email);
+                }
+                else
+                {
+                    // Fallback or empty if needed
+                }
+
                 return new AppointmentDto(
                     a.Id,
                     a.ClientId,
-                    a.ArtistId,
+                    a.UserId,
                     a.StartTime,
                     a.EndTime,
                     a.ServiceType,
@@ -59,55 +75,51 @@ namespace InfernalInkSteelSuite.Api.Controllers
                     a.QuotedPrice,
                     a.FinalPrice,
                     a.Notes,
-                    new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email),
-                    a.Artist.Username
+                    clientDto,
+                    a.Artist?.Username ?? ""
                 );
             }).ToList();
 
             return Ok(results);
         }
 
+        [HttpGet("{id:int}")]
+        public ActionResult<Appointment> GetById(int id)
+        {
+            var item = _appointments.Get(id);
+            if (item == null) return NotFound();
+            return Ok(item);
+        }
+
         [HttpPost]
-        public async Task<ActionResult<Appointment>> CreateAppointment(Appointment appointment)
+        public ActionResult<Appointment> Create([FromBody] Appointment appointment)
         {
-            _context.Appointments.Add(appointment);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetAppointments), new { id = appointment.Id }, appointment);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            _appointments.Add(appointment);
+            return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Appointment>> UpdateAppointment(int id, Appointment update)
+        [HttpPut("{id:int}")]
+        public IActionResult Update(int id, [FromBody] Appointment appointment)
         {
-            if (id != update.Id) return BadRequest();
+            if (id != appointment.Id) return BadRequest("ID mismatch.");
 
-            var existing = await _context.Appointments.FindAsync(id);
-            if (existing is null) return NotFound();
+            var existing = _appointments.Get(id);
+            if (existing == null) return NotFound();
 
-            existing.StartTime = update.StartTime;
-            existing.EndTime = update.EndTime;
-            existing.ServiceType = update.ServiceType;
-            existing.ServiceCategory = update.ServiceCategory;
-            existing.Status = update.Status;
-            existing.QuotedPrice = update.QuotedPrice;
-            existing.FinalPrice = update.FinalPrice;
-            existing.Notes = update.Notes;
-            existing.ClientId = update.ClientId;
-            existing.ArtistId = update.ArtistId;
-
-            await _context.SaveChangesAsync();
-            return Ok(existing);
+            _appointments.Update(appointment);
+            return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [Authorize(Policy = "IsAdmin")]
-        public async Task<IActionResult> DeleteAppointment(int id)
+        public IActionResult Delete(int id)
         {
-            var existing = await _context.Appointments.FindAsync(id);
-            if (existing is null) return NotFound();
+            var existing = _appointments.Get(id);
+            if (existing == null) return NotFound();
 
-            _context.Appointments.Remove(existing);
-            await _context.SaveChangesAsync();
-
+            _appointments.Delete(id);
             return NoContent();
         }
     }

@@ -11,6 +11,7 @@ builder.Configuration
 
 // Razor Pages
 builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews(); // Add MVC support
 
 builder.Services.AddHttpContextAccessor();
 
@@ -73,6 +74,10 @@ app.UseAuthorization();
 
 // 👇 add this line BEFORE MapRazorPages
 app.MapGet("/", () => Results.Redirect("/Account/Login"));
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
