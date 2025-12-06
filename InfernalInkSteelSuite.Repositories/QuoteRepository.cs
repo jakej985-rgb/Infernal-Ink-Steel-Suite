@@ -51,7 +51,16 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("@similarJobsCount", quote.SimilarJobsCount);
             command.Parameters.AddWithValue("@createdAt", DateTime.UtcNow.ToString("o"));
 
-            return command.ExecuteNonQuery() > 0;
+            command.CommandText += "; SELECT last_insert_rowid();";
+            var result = command.ExecuteScalar();
+
+            if (result != null && long.TryParse(result.ToString(), out long newId))
+            {
+                quote.Id = (int)newId;
+                return true;
+            }
+
+            return false;
         }
 
         public List<Quote> GetAllQuotes()
