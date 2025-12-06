@@ -86,15 +86,20 @@
                 INFERNAL INK
             </div>
             <nav class="sidebar-nav">
-                <a asp-page="/Dashboard/Index"
-                    class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Dashboard/Index" ? "active" : "")">Dashboard</a>
-                <a href="#" class="nav-item-link">Clients</a>
-                <a href="#" class="nav-item-link">Appointments</a>
-                <a href="#" class="nav-item-link">Quotes</a>
-                <a href="#" class="nav-item-link">Documents</a>
-                <a href="#" class="nav-item-link">Statistics</a>
-                <a asp-page="/Settings/Index"
-                    class="nav-item-link @(ViewContext.RouteData.Values["page"]?.ToString() == "/Settings/Index" ? "active" : "")">Settings</a>
+                <a asp-controller="Dashboard" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">Dashboard</a>
+                <a asp-controller="Clients" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Clients" ? "active" : "")">Clients</a>
+                <a asp-controller="Appointments" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Appointments" ? "active" : "")">Appointments</a>
+                <a asp-controller="Quotes" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Quotes" ? "active" : "")">Quotes</a>
+                <a asp-controller="Documents" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Documents" ? "active" : "")">Documents</a>
+                <a asp-controller="Statistics" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Statistics" ? "active" : "")">Statistics</a>
+                <a asp-controller="Settings" asp-action="Index"
+                    class="nav-item-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">Settings</a>
             </nav>
             <div class="sidebar-footer">
                 <a href="/" class="nav-item-link">Exit to Site</a>
