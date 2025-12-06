@@ -125,48 +125,7 @@ app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db, Passwor
 // Simple health check
 app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
-// ---- Clients ----
-app.MapGet("/clients", async (AppDbContext db) =>
-    await db.Clients.ToListAsync())
-    .RequireAuthorization("IsArtist");
 
-app.MapGet("/clients/{id:int}", async (int id, AppDbContext db) =>
-    await db.Clients.FindAsync(id) is { } client
-        ? Results.Ok(client)
-        : Results.NotFound())
-    .RequireAuthorization("IsArtist");
-
-app.MapPost("/clients", async (Client client, AppDbContext db) =>
-{
-    db.Clients.Add(client);
-    await db.SaveChangesAsync();
-    return Results.Created($"/clients/{client.Id}", client);
-}).RequireAuthorization("IsArtist");
-
-app.MapPut("/clients/{id:int}", async (int id, Client update, AppDbContext db) =>
-{
-    var existing = await db.Clients.FindAsync(id);
-    if (existing is null) return Results.NotFound();
-
-    existing.FirstName = update.FirstName;
-    existing.LastName = update.LastName;
-    existing.Phone = update.Phone;
-    existing.Email = update.Email;
-
-    await db.SaveChangesAsync();
-    return Results.Ok(existing);
-}).RequireAuthorization("IsArtist");
-
-app.MapDelete("/clients/{id:int}", async (int id, AppDbContext db) =>
-{
-    var existing = await db.Clients.FindAsync(id);
-    if (existing is null) return Results.NotFound();
-
-    db.Clients.Remove(existing);
-    await db.SaveChangesAsync();
-
-    return Results.NoContent();
-}).RequireAuthorization("IsAdmin");
 
 // ---- Users ----
 app.MapGet("/users", async (AppDbContext db) =>

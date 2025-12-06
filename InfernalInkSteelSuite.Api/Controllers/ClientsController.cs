@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
@@ -6,6 +7,7 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "IsArtist")]
 public class ClientsController : ControllerBase
 {
     private readonly IClientRepository _clients;

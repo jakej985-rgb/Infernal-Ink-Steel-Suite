@@ -47,13 +47,13 @@ public class ApiClient
 
     public async Task<List<ClientDto>> GetClientsAsync()
     {
-        var result = await _http.GetFromJsonAsync<List<ClientDto>>("/clients");
+        var result = await _http.GetFromJsonAsync<List<ClientDto>>("api/clients");
         return result ?? [];
     }
 
     public async Task<ClientDto?> GetClientAsync(int id)
     {
-        return await _http.GetFromJsonAsync<ClientDto>($"/clients/{id}");
+        return await _http.GetFromJsonAsync<ClientDto>($"api/clients/{id}");
     }
 
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
