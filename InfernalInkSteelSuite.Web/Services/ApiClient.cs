@@ -66,7 +66,7 @@ public class ApiClient
     );
 
     // Stats DTOs
-    public record DashboardStatsDto(int AppointmentsToday, int TotalClients, List<ClientSummaryDto> RecentClients, bool IsShopOpen, int ActiveArtistsCount);
+    public record DashboardStatsDto(int AppointmentsToday, int TotalClients, List<ClientSummaryDto> RecentClients, bool IsShopOpen, int ActiveArtistsCount, int UpcomingAppointments, int OpenQuotes);
     public record ClientSummaryDto(int Id, string Name, string Email);
     public record AppointmentStatDto(DateTime Date, int Count);
 
@@ -231,7 +231,7 @@ public class ApiClient
         catch (HttpRequestException)
         {
              // Fallback if API down or empty
-             return new DashboardStatsDto(0, 0, new List<ClientSummaryDto>(), false, 0);
+             return new DashboardStatsDto(0, 0, new List<ClientSummaryDto>(), false, 0, 0, 0);
         }
     }
 

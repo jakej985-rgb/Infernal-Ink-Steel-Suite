@@ -2,8 +2,9 @@ using InfernalInkSteelSuite.Web.Models;
 using InfernalInkSteelSuite.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static InfernalInkSteelSuite.Web.Services.ApiClient;
 
-namespace InfernalInkSteelSuite.Web.Pages.Appointments;
+namespace InfernalInkSteelSuite.Web.Pages.Dashboard;
 
 public class IndexModel : PageModel
 {
@@ -14,23 +15,25 @@ public class IndexModel : PageModel
         _api = api;
     }
 
-    public List<AppointmentDto> Appointments { get; set; } = new();
-
-    [BindProperty(SupportsGet = true)]
-    public DateOnly? Date { get; set; }
+    public DashboardStatsDto? Stats { get; set; }
+    public List<AppointmentDto> TodaysAppointments { get; set; } = new();
 
     public async Task<IActionResult> OnGetAsync()
     {
+        // 1. Require login
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
         {
             return RedirectToPage("/Account/Login");
         }
 
-        var dateToUse = Date ?? DateOnly.FromDateTime(DateTime.Today);
-        // Note: The ApiClient accepts DateTime?, but we want to work with DateOnly for the UI.
-        // We pass the DateTime equivalent.
-        Appointments = await _api.GetAppointmentsAsync(dateToUse.ToDateTime(TimeOnly.MinValue)) ?? new List<AppointmentDto>();
+        // 2. Load summary stats
+        Stats = await _api.GetDashboardStatsAsync();
+
+        // 3. Load today's appointments
+        var today = DateTime.Today;
+        TodaysAppointments = await _api.GetAppointmentsAsync(date: today);
+
         return Page();
     }
 }
