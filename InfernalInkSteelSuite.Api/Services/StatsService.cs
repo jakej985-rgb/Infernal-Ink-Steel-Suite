@@ -3,24 +3,14 @@ using InfernalInkSteelSuite.Domain;
 
 namespace InfernalInkSteelSuite.Api.Services;
 
-public class StatsService
+public class StatsService(
+    IAppointmentRepository appointmentRepository,
+    IClientRepository clientRepository,
+    IShopSettingsRepository shopSettingsRepository)
 {
-    private readonly IAppointmentRepository _appointmentRepository;
-    private readonly IClientRepository _clientRepository;
-    private readonly IShopSettingsRepository _shopSettingsRepository;
-    // Assuming we might have a User/Artist repo for active artists count, using IUserRepository for now but it's not injected yet in Service.
-    // The Program.cs doesn't register IUserRepository for DI yet? It registers AppDbContext.
-    // Let's use what we have or add UserRepo.
-
-    public StatsService(
-        IAppointmentRepository appointmentRepository,
-        IClientRepository clientRepository,
-        IShopSettingsRepository shopSettingsRepository)
-    {
-        _appointmentRepository = appointmentRepository;
-        _clientRepository = clientRepository;
-        _shopSettingsRepository = shopSettingsRepository;
-    }
+    private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
+    private readonly IClientRepository _clientRepository = clientRepository;
+    private readonly IShopSettingsRepository _shopSettingsRepository = shopSettingsRepository;
 
     public DashboardStatsDto GetOverview()
     {
@@ -63,12 +53,14 @@ public class StatsService
     public List<AppointmentStatDto> GetAppointmentsByDay(DateTime from, DateTime to)
     {
         var appointments = _appointmentRepository.GetAll();
-        return appointments
+        return
+        [
+            .. appointments
             .Where(a => a.StartTime >= from && a.StartTime <= to)
             .GroupBy(a => a.StartTime.Date)
             .Select(g => new AppointmentStatDto(g.Key, g.Count()))
             .OrderBy(x => x.Date)
-            .ToList();
+        ];
     }
 }
 
@@ -76,7 +68,7 @@ public class DashboardStatsDto
 {
     public int AppointmentsToday { get; set; }
     public int TotalClients { get; set; }
-    public List<ClientSummaryDto> RecentClients { get; set; } = new();
+    public List<ClientSummaryDto> RecentClients { get; set; } = [];
     public bool IsShopOpen { get; set; }
     public int ActiveArtistsCount { get; set; }
 }

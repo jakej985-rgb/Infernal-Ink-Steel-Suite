@@ -3,16 +3,10 @@ using InfernalInkSteelSuite.Repositories;
 
 namespace InfernalInkSteelSuite.Api.Services;
 
-public class QuoteService
+public class QuoteService(IQuoteRepository repository, IShopSettingsRepository shopSettingsRepository)
 {
-    private readonly IQuoteRepository _repository;
-    private readonly IShopSettingsRepository _shopSettingsRepository;
-
-    public QuoteService(IQuoteRepository repository, IShopSettingsRepository shopSettingsRepository)
-    {
-        _repository = repository;
-        _shopSettingsRepository = shopSettingsRepository;
-    }
+    private readonly IQuoteRepository _repository = repository;
+    private readonly IShopSettingsRepository _shopSettingsRepository = shopSettingsRepository;
 
     public QuoteEstimate CalculateQuote(QuoteInput input)
     {

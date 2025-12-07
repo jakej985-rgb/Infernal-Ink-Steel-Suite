@@ -6,7 +6,7 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings;
 
 public class IndexModel : PageModel
 {
-    public async Task<IActionResult> OnGetAsync()
+    public IActionResult OnGet()
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))

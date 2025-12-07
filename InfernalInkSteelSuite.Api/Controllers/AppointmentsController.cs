@@ -45,7 +45,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
 
                 if (!artistId.HasValue)
                 {
-                    appointments = appointments.Where(a => a.UserId == userId).ToList();
+                    appointments = [.. appointments.Where(a => a.UserId == userId)];
                 }
             }
 

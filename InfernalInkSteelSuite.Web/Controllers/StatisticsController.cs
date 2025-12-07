@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfernalInkSteelSuite.Web.Controllers;
 
-public class StatisticsController : Controller
+public class StatisticsController(ApiClient api) : Controller
 {
-    private readonly ApiClient _api;
-
-    public StatisticsController(ApiClient api)
-    {
-        _api = api;
-    }
+    private readonly ApiClient _api = api;
 
     public async Task<IActionResult> Index()
     {

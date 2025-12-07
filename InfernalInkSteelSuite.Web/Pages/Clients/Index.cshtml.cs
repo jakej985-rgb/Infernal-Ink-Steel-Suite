@@ -5,16 +5,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Clients;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
+    private readonly ApiClient _api = api;
 
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
+    [BindProperty(SupportsGet = true)]
+    public string? Search { get; set; }
 
-    public List<ClientDto> Clients { get; set; } = new();
+    public List<ClientDto> Clients { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -24,7 +22,12 @@ public class IndexModel : PageModel
             return RedirectToPage("/Account/Login");
         }
 
-        Clients = await _api.GetClientsAsync() ?? new List<ClientDto>();
+        var all = await _api.GetClientsAsync() ?? [];
+
+        Clients = string.IsNullOrWhiteSpace(Search)
+            ? all
+            : all.Where(c => c.FullName.Contains(Search, StringComparison.OrdinalIgnoreCase)).ToList();
+
         return Page();
     }
 }

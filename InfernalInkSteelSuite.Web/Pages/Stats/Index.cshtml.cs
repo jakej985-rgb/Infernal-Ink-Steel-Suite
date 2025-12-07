@@ -5,14 +5,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace InfernalInkSteelSuite.Web.Pages.Stats;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
-
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
+    private readonly ApiClient _api = api;
 
     public ApiClient.DashboardStatsDto? Stats { get; set; }
 

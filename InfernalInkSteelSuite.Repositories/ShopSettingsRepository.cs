@@ -89,7 +89,7 @@ namespace InfernalInkSteelSuite.Repositories
             EnsureColumnExists(connection, "AppFontSize", "REAL", "14.0");
 
             var command = connection.CreateCommand();
-            command.CommandText = @"SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginHeadline, loginTagline, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson, AppFontSize FROM shopsettings LIMIT 1";
+            command.CommandText = @"SELECT shopName, logoPath, accentColor, sidebarArtworkPath, loginBackgroundPath, loginHeadlineFontFamily, loginTaglineFontFamily, loginTextColor, tattooPerHour, piercingSingle, piercingMulti, shopMinimumRate, EnableAutomaticHolidayThemes, SpecialMessageText, IsSpecialMessageEnabled, ShopHoursJson, TaxRate, DepositType, DepositAmount, BookingBufferMinutes, CancellationPolicy, AppointmentDurationPresetsJson, SpecialHoursJson, NotificationSettingsJson, BackupSettingsJson, LinkedAccountsJson, AppFontSize FROM shopsettings LIMIT 1";
             using var reader = command.ExecuteReader();
             if (reader.Read())
             {

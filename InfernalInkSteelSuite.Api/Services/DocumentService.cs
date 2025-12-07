@@ -4,16 +4,10 @@ using Microsoft.Extensions.Options;
 
 namespace InfernalInkSteelSuite.Api.Services;
 
-public class DocumentService
+public class DocumentService(IDocumentRepository repository, IConfiguration config)
 {
-    private readonly IDocumentRepository _repository;
-    private readonly string _rootPath;
-
-    public DocumentService(IDocumentRepository repository, IConfiguration config)
-    {
-        _repository = repository;
-        _rootPath = config["FileStorage:RootPath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-    }
+    private readonly IDocumentRepository _repository = repository;
+    private readonly string _rootPath = config["FileStorage:RootPath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
     public async Task<Document> UploadDocumentAsync(int clientId, int uploadedByUserId, string title, IFormFile file)
     {
@@ -85,7 +79,7 @@ public class DocumentService
         // No, documents belong to a Client (ClientId).
 
         // Let's filter GetAll() for now to avoid breaking changes if I don't need to.
-        return _repository.GetAll().Where(d => d.ClientId == clientId).ToList();
+        return [.. _repository.GetAll().Where(d => d.ClientId == clientId)];
     }
 
     public void DeleteDocument(int id)

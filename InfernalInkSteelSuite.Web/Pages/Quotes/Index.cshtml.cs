@@ -4,16 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Quotes;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
+    private readonly ApiClient _api = api;
 
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
-
-    public List<ApiClient.QuoteDto> Quotes { get; set; } = new();
+    public List<ApiClient.QuoteDto> Quotes { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -23,7 +18,7 @@ public class IndexModel : PageModel
             return RedirectToPage("/Account/Login");
         }
 
-        Quotes = await _api.GetAllQuotesAsync() ?? new List<ApiClient.QuoteDto>();
+        Quotes = await _api.GetAllQuotesAsync() ?? [];
         return Page();
     }
 }

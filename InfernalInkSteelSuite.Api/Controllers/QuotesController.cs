@@ -6,14 +6,9 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class QuotesController : ControllerBase
+public class QuotesController(QuoteService service) : ControllerBase
 {
-    private readonly QuoteService _service;
-
-    public QuotesController(QuoteService service)
-    {
-        _service = service;
-    }
+    private readonly QuoteService _service = service;
 
     [HttpPost("preview")]
     public IActionResult Calculate([FromBody] QuoteInput input)

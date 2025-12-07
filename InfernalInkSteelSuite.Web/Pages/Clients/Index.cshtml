@@ -7,24 +7,49 @@
 
 <h2>Clients</h2>
 
-<div class="table-responsive">
-    <table class="table table-dark table-hover">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var c in Model.Clients)
-        {
-            <tr>
-                <td>@c.FullName</td>
-                <td>@c.Phone</td>
-                <td>@c.Email</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="get" class="d-flex gap-2">
+        <input type="text" name="Search" value="@Model.Search" class="form-control bg-dark text-light border-secondary"
+            placeholder="Search clients..." />
+        <button type="submit" class="btn btn-outline-accent">Search</button>
+    </form>
+    <button class="btn btn-primary" disabled title="Coming soon">Add Client</button>
+</div>
+
+<div class="card bg-dark border-secondary">
+    <div class="table-responsive">
+        <table class="table table-dark table-striped table-hover m-0 align-middle">
+            <thead class="text-secondary text-uppercase small">
+                <tr>
+                    <th scope="col" class="ps-3">Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th scope="col" class="text-end pe-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Clients.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No clients found.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var c in Model.Clients)
+                    {
+                        <tr>
+                            <td class="ps-3 fw-bold text-white">@c.FullName</td>
+                            <td>@c.Phone</td>
+                            <td>@c.Email</td>
+                            <td class="text-end pe-3">
+                                <a asp-page="/Clients/Edit" asp-route-id="@c.Id"
+                                    class="btn btn-sm btn-outline-light disabled">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfernalInkSteelSuite.Web.Controllers;
 
-public class DocumentsController : Controller
+public class DocumentsController(ApiClient api) : Controller
 {
-    private readonly ApiClient _api;
-
-    public DocumentsController(ApiClient api)
-    {
-        _api = api;
-    }
+    private readonly ApiClient _api = api;
 
     public async Task<IActionResult> Index(int? clientId)
     {

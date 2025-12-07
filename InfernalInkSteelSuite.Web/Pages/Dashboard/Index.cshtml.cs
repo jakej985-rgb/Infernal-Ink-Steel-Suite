@@ -6,17 +6,12 @@ using static InfernalInkSteelSuite.Web.Services.ApiClient;
 
 namespace InfernalInkSteelSuite.Web.Pages.Dashboard;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
-
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
+    private readonly ApiClient _api = api;
 
     public DashboardStatsDto? Stats { get; set; }
-    public List<AppointmentDto> TodaysAppointments { get; set; } = new();
+    public List<AppointmentDto> TodaysAppointments { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {

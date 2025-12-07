@@ -4,19 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfernalInkSteelSuite.Web.Controllers
 {
-    public class ClientsController : Controller
+    public class ClientsController(ApiClient api) : Controller
     {
-        private readonly ApiClient _api;
-
-        public ClientsController(ApiClient api)
-        {
-            _api = api;
-        }
+        private readonly ApiClient _api = api;
 
         public async Task<IActionResult> Index()
         {
             var clients = await _api.GetClientsAsync()
-                          ?? new List<ClientDto>();
+                          ?? [];
             return View(clients);
         }
     }

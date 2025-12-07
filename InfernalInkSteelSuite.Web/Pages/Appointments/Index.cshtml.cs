@@ -5,16 +5,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Appointments;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
+    private readonly ApiClient _api = api;
 
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
-
-    public List<AppointmentDto> Appointments { get; set; } = new();
+    public List<AppointmentDto> Appointments { get; set; } = [];
 
     [BindProperty(SupportsGet = true)]
     public DateOnly? Date { get; set; }
@@ -30,7 +25,7 @@ public class IndexModel : PageModel
         var dateToUse = Date ?? DateOnly.FromDateTime(DateTime.Today);
         // Note: The ApiClient accepts DateTime?, but we want to work with DateOnly for the UI.
         // We pass the DateTime equivalent.
-        Appointments = await _api.GetAppointmentsAsync(dateToUse.ToDateTime(TimeOnly.MinValue)) ?? new List<AppointmentDto>();
+        Appointments = await _api.GetAppointmentsAsync(dateToUse.ToDateTime(TimeOnly.MinValue)) ?? [];
         return Page();
     }
 }

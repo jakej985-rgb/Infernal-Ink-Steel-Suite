@@ -230,8 +230,8 @@ public class ApiClient
         }
         catch (HttpRequestException)
         {
-             // Fallback if API down or empty
-             return new DashboardStatsDto(0, 0, new List<ClientSummaryDto>(), false, 0, 0, 0);
+            // Fallback if API down or empty
+            return new DashboardStatsDto(0, 0, [], false, 0, 0, 0);
         }
     }
 

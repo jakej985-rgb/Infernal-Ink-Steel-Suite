@@ -4,16 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace InfernalInkSteelSuite.Web.Pages.Documents;
 
-public class IndexModel : PageModel
+public class IndexModel(ApiClient api) : PageModel
 {
-    private readonly ApiClient _api;
+    private readonly ApiClient _api = api;
 
-    public IndexModel(ApiClient api)
-    {
-        _api = api;
-    }
-
-    public List<ApiClient.DocumentDto> Documents { get; set; } = new();
+    public List<ApiClient.DocumentDto> Documents { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -23,7 +18,7 @@ public class IndexModel : PageModel
             return RedirectToPage("/Account/Login");
         }
 
-        Documents = await _api.GetDocumentsAsync() ?? new List<ApiClient.DocumentDto>();
+        Documents = await _api.GetDocumentsAsync() ?? [];
         return Page();
     }
 }

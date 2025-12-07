@@ -8,14 +8,9 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Policy = "IsArtist")]
-public class ClientsController : ControllerBase
+public class ClientsController(IClientRepository clients) : ControllerBase
 {
-    private readonly IClientRepository _clients;
-
-    public ClientsController(IClientRepository clients)
-    {
-        _clients = clients;
-    }
+    private readonly IClientRepository _clients = clients;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Client>>> GetAll()

@@ -3,14 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InfernalInkSteelSuite.Web.Controllers;
 
-public class QuotesController : Controller
+public class QuotesController(ApiClient api) : Controller
 {
-    private readonly ApiClient _api;
-
-    public QuotesController(ApiClient api)
-    {
-        _api = api;
-    }
+    private readonly ApiClient _api = api;
 
     public async Task<IActionResult> Index()
     {

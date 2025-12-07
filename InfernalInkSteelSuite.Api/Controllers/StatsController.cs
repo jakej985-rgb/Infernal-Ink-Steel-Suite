@@ -5,14 +5,9 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StatsController : ControllerBase
+public class StatsController(StatsService service) : ControllerBase
 {
-    private readonly StatsService _service;
-
-    public StatsController(StatsService service)
-    {
-        _service = service;
-    }
+    private readonly StatsService _service = service;
 
     [HttpGet("overview")]
     public IActionResult GetOverview()

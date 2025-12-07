@@ -7,14 +7,9 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DocumentsController : ControllerBase
+public class DocumentsController(DocumentService service) : ControllerBase
 {
-    private readonly DocumentService _service;
-
-    public DocumentsController(DocumentService service)
-    {
-        _service = service;
-    }
+    private readonly DocumentService _service = service;
 
     [HttpPost]
     public async Task<IActionResult> Upload([FromForm] int clientId, [FromForm] int uploadedByUserId, [FromForm] string? title, IFormFile file)
