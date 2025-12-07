@@ -282,4 +282,37 @@ public class ApiClient
         var result = await _http.GetFromJsonAsync<List<AppointmentStatDto>>($"api/Stats/appointments-by-day{qs}");
         return result ?? [];
     }
+
+    // SETTINGS
+
+    public record ShopSettingsDto(
+        string ShopName,
+        decimal HourlyRate,
+        decimal MinimumRate,
+        double DepositPercentage,
+        string Theme,
+        string Tagline,
+        string ContactEmail,
+        string ContactPhone
+    );
+
+    public async Task<ShopSettingsDto?> GetShopSettingsAsync()
+    {
+        ApplyAuthHeader();
+        try
+        {
+            return await _http.GetFromJsonAsync<ShopSettingsDto>("api/Settings");
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> UpdateShopSettingsAsync(ShopSettingsDto settings)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PutAsJsonAsync("api/Settings", settings);
+        return response.IsSuccessStatusCode;
+    }
 }

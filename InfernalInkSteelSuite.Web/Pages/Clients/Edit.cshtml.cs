@@ -15,24 +15,36 @@ public class EditModel(ApiClient api) : PageModel
     public string Title { get; set; } = "New Client";
     public string? ErrorMessage { get; set; }
 
+    public List<ApiClient.DocumentDto> Documents { get; set; } = [];
+
+    [BindProperty]
+    public string UploadTitle { get; set; } = "";
+
+    [BindProperty]
+    public IFormFile? Upload { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
             return RedirectToPage("/Account/Login");
 
+
         if (id.HasValue && id.Value > 0)
         {
+            // Update mode
             var existing = await _api.GetClientAsync(id.Value);
-            if (existing != null)
-            {
-                Client = existing;
-                Title = $"Edit Client: {existing.FullName}";
-            }
-            else
-            {
-                return RedirectToPage("/Clients/Index");
-            }
+            if (existing == null) return RedirectToPage("/Clients/Index");
+            Client = existing;
+            Title = "Edit Client";
+
+            // Load documents
+            Documents = await _api.GetDocumentsForClientAsync(id.Value);
+        }
+        else
+        {
+            // Create mode
+            // No documents for new client
         }
 
         return Page();
@@ -41,50 +53,52 @@ public class EditModel(ApiClient api) : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         var token = HttpContext.Session.GetString("ApiToken");
-        if (string.IsNullOrEmpty(token))
-            return RedirectToPage("/Account/Login");
+        if (string.IsNullOrEmpty(token)) return RedirectToPage("/Account/Login");
 
-        if (!ModelState.IsValid)
-        {
-            return Page();
-        }
-
-        // Determine if Create or Update
-        // Note: The ApiClient currently only shows GetClientsAsync and GetClientAsync in the visible view.
-        // We likely need CreateClientAsync and UpdateClientAsync methods.
-        // I will assume they might exist or I need to use generic HTTP calls if they are missing from the wrapper.
-        // However, the plan assumed using ApiClient.
-        // If ApiClient doesn't have Create/Update for Client, I might need to add them or use _http directly if exposed.
-        // Wait, ApiClient.cs view didn't show CreateClientAsync.
-        // I should check if I missed them or if I need to add them to ApiClient.cs.
-        // For now, I'll generate the code assuming they exist or I'll add them in the next step if I recall they were missing.
-        // Actually, looking back at ApiClient.cs in Step 15 lines 129-140, strictly Getters are shown for Clients.
-        // Line 129: GetClientsAsync
-        // Line 136: GetClientAsync
-        // No Create or Update. I must add them to ApiClient.cs as well.
-
-        // I will write the code here assuming the methods `CreateClientAsync` and `UpdateClientAsync` exist,
-        // and then I will immediately go update ApiClient.cs to add them.
+        if (!ModelState.IsValid) return Page();
 
         bool success;
         if (Client.Id > 0)
         {
-            // Update
             success = await _api.UpdateClientAsync(Client);
         }
         else
         {
-            // Create
             var created = await _api.CreateClientAsync(Client);
-            success = created != null;
+            if (created != null)
+            {
+                // Redirect to edit page so they can upload docs if they want, or index
+                return RedirectToPage("/Clients/Edit", new { id = created.Id });
+            }
+            success = false;
         }
 
         if (!success)
         {
-            ErrorMessage = "Failed to save client. Please try again.";
+            ErrorMessage = "Failed to save client.";
             return Page();
         }
 
         return RedirectToPage("/Clients/Index");
+    }
+
+    public async Task<IActionResult> OnPostUploadAsync()
+    {
+        var token = HttpContext.Session.GetString("ApiToken");
+        if (string.IsNullOrEmpty(token)) return RedirectToPage("/Account/Login");
+
+        if (Upload == null || Client.Id == 0)
+        {
+            ErrorMessage = "Please select a file and ensure client is saved.";
+            // Reload client and docs
+            Client = await _api.GetClientAsync(Client.Id) ?? new();
+            Documents = await _api.GetDocumentsForClientAsync(Client.Id);
+            return Page();
+        }
+
+        var userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+        await _api.UploadDocumentAsync(Client.Id, userId, UploadTitle, Upload);
+
+        return RedirectToPage("/Clients/Edit", new { id = Client.Id });
     }
 }

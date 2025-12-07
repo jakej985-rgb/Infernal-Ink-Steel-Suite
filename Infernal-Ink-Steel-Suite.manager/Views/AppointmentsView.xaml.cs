@@ -25,7 +25,7 @@ namespace InfernalInkSteelSuite.Views
             {
                 DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository, _clientRepository)
             };
-            CalendarTab.Content = calendarTab;
+            CalendarTabItem.Content = calendarTab;
 
             AddButton.Click += AddButton_Click;
             EditButton.Click += EditButton_Click;
@@ -98,7 +98,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void MainTabWidget_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var isCalendarTab = MainTabWidget.SelectedItem == CalendarTab;
+            var isCalendarTab = MainTabWidget.SelectedItem == CalendarTabItem;
             EditButton.IsEnabled = !isCalendarTab;
             DeleteButton.IsEnabled = !isCalendarTab;
         }

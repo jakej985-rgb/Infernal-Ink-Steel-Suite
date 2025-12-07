@@ -10,13 +10,13 @@ public class IndexModel(ApiClient api) : PageModel
     private readonly ApiClient _api = api;
 
     [BindProperty]
-    public ShopSettingsDto Settings { get; set; } = new();
+    public ApiClient.ShopSettingsDto Settings { get; set; } = new("Infernal Ink", 150m, 100m, 20.0, "Neon", "", "", "");
 
     // Theming
     [BindProperty]
-    public string SelectedTheme { get; set; } = "Neon"; // Default
+    public string SelectedTheme { get; set; } = "Neon";
 
-    public IActionResult OnGet()
+    public async Task<IActionResult> OnGetAsync()
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token)) return RedirectToPage("/Account/Login");
@@ -24,44 +24,31 @@ public class IndexModel(ApiClient api) : PageModel
         var role = HttpContext.Session.GetString("Role");
         if (role != "Admin" && role != "Manager") return RedirectToPage("/Dashboard/Index");
 
-        // Fetch settings from API if available. 
-        // Assuming GetShopSettingsAsync exists or needs to be added.
-        // For MVP, we'll assume we can at least Mock it or I'll add simple properties.
-        // NOTE: ApiClient was not defined with GetShopSettingsAsync in earlier steps.
-        // I will implement this PageModel assuming I need to add that next.
-        // For now, hardcode defaults or fetch if I add method.
-
-        Settings = new ShopSettingsDto
+        var settings = await _api.GetShopSettingsAsync();
+        if (settings != null)
         {
-            ShopName = "Infernal Ink & Steel",
-            HourlyRate = 150,
-            MinimumRate = 100,
-            DepositPercentage = 20
-        };
+            Settings = settings;
+            SelectedTheme = settings.Theme;
+        }
 
         return Page();
     }
 
-    public IActionResult OnPost()
+    public async Task<IActionResult> OnPostAsync()
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token)) return RedirectToPage("/Account/Login");
 
-        // Save logic to API
-        // _api.UpdateShopSettings(Settings);
+        // Update theme in settings object
+        Settings = Settings with { Theme = SelectedTheme };
 
-        // For now, just reload page to simulate save
-        TempData["Message"] = "Settings saved successfully.";
+        var success = await _api.UpdateShopSettingsAsync(Settings);
+
+        if (success)
+            TempData["Message"] = "Settings saved successfully.";
+        else
+            TempData["Message"] = "Failed to save settings.";
 
         return Page();
     }
-}
-
-public class ShopSettingsDto
-{
-    public string ShopName { get; set; } = "";
-    public decimal HourlyRate { get; set; }
-    public decimal MinimumRate { get; set; }
-    public double DepositPercentage { get; set; }
-    public string Theme { get; set; } = "Neon";
 }
