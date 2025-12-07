@@ -133,6 +133,7 @@ namespace InfernalInkSteelSuite.Data
                 @"CREATE TABLE IF NOT EXISTS users (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     username TEXT UNIQUE NOT NULL,
+                    DisplayName TEXT DEFAULT '',
                     passwordHash TEXT NOT NULL,
                     role TEXT NOT NULL,
                     ThemeKey TEXT NOT NULL DEFAULT 'InfernalNeon',
@@ -162,6 +163,7 @@ namespace InfernalInkSteelSuite.Data
 
         private static void EnsureColumnsExist(SqliteConnection connection)
         {
+            EnsureColumnExists(connection, "users", "DisplayName", "TEXT", "''");
             EnsureColumnExists(connection, "appointments", "serviceCategory", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceType", "TEXT DEFAULT ''");
             EnsureColumnExists(connection, "appointments", "priceCharged", "REAL NOT NULL DEFAULT 0");

@@ -305,11 +305,20 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var db = services.GetRequiredService<AppDbContext>();
     var hasher = services.GetRequiredService<PasswordHasher>();
-    db.Database.Migrate();
+    // db.Database.Migrate();
+    db.Database.EnsureCreated();
 
     // Ensure non-EF tables are created (like Quotes, ShopSettings)
     var dbManager = new DatabaseManager(connectionString);
     dbManager.InitializeDatabase();
+
+    var adminUser = db.Users.FirstOrDefault(u => u.Username == "admin");
+    if (adminUser != null)
+    {
+        // FORCE PASSWORD RESET FOR DEBUGGING/RECOVERY
+        adminUser.PasswordHash = hasher.HashPassword("password");
+        db.SaveChanges();
+    }
 
     if (!db.Users.Any())
     {
