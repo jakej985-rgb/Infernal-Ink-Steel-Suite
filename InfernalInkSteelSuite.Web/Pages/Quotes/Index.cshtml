@@ -1,32 +1,55 @@
 @page
 @model InfernalInkSteelSuite.Web.Pages.Quotes.IndexModel
 @{
-    Layout = "_DashboardLayout";
     ViewData["Title"] = "Quotes";
 }
 
-<h2>Quotes</h2>
+<section class="quotes-page">
+    <header class="page-header d-flex justify-content-between align-items-center mb-4">
+        <h1>Quotes</h1>
+        <div class="d-flex gap-2">
+            <a asp-page="/Quotes/New" class="btn btn-primary d-flex align-items-center gap-2">
+                <span>+ New Smart Quote</span>
+            </a>
+        </div>
+    </header>
 
-<div class="table-responsive">
-    <table class="table table-dark table-hover">
-        <thead>
-            <tr>
-                <th>Placement</th>
-                <th>Style</th>
-                <th>Estimate</th>
-                <th>Confidence</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var q in Model.Quotes)
-        {
-            <tr>
-                <td>@q.Placement</td>
-                <td>@q.Style</td>
-                <td>$@q.PriceLow - $@q.PriceHigh</td>
-                <td>@(q.ConfidenceScore * 100)%</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
+    @if (Model.Quotes.Count == 0)
+    {
+        <div class="text-center py-5 text-muted border rounded border-secondary bg-surface">
+            <h4>No quotes generated yet.</h4>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-striped mb-0 text-white">
+                <thead>
+                    <tr>
+                        <th class="border-secondary">Style</th>
+                        <th class="border-secondary">Placement</th>
+                        <th class="border-secondary">Dimensions</th>
+                        <th class="border-secondary">Est. Time</th>
+                        <th class="border-secondary">Est. Price</th>
+                        <th class="border-secondary">Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var q in Model.Quotes)
+                    {
+                        <tr class="align-middle">
+                            <td class="border-secondary">@q.Style</td>
+                            <td class="border-secondary">@q.Placement</td>
+                            <td class="border-secondary">@q.Width" x @q.Height"</td>
+                            <td class="border-secondary">@q.EstimatedHoursLow - @q.EstimatedHoursHigh hrs</td>
+                            <td class="border-secondary text-accent">
+                                @q.PriceLow.ToString("C") - @q.PriceHigh.ToString("C")
+                            </td>
+                            <td class="border-secondary">@q.CreatedAt.ToString("g")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

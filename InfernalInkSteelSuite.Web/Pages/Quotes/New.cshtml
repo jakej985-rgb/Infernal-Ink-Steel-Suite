@@ -1,0 +1,164 @@
+@page
+@model InfernalInkSteelSuite.Web.Pages.Quotes.NewModel
+@{
+    ViewData["Title"] = "New Smart Quote";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <form method="post">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Smart Quote Engine</h1>
+                <a asp-page="/Quotes/Index" class="btn btn-outline-light">Back to Quotes</a>
+            </header>
+
+            <div class="row">
+                <!-- Input Panel -->
+                <div class="col-md-7">
+                    <div class="card mb-3">
+                        <div class="card-header bg-transparent border-secondary">
+                            <h5 class="mb-0">Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.ClientId" class="form-label">Client (Optional)</label>
+                                    <select asp-for="Quote.ClientId" asp-items="Model.Clients" class="form-select">
+                                        <option value="">-- Guest --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.ArtistId" class="form-label">Artist</label>
+                                    <select asp-for="Quote.ArtistId" asp-items="Model.Artists"
+                                        class="form-select"></select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.Style" class="form-label">Style</label>
+                                    <select asp-for="Quote.Style" asp-items="Model.Styles" class="form-select"
+                                        required></select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.Placement" class="form-label">Placement</label>
+                                    <input asp-for="Quote.Placement" class="form-control" placeholder="e.g. Forearm"
+                                        required />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.Width" class="form-label">Width (inches)</label>
+                                    <input asp-for="Quote.Width" type="number" step="0.1" class="form-control"
+                                        required />
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Quote.Height" class="form-label">Height (inches)</label>
+                                    <input asp-for="Quote.Height" type="number" step="0.1" class="form-control"
+                                        required />
+                                </div>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input asp-for="Quote.IsCoverUp" class="form-check-input" />
+                                <label asp-for="Quote.IsCoverUp" class="form-check-label">Is Cover-Up?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-3">
+                        <div class="card-header bg-transparent border-secondary">
+                            <h5 class="mb-0">Complexity Factors (1-10)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Coverage</label>
+                                    <input asp-for="Quote.CoverageLevel" type="range" min="1" max="10"
+                                        class="form-range" oninput="this.nextElementSibling.value = this.value" />
+                                    <output>@Model.Quote.CoverageLevel</output>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Line Work</label>
+                                    <input asp-for="Quote.LineComplexity" type="range" min="1" max="10"
+                                        class="form-range" oninput="this.nextElementSibling.value = this.value" />
+                                    <output>@Model.Quote.LineComplexity</output>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Shading</label>
+                                    <input asp-for="Quote.ShadingComplexity" type="range" min="1" max="10"
+                                        class="form-range" oninput="this.nextElementSibling.value = this.value" />
+                                    <output>@Model.Quote.ShadingComplexity</output>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Color Complexity</label>
+                                    <input asp-for="Quote.ColorComplexity" type="range" min="1" max="10"
+                                        class="form-range" oninput="this.nextElementSibling.value = this.value" />
+                                    <output>@Model.Quote.ColorComplexity</output>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Overall Difficulty</label>
+                                    <input asp-for="Quote.Difficulty" type="range" min="1" max="10" class="form-range"
+                                        oninput="this.nextElementSibling.value = this.value" />
+                                    <output>@Model.Quote.Difficulty</output>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" asp-page-handler="Calculate" class="btn btn-info w-100 mb-2">Preview
+                        Estimate</button>
+                    <button type="submit" asp-page-handler="Save" class="btn btn-success w-100">Save Quote</button>
+
+                    <div asp-validation-summary="All" class="text-danger mt-2"></div>
+                </div>
+
+                <!-- Preview Panel -->
+                <div class="col-md-5">
+                    @if (Model.Estimate != null)
+                    {
+                        <div class="card bg-dark border-primary text-white sticky-top" style="top: 100px;">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Estimated Quote</h4>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="text-center text-accent mb-4">
+                                    @Model.Estimate.PriceLow.ToString("C0") - @Model.Estimate.PriceHigh.ToString("C0")
+                                </h2>
+
+                                <ul class="list-group list-group-flush bg-transparent">
+                                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                                        <span>Est. Time:</span>
+                                        <strong>@Model.Estimate.EstimatedHoursLow - @Model.Estimate.EstimatedHoursHigh
+                                            hrs</strong>
+                                    </li>
+                                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                                        <span>Deposit:</span>
+                                        <strong>@Model.Estimate.RecommendedDeposit.ToString("C0")</strong>
+                                    </li>
+                                    <li class="list-group-item bg-transparent text-white d-flex justify-content-between">
+                                        <span>Shop Minimum:</span>
+                                        <strong>@Model.Estimate.ShopMinimum.ToString("C0")</strong>
+                                    </li>
+                                </ul>
+
+                                <div class="alert alert-info mt-3 mb-0">
+                                    <small>Based on shop hourly rate + complexity factors.</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-secondary mt-5">
+                            Click "Preview Estimate" to calculate price based on your inputs.
+                        </div>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

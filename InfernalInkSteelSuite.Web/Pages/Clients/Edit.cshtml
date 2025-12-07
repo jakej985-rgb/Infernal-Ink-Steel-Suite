@@ -1,0 +1,81 @@
+@page "{id:int?}"
+@model InfernalInkSteelSuite.Web.Pages.Clients.EditModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <form method="post">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>@Model.Title</h1>
+                <div class="btn-group">
+                    <a asp-page="/Clients/Index" class="btn btn-outline-light">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Client</button>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+
+            <div class="card mb-4">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0">Client Information</h5>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" asp-for="Client.Id" />
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Client.FirstName" class="form-label">First Name</label>
+                            <input asp-for="Client.FirstName" class="form-control" required />
+                            <span asp-validation-for="Client.FirstName" class="text-warning"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Client.MiddleName" class="form-label">Middle Name</label>
+                            <input asp-for="Client.MiddleName" class="form-control" />
+                            <span asp-validation-for="Client.MiddleName" class="text-warning"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="Client.LastName" class="form-label">Last Name</label>
+                            <input asp-for="Client.LastName" class="form-control" required />
+                            <span asp-validation-for="Client.LastName" class="text-warning"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Client.Phone" class="form-label">Phone</label>
+                            <input asp-for="Client.Phone" class="form-control" />
+                            <span asp-validation-for="Client.Phone" class="text-warning"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Client.Email" class="form-label">Email</label>
+                            <input asp-for="Client.Email" type="email" class="form-control" />
+                            <span asp-validation-for="Client.Email" class="text-warning"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-transparent border-secondary">
+                    <h5 class="mb-0">Additional Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Client.Notes" class="form-label">Notes</label>
+                        <textarea asp-for="Client.Notes" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="Client.Notes" class="text-warning"></span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

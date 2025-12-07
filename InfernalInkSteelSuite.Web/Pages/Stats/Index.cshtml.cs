@@ -20,12 +20,12 @@ public class IndexModel(ApiClient api) : PageModel
         }
 
         var role = HttpContext.Session.GetString("Role");
-        var isAdminOrManager = role == "Admin" || role == "Manager";
-
-        if (!isAdminOrManager)
+        if (role != "Admin" && role != "Manager")
         {
             return RedirectToPage("/Dashboard/Index");
         }
+
+        // Role checked above
 
         Stats = await _api.GetDashboardStatsAsync();
         return Page();

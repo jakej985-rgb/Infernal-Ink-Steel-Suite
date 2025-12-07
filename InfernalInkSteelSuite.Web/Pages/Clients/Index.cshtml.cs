@@ -9,24 +9,32 @@ public class IndexModel(ApiClient api) : PageModel
 {
     private readonly ApiClient _api = api;
 
+    public List<ClientDto> Clients { get; set; } = [];
+
     [BindProperty(SupportsGet = true)]
     public string? Search { get; set; }
-
-    public List<ClientDto> Clients { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
-        {
             return RedirectToPage("/Account/Login");
+
+        var all = await _api.GetClientsAsync();
+
+        if (!string.IsNullOrWhiteSpace(Search))
+        {
+            var term = Search.Trim();
+            Clients = [.. all.Where(c =>
+                (!string.IsNullOrEmpty(c.FullName) && c.FullName.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Phone) && c.Phone.Contains(term, StringComparison.OrdinalIgnoreCase)) ||
+                (!string.IsNullOrEmpty(c.Email) && c.Email.Contains(term, StringComparison.OrdinalIgnoreCase))
+            )];
         }
-
-        var all = await _api.GetClientsAsync() ?? [];
-
-        Clients = string.IsNullOrWhiteSpace(Search)
-            ? all
-            : all.Where(c => c.FullName.Contains(Search, StringComparison.OrdinalIgnoreCase)).ToList();
+        else
+        {
+            Clients = all;
+        }
 
         return Page();
     }

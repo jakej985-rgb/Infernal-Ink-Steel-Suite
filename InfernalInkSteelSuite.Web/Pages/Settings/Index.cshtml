@@ -1,9 +1,69 @@
 @page
 @model InfernalInkSteelSuite.Web.Pages.Settings.IndexModel
 @{
-    Layout = "_DashboardLayout";
     ViewData["Title"] = "Settings";
 }
 
-<h2>Settings</h2>
-<p>Settings configuration will go here.</p>
+<section class="settings-page">
+    <header class="page-header mb-4">
+        <h1>Shop Settings</h1>
+    </header>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+                <div class="card mb-4">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="mb-0">General Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="Settings.ShopName" class="form-label">Shop Name</label>
+                            <input asp-for="Settings.ShopName" class="form-control" />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Settings.HourlyRate" class="form-label">Hourly Rate ($)</label>
+                                <input asp-for="Settings.HourlyRate" type="number" class="form-control" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Settings.MinimumRate" class="form-label">Shop Minimum ($)</label>
+                                <input asp-for="Settings.MinimumRate" type="number" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Settings.DepositPercentage" class="form-label">Deposit %</label>
+                            <input asp-for="Settings.DepositPercentage" type="number" step="1" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header bg-transparent border-secondary">
+                        <h5 class="mb-0">Appearance</h5>
+                    </div>
+                    <div class="card-body">
+                        <label asp-for="SelectedTheme" class="form-label">Theme</label>
+                        <select asp-for="SelectedTheme" class="form-select">
+                            <option value="Neon">Neon (Default)</option>
+                            <option value="Steampunk">Steampunk</option>
+                            <option value="Minimal">High Contrast</option>
+                        </select>
+                        <div class="form-text text-muted">Theme changes apply after refresh.</div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

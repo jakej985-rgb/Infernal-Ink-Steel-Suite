@@ -139,6 +139,21 @@ public class ApiClient
         return await _http.GetFromJsonAsync<ClientDto>($"api/clients/{id}");
     }
 
+    public async Task<ClientDto?> CreateClientAsync(ClientDto client)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PostAsJsonAsync("api/clients", client);
+        if (!response.IsSuccessStatusCode) return null;
+        return await response.Content.ReadFromJsonAsync<ClientDto>();
+    }
+
+    public async Task<bool> UpdateClientAsync(ClientDto client)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PutAsJsonAsync($"api/clients/{client.Id}", client);
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
     {
         ApplyAuthHeader();
@@ -149,6 +164,27 @@ public class ApiClient
 
         var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"api/appointments{qs}");
         return result ?? [];
+    }
+
+    public async Task<AppointmentDto?> GetAppointmentAsync(int id)
+    {
+        ApplyAuthHeader();
+        return await _http.GetFromJsonAsync<AppointmentDto>($"api/appointments/{id}");
+    }
+
+    public async Task<AppointmentDto?> CreateAppointmentAsync(AppointmentDto appt)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PostAsJsonAsync("api/appointments", appt);
+        if (!response.IsSuccessStatusCode) return null;
+        return await response.Content.ReadFromJsonAsync<AppointmentDto>();
+    }
+
+    public async Task<bool> UpdateAppointmentAsync(AppointmentDto appt)
+    {
+        ApplyAuthHeader();
+        var response = await _http.PutAsJsonAsync($"api/appointments/{appt.Id}", appt);
+        return response.IsSuccessStatusCode;
     }
 
     // DOCUMENTS
