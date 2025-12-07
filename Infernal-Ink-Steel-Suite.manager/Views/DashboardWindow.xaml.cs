@@ -36,7 +36,7 @@ namespace InfernalInkSteelSuite.Views
 
             InitializeComponent();
             LoadShopSettings();
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
@@ -67,7 +67,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
@@ -128,7 +128,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Statistics_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new StatsView();
+            MainContent.Content = new StatsView(_connectionString);
         }
     }
 }

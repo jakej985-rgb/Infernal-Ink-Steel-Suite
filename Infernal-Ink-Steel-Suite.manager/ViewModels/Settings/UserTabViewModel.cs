@@ -28,12 +28,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         }
 
         private string _avatarPath;
-        public string AvatarPath
+        public string? AvatarPath
         {
-            get => _avatarPath;
+            get => string.IsNullOrWhiteSpace(_avatarPath) ? null : _avatarPath;
             set
             {
-                _avatarPath = value;
+                _avatarPath = value ?? string.Empty;
                 OnPropertyChanged();
             }
         }

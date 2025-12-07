@@ -307,6 +307,10 @@ using (var scope = app.Services.CreateScope())
     var hasher = services.GetRequiredService<PasswordHasher>();
     db.Database.Migrate();
 
+    // Ensure non-EF tables are created (like Quotes, ShopSettings)
+    var dbManager = new DatabaseManager(connectionString);
+    dbManager.InitializeDatabase();
+
     if (!db.Users.Any())
     {
         db.Users.AddRange(

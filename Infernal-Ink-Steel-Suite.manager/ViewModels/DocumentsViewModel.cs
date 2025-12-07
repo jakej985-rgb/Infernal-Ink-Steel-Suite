@@ -67,7 +67,13 @@ namespace InfernalInkSteelSuite.ViewModels
                 var document = _documentRepository.Get(SelectedDocument.Id);
                 if (document != null)
                 {
-                    System.Diagnostics.Process.Start(document.FilePath);
+                    new System.Diagnostics.Process
+                    {
+                        StartInfo = new System.Diagnostics.ProcessStartInfo(document.FilePath)
+                        {
+                            UseShellExecute = true
+                        }
+                    }.Start();
                 }
             }
         }

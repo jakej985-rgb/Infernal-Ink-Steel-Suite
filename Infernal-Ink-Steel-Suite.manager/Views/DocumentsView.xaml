@@ -19,7 +19,7 @@
             <Button Content="Filter" Command="{Binding FilterDocumentsCommand}" Margin="5" />
         </StackPanel>
 
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Documents}" AutoGenerateColumns="False" CanUserAddRows="False" SelectedItem="{Binding SelectedDocument}">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Documents}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectedItem="{Binding SelectedDocument}">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Open" Command="{Binding OpenDocumentCommand}" />

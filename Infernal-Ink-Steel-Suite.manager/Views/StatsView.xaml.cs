@@ -7,10 +7,9 @@ namespace InfernalInkSteelSuite.Views
 {
     public partial class StatsView : UserControl
     {
-        public StatsView()
+        public StatsView(string connectionString)
         {
             InitializeComponent();
-            string connectionString = @"Data Source=shop_manager.db";
             DataContext = new StatsViewModel(new AppointmentRepository(connectionString), new ShopSettingsRepository(connectionString));
         }
     }

@@ -44,13 +44,11 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
         public ICommand OpenShopSettingsCommand { get; }
         public ICommand ResolveActionItemCommand { get; }
 
-        public HomeDashboardViewModel(User currentUser, IShopSettingsRepository shopSettingsRepository)
+        public HomeDashboardViewModel(User currentUser, IShopSettingsRepository shopSettingsRepository, IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
         {
             _shopSettingsRepository = shopSettingsRepository;
-            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"]?.ConnectionString
-                                   ?? "Data Source=shop_manager.db";
-            _appointmentRepository = new AppointmentRepository(connectionString);
-            _clientRepository = new ClientRepository(connectionString);
+            _appointmentRepository = appointmentRepository;
+            _clientRepository = clientRepository;
 
             // Initialize Collections
             TodayAppointments = [];
