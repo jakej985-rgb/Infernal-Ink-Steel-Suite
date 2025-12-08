@@ -120,6 +120,18 @@ namespace InfernalInkSteelSuite.Data
                     PiercingMulti REAL NOT NULL DEFAULT 0,
                     SpecialMessageText TEXT,
                     IsSpecialMessageEnabled INTEGER NOT NULL DEFAULT 1,
+                    TaxRate REAL NOT NULL DEFAULT 0,
+                    DepositType TEXT DEFAULT 'Percentage',
+                    DepositAmount REAL NOT NULL DEFAULT 0,
+                    BookingBufferMinutes INTEGER NOT NULL DEFAULT 0,
+                    CancellationPolicy TEXT,
+                    AppointmentDurationPresetsJson TEXT,
+                    SpecialHoursJson TEXT,
+                    NotificationSettingsJson TEXT,
+                    BackupSettingsJson TEXT,
+                    LinkedAccountsJson TEXT,
+                    AppFontSize REAL NOT NULL DEFAULT 14.0,
+                    ShopHoursJson TEXT,
                     CreatedAt TEXT,
                     UpdatedAt TEXT
                 )";
@@ -181,6 +193,22 @@ namespace InfernalInkSteelSuite.Data
             EnsureColumnExists(connection, "users", "KeyboardShortcutsJson", "TEXT", "''");
             EnsureColumnExists(connection, "users", "PermissionsJson", "TEXT", "''");
             EnsureColumnExists(connection, "clients", "photoPath", "TEXT DEFAULT ''");
+
+            // ShopSettings migrations
+            EnsureColumnExists(connection, "shopsettings", "SidebarArtworkPath", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "LoginBackgroundPath", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "TaxRate", "REAL", "0");
+            EnsureColumnExists(connection, "shopsettings", "DepositType", "TEXT", "'Percentage'");
+            EnsureColumnExists(connection, "shopsettings", "DepositAmount", "REAL", "0");
+            EnsureColumnExists(connection, "shopsettings", "BookingBufferMinutes", "INTEGER", "0");
+            EnsureColumnExists(connection, "shopsettings", "CancellationPolicy", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "AppointmentDurationPresetsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "SpecialHoursJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "ShopHoursJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "NotificationSettingsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "BackupSettingsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "LinkedAccountsJson", "TEXT", "''");
+            EnsureColumnExists(connection, "shopsettings", "AppFontSize", "REAL", "14.0");
         }
 
         private static void MigrateShopSettings(SqliteConnection connection)

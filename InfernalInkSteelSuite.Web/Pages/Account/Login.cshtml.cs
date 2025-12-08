@@ -19,8 +19,12 @@ public class LoginModel(ApiClient apiClient) : PageModel
 
     public string? ErrorMessage { get; set; }
 
-    public void OnGet()
+    public ApiClient.PublicShopSettingsDto Settings { get; set; } = new();
+
+    public async Task OnGetAsync()
     {
+        var settings = await _apiClient.GetPublicShopSettingsAsync();
+        if (settings != null) Settings = settings;
     }
 
     public async Task<IActionResult> OnPostAsync()

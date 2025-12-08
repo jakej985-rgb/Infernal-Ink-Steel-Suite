@@ -26,5 +26,23 @@ namespace InfernalInkSteelSuite.Api.Controllers
             _settingsRepository.SaveSettings(settings);
             return Ok();
         }
+
+        [HttpGet("public")]
+        [AllowAnonymous]
+        public ActionResult<object> GetPublicSettings()
+        {
+            var settings = _settingsRepository.LoadSettings();
+            return Ok(new
+            {
+                settings.ShopName,
+                settings.LogoPath,
+                settings.LoginBackgroundPath,
+                settings.IsSpecialMessageEnabled,
+                settings.SpecialMessageText,
+                settings.LoginHeadlineFontFamily,
+                settings.LoginTaglineFontFamily,
+                settings.LoginTextColor
+            });
+        }
     }
 }

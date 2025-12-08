@@ -285,16 +285,47 @@ public class ApiClient
 
     // SETTINGS
 
-    public record ShopSettingsDto(
-        string ShopName,
-        decimal HourlyRate,
-        decimal MinimumRate,
-        double DepositPercentage,
-        string Theme,
-        string Tagline,
-        string ContactEmail,
-        string ContactPhone
-    );
+    public class ShopSettingsDto
+    {
+        public string ShopName { get; set; } = string.Empty;
+        public string LogoPath { get; set; } = string.Empty;
+        public string AccentColor { get; set; } = string.Empty;
+        public string SidebarArtworkPath { get; set; } = string.Empty;
+        public string LoginBackgroundPath { get; set; } = string.Empty;
+        public string LoginHeadlineFontFamily { get; set; } = string.Empty;
+        public string LoginTaglineFontFamily { get; set; } = string.Empty;
+        public string LoginTextColor { get; set; } = string.Empty;
+
+        // Rates
+        public double TattooPerHour { get; set; }
+        public double PiercingSingle { get; set; }
+        public double PiercingMulti { get; set; }
+        public double ShopMinimumRate { get; set; }
+        public double TaxRate { get; set; }
+
+        // Deposits & Booking
+        public string DepositType { get; set; } = "Percentage";
+        public double DepositAmount { get; set; }
+        public int BookingBufferMinutes { get; set; }
+        public string CancellationPolicy { get; set; } = string.Empty;
+
+        // Features / Toggles
+        public bool EnableAutomaticHolidayThemes { get; set; }
+        public bool IsSpecialMessageEnabled { get; set; }
+        public string SpecialMessageText { get; set; } = string.Empty;
+        public double AppFontSize { get; set; } = 14.0;
+
+        // JSON Blobs
+        public string ShopHoursJson { get; set; } = string.Empty;
+        public string SpecialHoursJson { get; set; } = string.Empty;
+        public string AppointmentDurationPresetsJson { get; set; } = string.Empty;
+        public string NotificationSettingsJson { get; set; } = string.Empty;
+        public string BackupSettingsJson { get; set; } = string.Empty;
+        public string LinkedAccountsJson { get; set; } = string.Empty;
+
+        // Legacy / Transient
+        public string Theme { get; set; } = "Neon"; // Used for Web Theme selection
+    }
 
     public async Task<ShopSettingsDto?> GetShopSettingsAsync()
     {
@@ -306,6 +337,30 @@ public class ApiClient
         catch (HttpRequestException)
         {
             return null;
+        }
+    }
+
+    public class PublicShopSettingsDto
+    {
+        public string ShopName { get; set; } = "Infernal Ink";
+        public string LogoPath { get; set; } = string.Empty;
+        public string LoginBackgroundPath { get; set; } = string.Empty;
+        public bool IsSpecialMessageEnabled { get; set; }
+        public string SpecialMessageText { get; set; } = string.Empty;
+        public string LoginHeadlineFontFamily { get; set; } = string.Empty;
+        public string LoginTaglineFontFamily { get; set; } = string.Empty;
+        public string LoginTextColor { get; set; } = string.Empty;
+    }
+
+    public async Task<PublicShopSettingsDto?> GetPublicShopSettingsAsync()
+    {
+        try
+        {
+            return await _http.GetFromJsonAsync<PublicShopSettingsDto>("api/Settings/public");
+        }
+        catch
+        {
+            return new PublicShopSettingsDto();
         }
     }
 
