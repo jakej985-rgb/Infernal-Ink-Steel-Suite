@@ -15,7 +15,7 @@
             <TabItem Header="Upcoming" x:Name="UpcomingTab"/>
             <TabItem Header="Pending" x:Name="PendingTab"/>
             <TabItem Header="Completed" x:Name="CompletedTab"/>
-            <TabItem Header="Calendar" x:Name="CalendarTab"/>
+            <TabItem Header="Calendar" x:Name="CalendarTabItem"/>
         </TabControl>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10">
