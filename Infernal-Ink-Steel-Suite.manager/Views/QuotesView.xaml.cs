@@ -1,4 +1,5 @@
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Domain;
 using System.Windows.Controls;
 using InfernalInkSteelSuite.ViewModels;
 

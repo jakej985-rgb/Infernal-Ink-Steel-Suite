@@ -7,10 +7,10 @@ namespace InfernalInkSteelSuite.Views
 {
     public partial class StatsView : UserControl
     {
-        public StatsView(string connectionString)
+        public StatsView(InfernalInkSteelSuite.Domain.IDataProvider dataProvider)
         {
             InitializeComponent();
-            DataContext = new StatsViewModel(new AppointmentRepository(connectionString), new ShopSettingsRepository(connectionString));
+            DataContext = new StatsViewModel(dataProvider.Appointments, dataProvider.ShopSettings);
         }
     }
 }

@@ -21,6 +21,8 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
 
     <PackageReference Include="OpenTK.Audio.OpenAL" Version="4.9.4" />
+
+    <PackageReference Include="Refit" Version="9.0.2" />
     <PackageReference Include="ScottPlot.WPF" Version="5.1.57" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="3.119.1" />

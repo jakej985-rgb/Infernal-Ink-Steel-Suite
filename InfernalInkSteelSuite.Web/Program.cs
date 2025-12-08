@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Web.Services;
 using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 

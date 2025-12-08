@@ -95,7 +95,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             CreateNewAppointmentCommand = new RelayCommand(p =>
             {
                 var appointment = new Appointment { DateTime = DateTime.Today };
-                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment)
+                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, _shopSettingsRepository, appointment)
                 {
                     Owner = Application.Current.MainWindow
                 };

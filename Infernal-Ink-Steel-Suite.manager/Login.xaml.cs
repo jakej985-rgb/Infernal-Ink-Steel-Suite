@@ -17,18 +17,17 @@ namespace InfernalInkSteelSuite
 {
     public partial class Login : Window
     {
-        private readonly UserRepository _userRepository;
-        private readonly ShopSettingsRepository _settingsRepository;
+        private readonly IDataProvider _dataProvider;
         private User _currentUser;
-        private readonly string _connectionString;
 
-        public Login()
+        // Removed _connectionString, _userRepository, _settingsRepository fields as they are now in _dataProvider
+
+        public Login(IDataProvider dataProvider)
         {
             InitializeComponent();
-            _connectionString = App.ConnectionString;
+            _dataProvider = dataProvider;
             _currentUser = null!;
-            _userRepository = new UserRepository(_connectionString);
-            _settingsRepository = new ShopSettingsRepository(_connectionString);
+
             BuildUserGrid();
             ApplyBranding();
         }
@@ -36,7 +35,7 @@ namespace InfernalInkSteelSuite
         private void BuildUserGrid()
         {
             UserGrid.Children.Clear();
-            var users = _userRepository.GetAllUsers();
+            var users = _dataProvider.Users.GetAllUsers();
             foreach (var user in users)
             {
                 var userWidget = new StackPanel { Margin = new Thickness(12) };
@@ -81,7 +80,7 @@ namespace InfernalInkSteelSuite
 
         private void ApplyBranding()
         {
-            var settings = _settingsRepository.LoadSettings();
+            var settings = _dataProvider.ShopSettings.LoadSettings();
             const string defaultImagePath = "default_art.png";
 
             Title = string.IsNullOrWhiteSpace(settings.ShopName) ? "Login" : $"{settings.ShopName} Login";
@@ -148,7 +147,7 @@ namespace InfernalInkSteelSuite
                 return;
             }
 
-            if (!_userRepository.CheckPassword(_currentUser.Username, password))
+            if (!_dataProvider.Users.CheckPassword(_currentUser.Username, password))
             {
                 MessageBox.Show("Incorrect password.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -157,7 +156,7 @@ namespace InfernalInkSteelSuite
             // Apply the user's theme BEFORE showing main window
             ThemeManager.ApplyTheme(_currentUser.ThemeKey);
 
-            var dashboard = new DashboardWindow(_connectionString, _currentUser);
+            var dashboard = new DashboardWindow(_dataProvider, _currentUser);
             dashboard.Show();
             Close();
         }

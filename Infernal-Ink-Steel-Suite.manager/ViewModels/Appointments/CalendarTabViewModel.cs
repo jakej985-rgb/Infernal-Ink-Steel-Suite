@@ -14,13 +14,15 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
         private DateTime _currentDate = DateTime.Today;
         private ObservableCollection<CalendarDay> _days = [];
 
-        public CalendarTabViewModel(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public CalendarTabViewModel(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, IShopSettingsRepository shopSettingsRepository)
         {
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
+            _shopSettingsRepository = shopSettingsRepository;
             PreviousMonthCommand = new RelayCommand(_ => PreviousMonth());
             NextMonthCommand = new RelayCommand(_ => NextMonth());
             TodayCommand = new RelayCommand(_ => GoToToday());
@@ -82,7 +84,7 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
                 {
                     DateTime = date.Date.AddHours(12) // Default to noon
                 };
-                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, newAppointment);
+                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, _shopSettingsRepository, newAppointment);
 
                 if (dialog.ShowDialog() == true)
                 {

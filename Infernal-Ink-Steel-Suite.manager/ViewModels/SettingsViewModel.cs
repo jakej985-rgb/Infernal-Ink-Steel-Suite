@@ -29,26 +29,24 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public SettingsViewModel(string connectionString, User currentUser)
+        public SettingsViewModel(IDataProvider dataProvider, User currentUser)
         {
             _tabs = [];
             _selectedTab = null!;
-            var shopSettingsRepository = new ShopSettingsRepository(connectionString);
-            var userRepository = new UserRepository(connectionString);
 
-            Tabs.Add(new UserTabViewModel(userRepository, shopSettingsRepository, currentUser));
-            Tabs.Add(new LinkedAccountsTabViewModel(shopSettingsRepository));
-            Tabs.Add(new NotificationSettingsTabViewModel(shopSettingsRepository));
-            Tabs.Add(new BackupDataTabViewModel(shopSettingsRepository));
-            Tabs.Add(new AccessibilityTabViewModel(userRepository, currentUser));
+            Tabs.Add(new UserTabViewModel(dataProvider.Users, dataProvider.ShopSettings, currentUser));
+            Tabs.Add(new LinkedAccountsTabViewModel(dataProvider.ShopSettings));
+            Tabs.Add(new NotificationSettingsTabViewModel(dataProvider.ShopSettings));
+            Tabs.Add(new BackupDataTabViewModel(dataProvider.ShopSettings));
+            Tabs.Add(new AccessibilityTabViewModel(dataProvider.Users, currentUser));
 
             if (currentUser.Role.Contains("Manager") || currentUser.Role.Contains("Admin"))
             {
-                Tabs.Insert(2, new ManagerTabViewModel(userRepository));
+                Tabs.Insert(2, new ManagerTabViewModel(dataProvider.Users));
             }
             if (currentUser.Role.Contains("Admin"))
             {
-                Tabs.Insert(1, new AdminTabViewModel(userRepository, shopSettingsRepository));
+                Tabs.Insert(1, new AdminTabViewModel(dataProvider.Users, dataProvider.ShopSettings));
             }
 
             SelectedTab = Tabs[0];

@@ -53,6 +53,26 @@ namespace InfernalInkSteelSuite.Data
             CreateUsersTable(connection);
             CreateShopSettingsTable(connection);
             CreateQuotesTable(connection);
+            CreateSyncQueueTable(connection);
+        }
+
+        private static void CreateSyncQueueTable(SqliteConnection connection)
+        {
+            var command = connection.CreateCommand();
+            command.CommandText =
+                @"CREATE TABLE IF NOT EXISTS sync_queue (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    entityType TEXT NOT NULL,
+                    entityId INTEGER NOT NULL,
+                    action TEXT NOT NULL,
+                    payloadJson TEXT,
+                    createdAt TEXT DEFAULT (strftime('%Y-%m-%dT%H:%M:%SZ', 'now')),
+                    syncedAt TEXT DEFAULT NULL,
+                    status TEXT DEFAULT 'Pending',
+                    retryCount INTEGER DEFAULT 0,
+                    lastErrorMessage TEXT DEFAULT NULL
+                )";
+            command.ExecuteNonQuery();
         }
 
         private static void CreateQuotesTable(SqliteConnection connection)

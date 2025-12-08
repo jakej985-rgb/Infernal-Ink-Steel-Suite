@@ -2,7 +2,7 @@ using InfernalInkSteelSuite.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace InfernalInkSteelSuite.Repositories
+namespace InfernalInkSteelSuite.Domain
 {
     public interface IDocumentRepository
     {

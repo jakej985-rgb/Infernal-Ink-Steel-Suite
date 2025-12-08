@@ -11,32 +11,23 @@ namespace InfernalInkSteelSuite.Views
 {
     public partial class DashboardWindow : Window
     {
-        private readonly string _connectionString;
-        private readonly AppointmentRepository _appointmentRepository;
-        private readonly ClientRepository _clientRepository;
-        private readonly DocumentRepository _documentRepository;
-        private readonly ShopSettingsRepository _shopSettingsRepository;
-        private readonly UserRepository _userRepository;
-        private readonly QuoteRepository _quoteRepository;
+        private readonly IDataProvider _dataProvider;
+        private readonly User _currentUser;
         private readonly ImageComplexityService _imageComplexityService;
 
-        private readonly User _currentUser;
-
-        public DashboardWindow(string connectionString, User currentUser)
+        public DashboardWindow(IDataProvider dataProvider, User currentUser)
         {
-            _connectionString = connectionString;
+            _dataProvider = dataProvider;
             _currentUser = currentUser;
-            _appointmentRepository = new AppointmentRepository(_connectionString);
-            _clientRepository = new ClientRepository(_connectionString);
-            _documentRepository = new DocumentRepository(_connectionString);
-            _shopSettingsRepository = new ShopSettingsRepository(_connectionString);
-            _userRepository = new UserRepository(_connectionString);
-            _quoteRepository = new QuoteRepository(_connectionString);
-            _imageComplexityService = new ImageComplexityService();
 
             InitializeComponent();
+
+            // Set DataContext for Window (StatusBar etc)
+            this.DataContext = new DashboardViewModel(new ConnectionSettingsService().Load());
+
+            _imageComplexityService = new ImageComplexityService();
             LoadShopSettings();
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _dataProvider.ShopSettings, _dataProvider.Appointments, _dataProvider.Clients);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
@@ -48,7 +39,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void LoadShopSettings()
         {
-            var settings = _shopSettingsRepository.LoadSettings();
+            var settings = _dataProvider.ShopSettings.LoadSettings();
             TattooRateLabel.Text = $"{settings.TattooPerHour:C}/hr";
             ShopMinimumRateLabel.Text = $"{settings.ShopMinimumRate:C}";
             PiercingRateLabel.Text = $"{settings.PiercingSingle:C}";
@@ -60,14 +51,14 @@ namespace InfernalInkSteelSuite.Views
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            var login = new Login();
+            var login = new Login(_dataProvider);
             login.Show();
             this.Close();
         }
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _dataProvider.ShopSettings, _dataProvider.Appointments, _dataProvider.Clients);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
@@ -77,18 +68,18 @@ namespace InfernalInkSteelSuite.Views
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ClientsView(_connectionString);
+            MainContent.Content = new ClientsView(_dataProvider.Clients);
         }
 
         private void Appointments_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new AppointmentsView(_appointmentRepository, _clientRepository);
+            MainContent.Content = new AppointmentsView(_dataProvider.Appointments, _dataProvider.Clients, _dataProvider.ShopSettings);
         }
 
         private void Quotes_Click(object sender, RoutedEventArgs e)
         {
-            var quotesViewModel = new QuotesViewModel(_appointmentRepository);
-            var quotesView = new QuotesView(_appointmentRepository)
+            var quotesViewModel = new QuotesViewModel(_dataProvider.Appointments);
+            var quotesView = new QuotesView(_dataProvider.Appointments)
             {
                 DataContext = quotesViewModel
             };
@@ -97,8 +88,8 @@ namespace InfernalInkSteelSuite.Views
 
         private void CreateQuote_Click(object sender, RoutedEventArgs e)
         {
-            var pricingService = new TattooPricingService(_shopSettingsRepository, _userRepository);
-            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
+            var pricingService = new TattooPricingService(_dataProvider.ShopSettings, _dataProvider.Users);
+            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _dataProvider.Quotes, _dataProvider.Clients, _dataProvider.Users, _dataProvider.Appointments, _imageComplexityService, _dataProvider.ShopSettings);
             var quoteCreateView = new QuoteCreateView
             {
                 DataContext = quoteCreateViewModel
@@ -108,7 +99,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Documents_Click(object sender, RoutedEventArgs e)
         {
-            var documentsViewModel = new DocumentsViewModel(_documentRepository, _clientRepository);
+            var documentsViewModel = new DocumentsViewModel(_dataProvider.Documents, _dataProvider.Clients);
             var documentsView = new DocumentsView
             {
                 DataContext = documentsViewModel
@@ -118,7 +109,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            var settingsViewModel = new SettingsViewModel(_connectionString, _currentUser);
+            var settingsViewModel = new SettingsViewModel(_dataProvider, _currentUser);
             var settingsView = new SettingsView
             {
                 DataContext = settingsViewModel
@@ -128,7 +119,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Statistics_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new StatsView(_connectionString);
+            MainContent.Content = new StatsView(_dataProvider);
         }
     }
 }

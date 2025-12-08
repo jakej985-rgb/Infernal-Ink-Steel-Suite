@@ -15,7 +15,7 @@ namespace InfernalInkSteelSuite.Views
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
-        private readonly ShopSettingsRepository _shopSettingsRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
         private readonly List<Client> _allClients;
 
         public Appointment Appointment { get; set; }
@@ -97,12 +97,12 @@ namespace InfernalInkSteelSuite.Views
             }
         }
 
-        public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, IShopSettingsRepository shopSettingsRepository)
         {
             InitializeComponent();
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
-            _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
+            _shopSettingsRepository = shopSettingsRepository;
 
             _allClients = [.. _clientRepository.GetAll()];
             FilterClients(); // Initialize FilteredClients
@@ -119,12 +119,12 @@ namespace InfernalInkSteelSuite.Views
             DataContext = this;
         }
 
-        public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, Appointment appointment)
+        public AppointmentDialog(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, IShopSettingsRepository shopSettingsRepository, Appointment appointment)
         {
             InitializeComponent();
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
-            _shopSettingsRepository = new ShopSettingsRepository(App.ConnectionString);
+            _shopSettingsRepository = shopSettingsRepository;
 
             _allClients = [.. _clientRepository.GetAll()];
             FilterClients();

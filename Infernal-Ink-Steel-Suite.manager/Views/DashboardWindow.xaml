@@ -4,6 +4,10 @@
         Title="Dashboard" Height="720" Width="1280"
         WindowStartupLocation="CenterScreen"
         Background="{DynamicResource AppBackgroundBrush}">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -41,6 +45,25 @@
             </StackPanel>
         </Grid>
 
-        <ContentControl Grid.Column="1" x:Name="MainContent"/>
+        <ContentControl Grid.Column="1" x:Name="MainContent" Margin="0,0,0,30"/>
+        
+        <!-- Status Bar -->
+        <Border Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Height="30" Background="{DynamicResource SurfaceAltBrush}" BorderBrush="{DynamicResource PrimaryBorderBrush}" BorderThickness="0,1,0,0" Padding="10,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding DataModeDisplay}" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <Ellipse Width="8" Height="8" Fill="{Binding IsOnline, Converter={StaticResource BoolToBrushConverter}}" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextColor}" FontStyle="Italic"/>
+                
+                <ProgressBar Grid.Column="2" Width="100" Height="10" IsIndeterminate="True" Visibility="{Binding IsSyncing, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid> 
+        </Border>
     </Grid>
 </Window>

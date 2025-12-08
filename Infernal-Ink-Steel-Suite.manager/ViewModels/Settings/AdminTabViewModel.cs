@@ -81,6 +81,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         private readonly IUserRepository _userRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
         private readonly ShopSettings _shopSettings;
+        private readonly ConnectionSettingsService _connectionSettingsService;
+        private readonly ConnectionSettings _connectionSettings;
 
         public override string Header => "Admin";
 
@@ -457,6 +459,65 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
+        // Connection Settings Properties
+        public DataMode SelectedDataMode
+        {
+            get => _connectionSettings.Mode;
+            set
+            {
+                if (_connectionSettings.Mode != value)
+                {
+                    _connectionSettings.Mode = value;
+                    OnPropertyChanged();
+                    OnSettingChanged();
+                }
+            }
+        }
+
+        public string ServerBaseUrl
+        {
+            get => _connectionSettings.ServerBaseUrl;
+            set
+            {
+                if (_connectionSettings.ServerBaseUrl != value)
+                {
+                    _connectionSettings.ServerBaseUrl = value;
+                    OnPropertyChanged();
+                    OnSettingChanged();
+                }
+            }
+        }
+
+        public bool UseHttps
+        {
+            get => _connectionSettings.UseHttps;
+            set
+            {
+                if (_connectionSettings.UseHttps != value)
+                {
+                    _connectionSettings.UseHttps = value;
+                    OnPropertyChanged();
+                    OnSettingChanged();
+                }
+            }
+        }
+
+        public int SyncIntervalMinutes
+        {
+            get => _connectionSettings.SyncIntervalMinutes;
+            set
+            {
+                if (_connectionSettings.SyncIntervalMinutes != value)
+                {
+                    _connectionSettings.SyncIntervalMinutes = value;
+                    OnPropertyChanged();
+                    OnSettingChanged();
+                }
+            }
+        }
+
+        public static IEnumerable<DataMode> AvailableDataModes => Enum.GetValues(typeof(DataMode)).Cast<DataMode>();
+
         public RelayCommand AddDurationPresetCommand { get; }
         public RelayCommand RemoveDurationPresetCommand { get; }
 
@@ -472,6 +533,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public RelayCommand BrowseFileCommand { get; }
         public RelayCommand RestoreDefaultsCommand { get; }
         public RelayCommand ClearImageCommand { get; }
+        public RelayCommand TestConnectionCommand { get; }
 
         private void LoadSpecialHours()
         {
@@ -498,6 +560,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             _userRepository = userRepository;
             _shopSettingsRepository = shopSettingsRepository;
+            _connectionSettingsService = new ConnectionSettingsService();
+            _connectionSettings = _connectionSettingsService.Load();
+
             _users = [];
             _filteredUsers = [];
             LoadUsers();
@@ -513,7 +578,10 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             SaveSettingsCommand = new RelayCommand(SaveSettings);
             BrowseFileCommand = new RelayCommand(BrowseFile);
             RestoreDefaultsCommand = new RelayCommand(RestoreDefaults);
+            BrowseFileCommand = new RelayCommand(BrowseFile);
+            RestoreDefaultsCommand = new RelayCommand(RestoreDefaults);
             ClearImageCommand = new RelayCommand(ClearImage);
+            TestConnectionCommand = new RelayCommand(TestConnection);
 
             AddDurationPresetCommand = new RelayCommand(AddDurationPreset);
             RemoveDurationPresetCommand = new RelayCommand(RemoveDurationPreset);
@@ -778,6 +846,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             // Save the updated settings object
             _shopSettingsRepository.SaveSettings(latestSettings);
 
+            // Save Connection Settings
+            _connectionSettingsService.Save(_connectionSettings);
+
             // Update local reference (optional, but good for consistency)
             // Note: We don't replace _shopSettings entirely to avoid breaking bindings if they were bound directly,
             // but here we are binding to ViewModel properties which wrap _shopSettings, so we should update the backing fields if we want to reflect external changes?
@@ -787,6 +858,38 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             SettingsUpdateService.NotifySettingsChanged();
             HasUnsavedChanges = false;
             LastSavedTimestamp = DateTime.Now;
+
+            // Notify user about restart if mode changed (we can't easily detect if ONLY mode changed without prev state, 
+            // but saving connection settings usually warrants a restart check or we just tell them)
+            MessageBox.Show("Settings saved. If you changed Connection Settings, please restart the application for changes to take effect.", "Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private async void TestConnection(object? obj)
+        {
+            try
+            {
+                using var client = new System.Net.Http.HttpClient
+                {
+                    BaseAddress = new Uri(ServerBaseUrl)
+                };
+                // Simple health check or ping. Assuming /api/health exists or just root.
+                // If API doesn't have health endpoint, we might catch 404 but connection successful.
+                // Refit client is better but we are in ViewModel without DI for Factory here easily.
+                // Just use HttpClient.
+                var response = await client.GetAsync(""); // checking root or known endpoint
+                if (response.IsSuccessStatusCode || response.StatusCode == System.Net.HttpStatusCode.NotFound || response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    MessageBox.Show("Connection Successful! Server is reachable.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show($"Connection Failed. Status: {response.StatusCode}", "Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Connection Failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void BrowseFile(object? parameter)

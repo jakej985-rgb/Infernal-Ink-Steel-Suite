@@ -19,6 +19,7 @@ namespace InfernalInkSteelSuite.ViewModels
         private readonly IUserRepository _userRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IImageComplexityService _imageComplexityService;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
         private readonly QuoteInput _quoteInput;
         private QuoteEstimate? _quoteEstimate;
 
@@ -160,7 +161,7 @@ namespace InfernalInkSteelSuite.ViewModels
         public ICommand ApplyComplexityCommand { get; }
         public ICommand DropImageCommand { get; }
 
-        public QuoteCreateViewModel(ITattooPricingService pricingService, IQuoteRepository quoteRepository, IClientRepository clientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository, IImageComplexityService imageComplexityService)
+        public QuoteCreateViewModel(ITattooPricingService pricingService, IQuoteRepository quoteRepository, IClientRepository clientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository, IImageComplexityService imageComplexityService, IShopSettingsRepository shopSettingsRepository)
         {
             _pricingService = pricingService;
             _quoteRepository = quoteRepository;
@@ -168,6 +169,7 @@ namespace InfernalInkSteelSuite.ViewModels
             _userRepository = userRepository;
             _appointmentRepository = appointmentRepository;
             _imageComplexityService = imageComplexityService;
+            _shopSettingsRepository = shopSettingsRepository;
 
             _quoteInput = new QuoteInput
             {
@@ -271,8 +273,8 @@ namespace InfernalInkSteelSuite.ViewModels
 
             if (_quoteEstimate == null)
             {
-                 MessageBox.Show("Unable to create appointment: Quote estimate is missing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                 return;
+                MessageBox.Show("Unable to create appointment: Quote estimate is missing.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             SaveQuote();
@@ -281,12 +283,12 @@ namespace InfernalInkSteelSuite.ViewModels
                 ClientId = ClientId.Value,
                 UserId = _quoteInput.ArtistId,
                 ServiceType = _quoteInput.Style,
-                Notes = $"Quote based on: {_quoteInput.Width}x{_quoteInput.Height}cm, { _quoteInput.Placement}",
+                Notes = $"Quote based on: {_quoteInput.Width}x{_quoteInput.Height}cm, {_quoteInput.Placement}",
                 PriceCharged = _quoteEstimate.PriceHigh,
                 DurationMinutes = (int)(_quoteEstimate.EstimatedHoursHigh * 60),
                 DateTime = System.DateTime.Now
             };
-            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment);
+            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, _shopSettingsRepository, appointment);
             dialog.ShowDialog();
         }
 

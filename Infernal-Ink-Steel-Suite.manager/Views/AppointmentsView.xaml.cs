@@ -11,19 +11,21 @@ namespace InfernalInkSteelSuite.Views
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
 
-        public AppointmentsView(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public AppointmentsView(IAppointmentRepository appointmentRepository, IClientRepository clientRepository, IShopSettingsRepository shopSettingsRepository)
         {
             InitializeComponent();
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
+            _shopSettingsRepository = shopSettingsRepository;
 
             UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository, _clientRepository);
             PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository, _clientRepository);
             CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository, _clientRepository);
             var calendarTab = new CalendarTab
             {
-                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository, _clientRepository)
+                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository, _clientRepository, _shopSettingsRepository)
             };
             CalendarTabItem.Content = calendarTab;
 
@@ -35,7 +37,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository);
+            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, _shopSettingsRepository);
             if (dialog.ShowDialog() == true)
             {
                 RefreshAppointments();

@@ -1,7 +1,8 @@
 using InfernalInkSteelSuite.Domain;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace InfernalInkSteelSuite.Repositories
+namespace InfernalInkSteelSuite.Domain
 {
     public interface IClientRepository
     {

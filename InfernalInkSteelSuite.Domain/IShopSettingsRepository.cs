@@ -1,6 +1,6 @@
 using InfernalInkSteelSuite.Domain;
 
-namespace InfernalInkSteelSuite.Repositories
+namespace InfernalInkSteelSuite.Domain
 {
     public interface IShopSettingsRepository
     {
