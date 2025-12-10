@@ -78,21 +78,28 @@ public class EditModel(ApiClient api) : PageModel
             return Page();
         }
 
-        // Add CreateAppointmentAsync and UpdateAppointmentAsync to ApiClient
-        bool success;
-        if (Appointment.Id > 0)
+        try
         {
-            success = await _api.UpdateAppointmentAsync(Appointment);
+            if (Appointment.Id > 0)
+            {
+                await _api.UpdateAppointmentAsync(Appointment);
+            }
+            else
+            {
+                await _api.CreateAppointmentAsync(Appointment);
+            }
         }
-        else
+        catch (ApiException ex)
         {
-            var created = await _api.CreateAppointmentAsync(Appointment);
-            success = created != null;
+            ErrorMessage = ex.Content;
+            ModelState.AddModelError("", $"API Error: {ex.Content}");
+            await LoadDropdowns();
+            return Page();
         }
-
-        if (!success)
+        catch (Exception ex)
         {
-            ErrorMessage = "Failed to save appointment. Time slot might be taken or error occurred.";
+            ErrorMessage = "An unexpected error occurred.";
+            ModelState.AddModelError("", $"Error: {ex.Message}");
             await LoadDropdowns();
             return Page();
         }

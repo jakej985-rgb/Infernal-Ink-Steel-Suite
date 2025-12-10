@@ -17,8 +17,10 @@
 
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div class="alert alert-danger">@Model.ErrorMessage</div>
+                    <div class="alert alert-danger">@Model.ErrorMessage</div>
             }
+
+            <div asp-validation-summary="All" class="alert alert-warning"></div>
 
             <div class="card mb-4">
                 <div class="card-header bg-transparent border-secondary">
@@ -76,50 +78,50 @@
 
         @if (Model.Client.Id > 0)
         {
-            <div class="card mb-4">
-                <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Documents</h5>
-                    <span class="badge bg-secondary">@Model.Documents.Count</span>
-                </div>
-                <div class="card-body">
+                <div class="card mb-4">
+                    <div class="card-header bg-transparent border-secondary d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Documents</h5>
+                        <span class="badge bg-secondary">@Model.Documents.Count</span>
+                    </div>
+                    <div class="card-body">
                     @if (Model.Documents.Count > 0)
                     {
-                        <div class="list-group list-group-flush mb-3">
+                                <div class="list-group list-group-flush mb-3">
                             @foreach (var doc in Model.Documents)
                             {
-                                <div class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center border-secondary">
-                                    <div>
-                                        <i class="bi bi-file-earmark-text me-2 text-accent"></i>
-                                        <strong>@doc.Title</strong>
-                                        <div class="small text-muted">Uploaded: @doc.CreatedAt.ToString("g")</div>
-                                    </div>
-                                    <button class="btn btn-sm btn-outline-light" disabled>Download</button>
-                                </div>
+                                            <div class="list-group-item bg-transparent text-white d-flex justify-content-between align-items-center border-secondary">
+                                                <div>
+                                                    <i class="bi bi-file-earmark-text me-2 text-accent"></i>
+                                                    <strong>@doc.Title</strong>
+                                                    <div class="small text-muted">Uploaded: @doc.CreatedAt.ToString("g")</div>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-light" disabled>Download</button>
+                                            </div>
                             }
-                        </div>
+                                </div>
                     }
                     else
                     {
-                        <p class="text-muted small mb-3">No documents uploaded.</p>
+                                <p class="text-muted small mb-3">No documents uploaded.</p>
                     }
 
-                    <hr class="border-secondary" />
+                        <hr class="border-secondary" />
 
-                    <form method="post" enctype="multipart/form-data" asp-page-handler="Upload">
-                        <input type="hidden" asp-for="Client.Id" />
-                        <label class="form-label small text-uppercase fw-bold text-accent">Upload New Document</label>
-                        <div class="input-group mb-2">
-                            <input asp-for="UploadTitle" class="form-control" placeholder="Document Title (Optional)" />
-                            <input asp-for="Upload" class="form-control" type="file" required />
-                            <button class="btn btn-primary" type="submit">Upload</button>
-                        </div>
-                    </form>
+                        <form method="post" enctype="multipart/form-data" asp-page-handler="Upload">
+                            <input type="hidden" asp-for="Client.Id" />
+                            <label class="form-label small text-uppercase fw-bold text-accent">Upload New Document</label>
+                            <div class="input-group mb-2">
+                                <input asp-for="UploadTitle" class="form-control" placeholder="Document Title (Optional)" />
+                                <input asp-for="Upload" class="form-control" type="file" required />
+                                <button class="btn btn-primary" type="submit">Upload</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
         }
     </div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+        <partial name="_ValidationScriptsPartial" />
 }

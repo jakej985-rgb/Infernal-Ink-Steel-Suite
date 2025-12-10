@@ -18,7 +18,7 @@ public class EditModel(ApiClient api) : PageModel
     public List<ApiClient.DocumentDto> Documents { get; set; } = [];
 
     [BindProperty]
-    public string UploadTitle { get; set; } = "";
+    public string? UploadTitle { get; set; }
 
     [BindProperty]
     public IFormFile? Upload { get; set; }
@@ -57,25 +57,28 @@ public class EditModel(ApiClient api) : PageModel
 
         if (!ModelState.IsValid) return Page();
 
-        bool success;
-        if (Client.Id > 0)
+        try
         {
-            success = await _api.UpdateClientAsync(Client);
-        }
-        else
-        {
-            var created = await _api.CreateClientAsync(Client);
-            if (created != null)
+            if (Client.Id > 0)
             {
-                // Redirect to edit page so they can upload docs if they want, or index
+                await _api.UpdateClientAsync(Client);
+            }
+            else
+            {
+                var created = await _api.CreateClientAsync(Client);
                 return RedirectToPage("/Clients/Edit", new { id = created.Id });
             }
-            success = false;
         }
-
-        if (!success)
+        catch (ApiException ex)
         {
-            ErrorMessage = "Failed to save client.";
+            ErrorMessage = ex.Content; // Or parse it if JSON
+            ModelState.AddModelError("", $"API Error: {ex.Content}");
+            return Page();
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "An unexpected error occurred.";
+            ModelState.AddModelError("", $"Error: {ex.Message}");
             return Page();
         }
 

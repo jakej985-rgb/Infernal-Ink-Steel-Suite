@@ -156,7 +156,7 @@ namespace InfernalInkSteelSuite.Domain
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public virtual Client Client { get; set; } = null!;
-        public virtual User Artist { get; set; } = null!;
+        public virtual Client? Client { get; set; }
+        public virtual User? Artist { get; set; }
     }
 }

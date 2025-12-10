@@ -139,19 +139,27 @@ public class ApiClient
         return await _http.GetFromJsonAsync<ClientDto>($"api/clients/{id}");
     }
 
-    public async Task<ClientDto?> CreateClientAsync(ClientDto client)
+    public async Task<ClientDto> CreateClientAsync(ClientDto client)
     {
         ApplyAuthHeader();
         var response = await _http.PostAsJsonAsync("api/clients", client);
-        if (!response.IsSuccessStatusCode) return null;
-        return await response.Content.ReadFromJsonAsync<ClientDto>();
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new ApiException(response.StatusCode, string.IsNullOrWhiteSpace(error) ? "Failed to create client." : error);
+        }
+        return await response.Content.ReadFromJsonAsync<ClientDto>() ?? throw new InvalidOperationException("API returned null.");
     }
 
-    public async Task<bool> UpdateClientAsync(ClientDto client)
+    public async Task UpdateClientAsync(ClientDto client)
     {
         ApplyAuthHeader();
         var response = await _http.PutAsJsonAsync($"api/clients/{client.Id}", client);
-        return response.IsSuccessStatusCode;
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new ApiException(response.StatusCode, string.IsNullOrWhiteSpace(error) ? "Failed to update client." : error);
+        }
     }
 
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
@@ -172,19 +180,27 @@ public class ApiClient
         return await _http.GetFromJsonAsync<AppointmentDto>($"api/appointments/{id}");
     }
 
-    public async Task<AppointmentDto?> CreateAppointmentAsync(AppointmentDto appt)
+    public async Task<AppointmentDto> CreateAppointmentAsync(AppointmentDto appt)
     {
         ApplyAuthHeader();
         var response = await _http.PostAsJsonAsync("api/appointments", appt);
-        if (!response.IsSuccessStatusCode) return null;
-        return await response.Content.ReadFromJsonAsync<AppointmentDto>();
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new ApiException(response.StatusCode, string.IsNullOrWhiteSpace(error) ? "Failed to create appointment." : error);
+        }
+        return await response.Content.ReadFromJsonAsync<AppointmentDto>() ?? throw new InvalidOperationException("API returned null.");
     }
 
-    public async Task<bool> UpdateAppointmentAsync(AppointmentDto appt)
+    public async Task UpdateAppointmentAsync(AppointmentDto appt)
     {
         ApplyAuthHeader();
         var response = await _http.PutAsJsonAsync($"api/appointments/{appt.Id}", appt);
-        return response.IsSuccessStatusCode;
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            throw new ApiException(response.StatusCode, string.IsNullOrWhiteSpace(error) ? "Failed to update appointment." : error);
+        }
     }
 
     // DOCUMENTS
