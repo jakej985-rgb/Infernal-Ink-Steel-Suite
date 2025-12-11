@@ -8,9 +8,11 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Policy = "IsArtist")]
-public class ClientsController(IClientRepository clients) : ControllerBase
+[Authorize(Policy = "IsArtist")]
+public class ClientsController(IClientRepository clients, IWebHostEnvironment env) : ControllerBase
 {
     private readonly IClientRepository _clients = clients;
+    private readonly IWebHostEnvironment _env = env;
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Client>>> GetAll()
@@ -57,5 +59,33 @@ public class ClientsController(IClientRepository clients) : ControllerBase
 
         await _clients.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpPost("{id:int}/avatar")]
+    public async Task<IActionResult> UploadAvatar(int id, IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        var client = await _clients.GetByIdAsync(id);
+        if (client == null) return NotFound();
+
+        var uploadsFolder = Path.Combine(_env.WebRootPath, "uploads", "avatars");
+        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+        var uniqueFileName = $"{id}_{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        // Update client photo path (relative URL)
+        var photoUrl = $"/uploads/avatars/{uniqueFileName}";
+        client.PhotoPath = photoUrl;
+        await _clients.UpdateAsync(client);
+
+        return Ok(new { PhotoPath = photoUrl });
     }
 }

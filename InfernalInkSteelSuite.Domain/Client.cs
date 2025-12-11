@@ -83,9 +83,19 @@ namespace InfernalInkSteelSuite.Domain
         public virtual ICollection<Appointment> Appointments { get; set; } = [];
         public virtual ICollection<Document> Documents { get; set; } = [];
 
+        public ClientStatus Status { get; set; } = ClientStatus.Bound;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public enum ClientStatus
+    {
+        Bound,      // Active
+        FreshSoul,  // New
+        HighValue,  // VIP
+        Void        // Archived/Inactive
     }
 }

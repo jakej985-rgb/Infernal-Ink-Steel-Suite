@@ -238,6 +238,9 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
     var results = appointments.Select(a =>
     {
         Enum.TryParse<AppointmentStatus>(a.Status, true, out var statusEnum);
+        var client = a.Client!;
+        var artist = a.Artist!;
+
         return new AppointmentDto(
             a.Id,
             a.ClientId,
@@ -246,12 +249,12 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
             a.EndTime,   // Alias
             a.ServiceType,
             a.ServiceCategory,
-            statusEnum,
+            a.Status, // Pass string directly
             a.QuotedPrice,
             a.FinalPrice,
             a.Notes,
-            new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email),
-            a.Artist.Username // Domain.User doesn't have DisplayName
+            new ClientDto(client.Id, client.FirstName, client.LastName, client.Phone, client.Email),
+            artist.Username // Domain.User doesn't have DisplayName
         );
     }).ToList();
 

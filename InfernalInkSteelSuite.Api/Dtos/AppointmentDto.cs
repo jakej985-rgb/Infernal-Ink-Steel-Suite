@@ -10,7 +10,7 @@ public record AppointmentDto(
     DateTime EndTime,
     string ServiceType,
     string ServiceCategory,
-    AppointmentStatus Status,
+    string Status,
     decimal? QuotedPrice,
     decimal? FinalPrice,
     string? Notes,

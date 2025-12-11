@@ -17,18 +17,4 @@ namespace InfernalInkSteelSuite.Web.Models
         public string ArtistName { get; set; } = "";
     }
 
-    public class ClientDto
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; } = "";
-        public string? MiddleName { get; set; }
-        public string LastName { get; set; } = "";
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
-
-        public string FullName => string.IsNullOrWhiteSpace(MiddleName)
-            ? $"{FirstName} {LastName}"
-            : $"{FirstName} {MiddleName} {LastName}";
-        public string Notes { get; set; } = "";
-    }
 }

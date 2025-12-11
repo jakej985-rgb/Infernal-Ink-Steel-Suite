@@ -246,6 +246,29 @@ public class ApiClient
         return await response.Content.ReadFromJsonAsync<DocumentDto>();
     }
 
+    public async Task<string?> UploadAvatarAsync(int clientId, Stream imageStream, string fileName)
+    {
+        ApplyAuthHeader();
+        using var content = new MultipartFormDataContent();
+        var streamContent = new StreamContent(imageStream);
+        // Assuming JPEG from smartcrop or detect via filename
+        streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+        content.Add(streamContent, "file", fileName);
+
+        var response = await _http.PostAsync($"api/clients/{clientId}/avatar", content);
+        if (!response.IsSuccessStatusCode) return null;
+
+        try
+        {
+            var result = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+            if (result.TryGetProperty("photoPath", out var prop)) return prop.GetString();
+            if (result.TryGetProperty("PhotoPath", out prop)) return prop.GetString();
+        }
+        catch { } // Fallback
+
+        return null;
+    }
+
     // QUOTES
 
     public async Task<QuoteEstimate?> CalculateQuoteAsync(QuoteInput input)

@@ -2,62 +2,58 @@
 @model InfernalInkSteelSuite.Web.Pages.Account.LoginModel
 @{
     Layout = "_LoginLayout";
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "The Gate";
 }
+
+<div class="login-gate-container">
+    <div class="login-gate-panel">
+        <div class="gate-header">
+             @if (!string.IsNullOrEmpty(Model.Settings.LogoPath))
+            {
+                <img src="@Model.Settings.LogoPath" alt="Logo" class="gate-logo" />
+            }
+            <h1 class="gate-title">@Model.Settings.ShopName</h1>
+            <p class="gate-subtitle">Enter the Void</p>
+        </div>
+
+        @if (Model.Settings.IsSpecialMessageEnabled && !string.IsNullOrEmpty(Model.Settings.SpecialMessageText))
+        {
+            <div class="gate-message">
+                @Model.Settings.SpecialMessageText
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="gate-error">@Model.ErrorMessage</div>
+        }
+
+        <form method="post" class="gate-form">
+            <div class="gate-input-group">
+                <input asp-for="Username" class="gate-input" placeholder=" " />
+                <label asp-for="Username" class="gate-label">Username</label>
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="gate-input-group">
+                <input asp-for="Password" type="password" class="gate-input" placeholder=" " />
+                <label asp-for="Password" class="gate-label">Password</label>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-gate-primary">
+                <span>Unlock</span>
+                <div class="btn-gate-glow"></div>
+            </button>
+        </form>
+    </div>
+</div>
 
 @if (!string.IsNullOrEmpty(Model.Settings.LoginBackgroundPath))
 {
     <style>
-        body {
+        .login-gate-body {
             background-image: url('@Model.Settings.LoginBackgroundPath') !important;
-            background-size: cover;
-            background-position: center;
         }
     </style>
 }
-
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <section class="login-panel card p-4 shadow-sm border-0"
-            style="background: rgba(var(--bs-body-bg-rgb), 0.95); backdrop-filter: blur(10px);">
-            <div class="text-center mb-4">
-                @if (!string.IsNullOrEmpty(Model.Settings.LogoPath))
-                {
-                    <img src="@Model.Settings.LogoPath" alt="Logo" class="img-fluid mb-3" style="max-height: 80px;" />
-                }
-                <h2>@Model.Settings.ShopName</h2>
-                <p class="text-muted">Sign in to your account</p>
-
-                @if (Model.Settings.IsSpecialMessageEnabled && !string.IsNullOrEmpty(Model.Settings.SpecialMessageText))
-                {
-                    <div class="alert alert-info mt-2 py-2 small">
-                        @Model.Settings.SpecialMessageText
-                    </div>
-                }
-            </div>
-
-            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-            {
-                <div class="alert alert-danger">@Model.ErrorMessage</div>
-            }
-
-            <form method="post">
-                <div class="form-group mb-3">
-                    <label asp-for="Username" class="form-label"></label>
-                    <input asp-for="Username" class="form-control" placeholder="Enter username" />
-                    <span asp-validation-for="Username" class="text-danger"></span>
-                </div>
-
-                <div class="form-group mb-3">
-                    <label asp-for="Password" class="form-label"></label>
-                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                </div>
-            </form>
-        </section>
-    </div>
-</div>

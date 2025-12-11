@@ -42,14 +42,24 @@ namespace InfernalInkSteelSuite.Repositories
             }
         }
 
+        // Helper to construct the SELECT part of the query
+        private const string SelectSql = @"
+            SELECT 
+                a.*, 
+                c.firstName as c_firstName, c.lastName as c_lastName, c.phone as c_phone, c.email as c_email,
+                u.username as u_username
+            FROM appointments a
+            LEFT JOIN clients c ON a.clientId = c.id
+            LEFT JOIN users u ON a.userId = u.id";
+
         private static Appointment MapReaderToAppointment(SqliteDataReader reader)
         {
-            return new Appointment
+            var appt = new Appointment
             {
                 Id = reader.GetInt32(reader.GetOrdinal("id")),
                 ClientId = reader.GetInt32(reader.GetOrdinal("clientId")),
                 UserId = reader.GetInt32(reader.GetOrdinal("userId")),
-                ClientName = reader.GetString(reader.GetOrdinal("clientName")),
+                ClientName = reader.IsDBNull(reader.GetOrdinal("clientName")) ? "" : reader.GetString(reader.GetOrdinal("clientName")),
                 DateTime = reader.GetDateTime(reader.GetOrdinal("dateTime")),
                 DurationMinutes = reader.GetInt32(reader.GetOrdinal("durationMinutes")),
                 ServiceType = reader.GetString(reader.GetOrdinal("serviceType")),
@@ -61,13 +71,38 @@ namespace InfernalInkSteelSuite.Repositories
                 Status = reader.GetString(reader.GetOrdinal("status")),
                 IsBlockOff = reader.GetInt32(reader.GetOrdinal("IsBlockOff")) == 1
             };
+
+            // Populate Client
+            if (!reader.IsDBNull(reader.GetOrdinal("c_firstName")))
+            {
+                appt.Client = new Client
+                {
+                    Id = appt.ClientId,
+                    FirstName = reader.GetString(reader.GetOrdinal("c_firstName")),
+                    LastName = reader.GetString(reader.GetOrdinal("c_lastName")),
+                    Phone = reader.IsDBNull(reader.GetOrdinal("c_phone")) ? "" : reader.GetString(reader.GetOrdinal("c_phone")),
+                    Email = reader.IsDBNull(reader.GetOrdinal("c_email")) ? "" : reader.GetString(reader.GetOrdinal("c_email"))
+                };
+            }
+
+            // Populate Artist (User)
+            if (!reader.IsDBNull(reader.GetOrdinal("u_username")))
+            {
+                appt.Artist = new User
+                {
+                    Id = appt.UserId,
+                    Username = reader.GetString(reader.GetOrdinal("u_username"))
+                };
+            }
+
+            return appt;
         }
 
         public Appointment? Get(int id)
         {
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE id = @id";
+            cmd.CommandText = $"{SelectSql} WHERE a.id = @id";
             cmd.Parameters.AddWithValue("@id", id);
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
@@ -82,7 +117,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments ORDER BY dateTime ASC";
+            cmd.CommandText = $"{SelectSql} ORDER BY a.dateTime ASC";
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -148,7 +183,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE DATE(dateTime) = @date ORDER BY dateTime ASC";
+            cmd.CommandText = $"{SelectSql} WHERE DATE(a.dateTime) = @date ORDER BY a.dateTime ASC";
             cmd.Parameters.AddWithValue("@date", date.ToString("yyyy-MM-dd"));
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -163,7 +198,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE userId = @userId ORDER BY dateTime ASC";
+            cmd.CommandText = $"{SelectSql} WHERE a.userId = @userId ORDER BY a.dateTime ASC";
             cmd.Parameters.AddWithValue("@userId", userId);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -178,7 +213,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE clientId = @clientId ORDER BY dateTime DESC";
+            cmd.CommandText = $"{SelectSql} WHERE a.clientId = @clientId ORDER BY a.dateTime DESC";
             cmd.Parameters.AddWithValue("@clientId", clientId);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -193,7 +228,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE dateTime BETWEEN @start AND @end ORDER BY dateTime ASC";
+            cmd.CommandText = $"{SelectSql} WHERE a.dateTime BETWEEN @start AND @end ORDER BY a.dateTime ASC";
             cmd.Parameters.AddWithValue("@start", start);
             cmd.Parameters.AddWithValue("@end", end);
             using var reader = cmd.ExecuteReader();
@@ -209,7 +244,7 @@ namespace InfernalInkSteelSuite.Repositories
             var appointments = new List<Appointment>();
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT * FROM appointments WHERE status = @status ORDER BY dateTime ASC";
+            cmd.CommandText = $"{SelectSql} WHERE a.status = @status ORDER BY a.dateTime ASC";
             cmd.Parameters.AddWithValue("@status", status);
             using var reader = cmd.ExecuteReader();
             while (reader.Read())

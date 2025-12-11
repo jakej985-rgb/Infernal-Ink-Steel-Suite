@@ -24,34 +24,43 @@
 
     <form method="post" id="settingsForm">
         <div class="row">
-            <!-- Sidebar Navigation -->
+            <!-- Sidebar Control Panel -->
             <div class="col-md-3 mb-4">
-                <div class="list-group sticky-top" style="top: 2rem;" id="settings-list-tab" role="tablist">
-                    <a class="list-group-item list-group-item-action active" id="list-general-list" data-bs-toggle="list" href="#list-general" role="tab">
-                        <i class="bi bi-gear me-2"></i>General
-                    </a>
-                    <a class="list-group-item list-group-item-action" id="list-schedule-list" data-bs-toggle="list" href="#list-schedule" role="tab">
-                        <i class="bi bi-calendar-week me-2"></i>Shop Schedule
-                    </a>
-                    <a class="list-group-item list-group-item-action" id="list-branding-list" data-bs-toggle="list" href="#list-branding" role="tab">
-                        <i class="bi bi-palette me-2"></i>Branding & Theme
-                    </a>
-                    <a class="list-group-item list-group-item-action" id="list-notifications-list" data-bs-toggle="list" href="#list-notifications" role="tab">
-                        <i class="bi bi-bell me-2"></i>Notifications
-                    </a>
-                    <a class="list-group-item list-group-item-action" id="list-integrations-list" data-bs-toggle="list" href="#list-integrations" role="tab">
-                        <i class="bi bi-link-45deg me-2"></i>Integrations
-                    </a>
-                    <a class="list-group-item list-group-item-action" id="list-backup-list" data-bs-toggle="list" href="#list-backup" role="tab">
-                        <i class="bi bi-hdd-network me-2"></i>Backup & Data
-                    </a>
+                <div class="settings-control-panel sticky-top" style="top: 2rem;">
+                    <div class="panel-label">System Specs</div>
+                    <div class="nav flex-column nav-pills settings-nav" id="settings-tab" role="tablist">
+                        <button class="nav-link active" id="list-general-list" data-bs-toggle="pill"
+                            data-bs-target="#list-general" type="button" role="tab">
+                            <i class="bi bi-gear-fill"></i> General
+                        </button>
+                        <button class="nav-link" id="list-schedule-list" data-bs-toggle="pill"
+                            data-bs-target="#list-schedule" type="button" role="tab">
+                            <i class="bi bi-clock-history"></i> Schedule
+                        </button>
+                        <button class="nav-link" id="list-branding-list" data-bs-toggle="pill"
+                            data-bs-target="#list-branding" type="button" role="tab">
+                            <i class="bi bi-palette-fill"></i> Branding
+                        </button>
+                        <button class="nav-link" id="list-notifications-list" data-bs-toggle="pill"
+                            data-bs-target="#list-notifications" type="button" role="tab">
+                            <i class="bi bi-bell-fill"></i> Alerts
+                        </button>
+                        <button class="nav-link" id="list-integrations-list" data-bs-toggle="pill"
+                            data-bs-target="#list-integrations" type="button" role="tab">
+                            <i class="bi bi-hdd-network-fill"></i> Uplink
+                        </button>
+                        <button class="nav-link" id="list-backup-list" data-bs-toggle="pill"
+                            data-bs-target="#list-backup" type="button" role="tab">
+                            <i class="bi bi-save-fill"></i> Archives
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Content Area -->
             <div class="col-md-9">
                 <div class="tab-content" id="nav-tabContent">
-                    
+
                     <!-- General Settings -->
                     <div class="tab-pane fade show active" id="list-general" role="tabpanel">
                         <div class="card shadow-sm mb-4">
@@ -65,21 +74,25 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.TattooPerHour" class="form-label">Tattoo Rate ($/hr)</label>
+                                        <label asp-for="Settings.TattooPerHour" class="form-label">Tattoo Rate
+                                            ($/hr)</label>
                                         <input asp-for="Settings.TattooPerHour" type="number" class="form-control" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.ShopMinimumRate" class="form-label">Shop Minimum ($)</label>
+                                        <label asp-for="Settings.ShopMinimumRate" class="form-label">Shop Minimum
+                                            ($)</label>
                                         <input asp-for="Settings.ShopMinimumRate" type="number" class="form-control" />
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.PiercingSingle" class="form-label">Piercing (Single) ($)</label>
+                                        <label asp-for="Settings.PiercingSingle" class="form-label">Piercing (Single)
+                                            ($)</label>
                                         <input asp-for="Settings.PiercingSingle" type="number" class="form-control" />
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.PiercingMulti" class="form-label">Piercing (Multi) ($)</label>
+                                        <label asp-for="Settings.PiercingMulti" class="form-label">Piercing (Multi)
+                                            ($)</label>
                                         <input asp-for="Settings.PiercingMulti" type="number" class="form-control" />
                                     </div>
                                 </div>
@@ -104,8 +117,10 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Settings.CancellationPolicy" class="form-label">Cancellation Policy</label>
-                                    <textarea asp-for="Settings.CancellationPolicy" class="form-control" rows="3"></textarea>
+                                    <label asp-for="Settings.CancellationPolicy" class="form-label">Cancellation
+                                        Policy</label>
+                                    <textarea asp-for="Settings.CancellationPolicy" class="form-control"
+                                        rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -137,14 +152,17 @@
                                                     </td>
                                                     <td>
                                                         <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" asp-for="ShopHours[i].IsOpen">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                asp-for="ShopHours[i].IsOpen">
                                                         </div>
                                                     </td>
                                                     <td>
                                                         <div class="input-group">
-                                                            <input type="time" class="form-control" asp-for="ShopHours[i].StartTime" />
+                                                            <input type="time" class="form-control"
+                                                                asp-for="ShopHours[i].StartTime" />
                                                             <span class="input-group-text">-</span>
-                                                            <input type="time" class="form-control" asp-for="ShopHours[i].EndTime" />
+                                                            <input type="time" class="form-control"
+                                                                asp-for="ShopHours[i].EndTime" />
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -175,16 +193,21 @@
                                 <hr />
                                 <h6>Login Screen</h6>
                                 <div class="mb-3">
-                                    <label asp-for="Settings.LoginBackgroundPath" class="form-label">Background Image URL</label>
-                                    <input asp-for="Settings.LoginBackgroundPath" class="form-control" placeholder="https://..." />
+                                    <label asp-for="Settings.LoginBackgroundPath" class="form-label">Background Image
+                                        URL</label>
+                                    <input asp-for="Settings.LoginBackgroundPath" class="form-control"
+                                        placeholder="https://..." />
                                     <div class="form-text">Enter a URL for the login background image.</div>
                                 </div>
                                 <div class="mb-3 form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" asp-for="Settings.IsSpecialMessageEnabled">
-                                    <label class="form-check-label" asp-for="Settings.IsSpecialMessageEnabled">Enable Special Message</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        asp-for="Settings.IsSpecialMessageEnabled">
+                                    <label class="form-check-label" asp-for="Settings.IsSpecialMessageEnabled">Enable
+                                        Special Message</label>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="Settings.SpecialMessageText" class="form-label">Special Message / Tagline</label>
+                                    <label asp-for="Settings.SpecialMessageText" class="form-label">Special Message /
+                                        Tagline</label>
                                     <input asp-for="Settings.SpecialMessageText" class="form-control" />
                                     <div class="form-text">Displayed on the login screen if enabled.</div>
                                 </div>
@@ -200,15 +223,22 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" asp-for="NotificationSettings.EmailAppointmentReminders">
-                                    <label class="form-check-label" asp-for="NotificationSettings.EmailAppointmentReminders">Email Appointment Reminders</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        asp-for="NotificationSettings.EmailAppointmentReminders">
+                                    <label class="form-check-label"
+                                        asp-for="NotificationSettings.EmailAppointmentReminders">Email Appointment
+                                        Reminders</label>
                                 </div>
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" asp-for="NotificationSettings.SmsAppointmentReminders">
-                                    <label class="form-check-label" asp-for="NotificationSettings.SmsAppointmentReminders">SMS Appointment Reminders</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        asp-for="NotificationSettings.SmsAppointmentReminders">
+                                    <label class="form-check-label"
+                                        asp-for="NotificationSettings.SmsAppointmentReminders">SMS Appointment
+                                        Reminders</label>
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="NotificationSettings.ReminderTiming" class="form-label">Default Reminder Timing</label>
+                                    <label asp-for="NotificationSettings.ReminderTiming" class="form-label">Default
+                                        Reminder Timing</label>
                                     <select asp-for="NotificationSettings.ReminderTiming" class="form-select">
                                         <option value="1 hour before">1 hour before</option>
                                         <option value="2 hours before">2 hours before</option>
@@ -229,19 +259,23 @@
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.InstagramUrl" class="form-label"><i class="bi bi-instagram me-2"></i>Instagram URL</label>
+                                    <label asp-for="LinkedAccounts.InstagramUrl" class="form-label"><i
+                                            class="bi bi-instagram me-2"></i>Instagram URL</label>
                                     <input asp-for="LinkedAccounts.InstagramUrl" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.FacebookUrl" class="form-label"><i class="bi bi-facebook me-2"></i>Facebook URL</label>
+                                    <label asp-for="LinkedAccounts.FacebookUrl" class="form-label"><i
+                                            class="bi bi-facebook me-2"></i>Facebook URL</label>
                                     <input asp-for="LinkedAccounts.FacebookUrl" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.TwitterUrl" class="form-label"><i class="bi bi-twitter me-2"></i>Twitter / X URL</label>
+                                    <label asp-for="LinkedAccounts.TwitterUrl" class="form-label"><i
+                                            class="bi bi-twitter me-2"></i>Twitter / X URL</label>
                                     <input asp-for="LinkedAccounts.TwitterUrl" class="form-control" />
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.WebsiteUrl" class="form-label"><i class="bi bi-globe me-2"></i>Website URL</label>
+                                    <label asp-for="LinkedAccounts.WebsiteUrl" class="form-label"><i
+                                            class="bi bi-globe me-2"></i>Website URL</label>
                                     <input asp-for="LinkedAccounts.WebsiteUrl" class="form-control" />
                                 </div>
                             </div>
@@ -256,15 +290,18 @@
                             </div>
                             <div class="card-body">
                                 <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>Backups happen on the server. Changing these settings affects the server behavior.
+                                    <i class="bi bi-info-circle me-2"></i>Backups happen on the server. Changing these
+                                    settings affects the server behavior.
                                 </div>
                                 <div class="mb-3">
-                                    <label asp-for="BackupSettings.BackupPath" class="form-label">Server Backup Path</label>
+                                    <label asp-for="BackupSettings.BackupPath" class="form-label">Server Backup
+                                        Path</label>
                                     <input asp-for="BackupSettings.BackupPath" class="form-control" />
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="BackupSettings.BackupFrequency" class="form-label">Frequency</label>
+                                        <label asp-for="BackupSettings.BackupFrequency"
+                                            class="form-label">Frequency</label>
                                         <select asp-for="BackupSettings.BackupFrequency" class="form-select">
                                             <option value="Daily">Daily</option>
                                             <option value="Weekly">Weekly</option>
@@ -272,13 +309,17 @@
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label asp-for="BackupSettings.RetentionDays" class="form-label">Retention (Days)</label>
-                                        <input asp-for="BackupSettings.RetentionDays" type="number" class="form-control" />
+                                        <label asp-for="BackupSettings.RetentionDays" class="form-label">Retention
+                                            (Days)</label>
+                                        <input asp-for="BackupSettings.RetentionDays" type="number"
+                                            class="form-control" />
                                     </div>
                                 </div>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" asp-for="BackupSettings.AutoBackupEnabled">
-                                    <label class="form-check-label" asp-for="BackupSettings.AutoBackupEnabled">Enable Automatic Backups</label>
+                                    <input class="form-check-input" type="checkbox"
+                                        asp-for="BackupSettings.AutoBackupEnabled">
+                                    <label class="form-check-label" asp-for="BackupSettings.AutoBackupEnabled">Enable
+                                        Automatic Backups</label>
                                 </div>
                             </div>
                         </div>

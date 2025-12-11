@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Domain;
+using System.Text.Json.Serialization;
 
-namespace InfernalInkSteelSuite.Api.Dtos;
+namespace InfernalInkSteelSuite.Web.Models;
 
 public class ClientDto
 {
@@ -13,18 +14,9 @@ public class ClientDto
     public string? PhotoPath { get; set; }
     public string? Notes { get; set; }
     public int Visits { get; set; }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ClientStatus Status { get; set; }
 
     public string FullName => string.Join(" ", new[] { FirstName, MiddleName, LastName }.Where(s => !string.IsNullOrWhiteSpace(s)));
-
-    public ClientDto() { }
-
-    public ClientDto(int id, string firstName, string lastName, string? phone, string? email)
-    {
-        Id = id;
-        FirstName = firstName;
-        LastName = lastName;
-        Phone = phone;
-        Email = email;
-    }
 }

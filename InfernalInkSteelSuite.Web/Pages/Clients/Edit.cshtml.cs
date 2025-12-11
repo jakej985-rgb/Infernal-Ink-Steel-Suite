@@ -21,6 +21,12 @@ public class EditModel(ApiClient api) : PageModel
     public string? UploadTitle { get; set; }
 
     [BindProperty]
+    public string? AvatarHtml { get; set; } // Legacy or unused?
+
+    [BindProperty]
+    public string? AvatarBase64 { get; set; }
+
+    [BindProperty]
     public IFormFile? Upload { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int? id)
@@ -59,15 +65,30 @@ public class EditModel(ApiClient api) : PageModel
 
         try
         {
+            ClientDto savedClient;
             if (Client.Id > 0)
             {
                 await _api.UpdateClientAsync(Client);
+                savedClient = Client;
             }
             else
             {
-                var created = await _api.CreateClientAsync(Client);
-                return RedirectToPage("/Clients/Edit", new { id = created.Id });
+                savedClient = await _api.CreateClientAsync(Client);
             }
+
+            // Handle avatar upload if present
+            if (!string.IsNullOrEmpty(AvatarBase64))
+            {
+                // Format: "data:image/jpeg;base64,....."
+                var parts = AvatarBase64.Split(',');
+                var base64 = parts.Length > 1 ? parts[1] : parts[0];
+                var bytes = Convert.FromBase64String(base64);
+
+                using var stream = new MemoryStream(bytes);
+                await _api.UploadAvatarAsync(savedClient.Id, stream, "avatar.jpg");
+            }
+
+            if (Client.Id == 0) return RedirectToPage("/Clients/Edit", new { id = savedClient.Id });
         }
         catch (ApiException ex)
         {

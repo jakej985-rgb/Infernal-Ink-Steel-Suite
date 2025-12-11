@@ -51,16 +51,10 @@ namespace InfernalInkSteelSuite.Api.Controllers
 
             var results = appointments.Select(a =>
             {
-                Enum.TryParse<AppointmentStatus>(a.Status, true, out var statusEnum);
-
                 ClientDto? clientDto = null;
                 if (a.Client != null)
                 {
                     clientDto = new ClientDto(a.Client.Id, a.Client.FirstName, a.Client.LastName, a.Client.Phone, a.Client.Email);
-                }
-                else
-                {
-                    // Fallback or empty if needed
                 }
 
                 return new AppointmentDto(
@@ -71,7 +65,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
                     a.EndTime,
                     a.ServiceType,
                     a.ServiceCategory,
-                    statusEnum,
+                    a.Status, // Pass string directly
                     a.QuotedPrice,
                     a.FinalPrice,
                     a.Notes,
@@ -92,24 +86,73 @@ namespace InfernalInkSteelSuite.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Appointment> Create([FromBody] Appointment appointment)
+        public ActionResult<Appointment> Create([FromBody] AppointmentDto appointmentDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var appointment = new Appointment();
+            MapToDomain(appointmentDto, appointment);
 
             _appointments.Add(appointment);
             return CreatedAtAction(nameof(GetById), new { id = appointment.Id }, appointment);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult Update(int id, [FromBody] Appointment appointment)
+        public IActionResult Update(int id, [FromBody] AppointmentDto appointmentDto)
         {
-            if (id != appointment.Id) return BadRequest("ID mismatch.");
+            if (id != appointmentDto.Id) return BadRequest("ID mismatch.");
 
             var existing = _appointments.Get(id);
             if (existing == null) return NotFound();
 
-            _appointments.Update(appointment);
+            MapToDomain(appointmentDto, existing);
+            // Ensure Id is preserved (though MapToDomain shouldn't touch it, safety first)
+            existing.Id = id;
+
+            _appointments.Update(existing);
             return NoContent();
+        }
+
+        private static void MapToDomain(AppointmentDto dto, Appointment entity)
+        {
+            entity.ClientId = dto.ClientId;
+            // Explicitly map ArtistId to UserId
+            entity.UserId = dto.ArtistId;
+            entity.DateTime = dto.StartTime;
+
+            // Calculate duration
+            if (dto.EndTime > dto.StartTime)
+            {
+                entity.DurationMinutes = (int)(dto.EndTime - dto.StartTime).TotalMinutes;
+            }
+            else
+            {
+                // Default if invalid
+                entity.DurationMinutes = 60;
+            }
+
+            entity.ServiceType = dto.ServiceType ?? "Tattoo";
+            entity.ServiceCategory = dto.ServiceCategory ?? "General";
+            entity.Notes = dto.Notes ?? string.Empty;
+
+            // Map Status (use string directly, default if empty)
+            entity.Status = string.IsNullOrWhiteSpace(dto.Status) ? "Scheduled" : dto.Status;
+
+            // Price fields
+            entity.QuotedPrice = dto.QuotedPrice;
+            entity.FinalPrice = dto.FinalPrice;
+
+            // Other fields not in DTO or handled by defaults:
+            // PriceType, PriceCharged, Color, IsBlockOff, etc.
+            // We might want to preserve existing values if updating, 
+            // but for now we are mapping what we have.
+
+            // If new (Id=0), set some defaults if needed
+            if (entity.Id == 0)
+            {
+                // entity.CreatedBy = "API"; // Property does not exist
+                entity.PriceType = "Hourly"; // Default
+            }
         }
 
         [HttpDelete("{id:int}")]

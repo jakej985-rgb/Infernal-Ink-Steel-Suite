@@ -22,34 +22,33 @@
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table table-dark table-hover table-striped mb-0 text-white">
-                <thead>
-                    <tr>
-                        <th class="border-secondary">Style</th>
-                        <th class="border-secondary">Placement</th>
-                        <th class="border-secondary">Dimensions</th>
-                        <th class="border-secondary">Est. Time</th>
-                        <th class="border-secondary">Est. Price</th>
-                        <th class="border-secondary">Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var q in Model.Quotes)
-                    {
-                        <tr class="align-middle">
-                            <td class="border-secondary">@q.Style</td>
-                            <td class="border-secondary">@q.Placement</td>
-                            <td class="border-secondary">@q.Width" x @q.Height"</td>
-                            <td class="border-secondary">@q.EstimatedHoursLow - @q.EstimatedHoursHigh hrs</td>
-                            <td class="border-secondary text-accent">
-                                @q.PriceLow.ToString("C") - @q.PriceHigh.ToString("C")
-                            </td>
-                            <td class="border-secondary">@q.CreatedAt.ToString("g")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="quotes-grid">
+            @foreach (var q in Model.Quotes)
+            {
+                <div class="quote-ticket">
+                    <div class="ticket-header">
+                        <span class="ticket-style">@q.Style</span>
+                        <span class="ticket-date">@q.CreatedAt.ToString("MMM dd")</span>
+                    </div>
+                    <div class="ticket-body">
+                        <div class="ticket-placement">
+                            <i class="bi bi-person-fill"></i> @q.Placement
+                        </div>
+                        <div class="ticket-size">
+                            @q.Width" &times; @q.Height"
+                        </div>
+                        <div class="ticket-time">
+                            <i class="bi bi-clock"></i> @q.EstimatedHoursLow - @q.EstimatedHoursHigh hrs
+                        </div>
+                    </div>
+                    <div class="ticket-footer">
+                        <div class="ticket-price">
+                            @q.PriceLow.ToString("C0") - @q.PriceHigh.ToString("C0")
+                        </div>
+                    </div>
+                    <div class="ticket-rip"></div>
+                </div>
+            }
         </div>
     }
 </section>
