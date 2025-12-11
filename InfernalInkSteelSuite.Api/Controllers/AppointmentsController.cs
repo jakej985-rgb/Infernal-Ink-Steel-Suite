@@ -49,6 +49,13 @@ namespace InfernalInkSteelSuite.Api.Controllers
                 }
             }
 
+            // Filter by Status if provided explicitly (e.g. for Purgatory/Waitlist)
+            string? status = HttpContext.Request.Query["status"];
+            if (!string.IsNullOrEmpty(status))
+            {
+                appointments = [.. appointments.Where(a => a.Status.Equals(status, StringComparison.OrdinalIgnoreCase))];
+            }
+
             var results = appointments.Select(a =>
             {
                 ClientDto? clientDto = null;

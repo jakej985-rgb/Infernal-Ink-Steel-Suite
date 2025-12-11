@@ -18,55 +18,91 @@
         </div>
     </header>
 
-    <div class="d-flex justify-content-between align-items-center bg-dark p-3 rounded mb-4 border border-secondary">
-        <div class="btn-group">
-            <a asp-page="./Index" asp-route-Date="@prevDate" class="btn btn-outline-light">&larr; Prev</a>
-            <a asp-page="./Index" asp-route-Date="@today" class="btn btn-outline-light">Today</a>
-            <a asp-page="./Index" asp-route-Date="@nextDate" class="btn btn-outline-light">Next &rarr;</a>
-        </div>
+    <div class="appointments-container">
+        <!-- Sidebar: Purgatory / Waitlist -->
+        <aside class="purgatory-sidebar rounded">
+            <h5 class="text-uppercase border-bottom border-secondary pb-2 mb-3">
+                <i class="bi bi-hourglass-split me-2 text-warning"></i>Purgatory (Waitlist)
+            </h5>
 
-        <form method="get" class="d-flex align-items-center gap-2">
-            <label class="text-white mb-0">Date:</label>
-            <input type="date" name="Date" value="@currentStr" class="form-control" onchange="this.form.submit()" />
-        </form>
-    </div>
-
-    @if (Model.Appointments.Count == 0)
-    {
-        <div class="text-center py-5 text-muted border rounded border-secondary bg-surface">
-            <h4>No appointments scheduled for @Model.SelectedDate.ToString("D")</h4>
-        </div>
-    }
-    else
-    {
-        <div class="appointments-timeline">
-            @foreach (var appt in Model.Appointments)
+            @if (Model.WaitlistAppointments.Count == 0)
             {
-                <div class="appointment-card @(appt.Status == "Confirmed" ? "status-confirmed" : (appt.Status == "Cancelled" ? "status-cancelled" : "status-pending"))">
-                    <div class="appt-time">
-                        <span class="time-start">@appt.StartTime.ToString("h:mm tt")</span>
-                        <span class="time-duration">@((appt.EndTime - appt.StartTime).TotalMinutes) min</span>
-                    </div>
-                    <div class="appt-details">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h4 class="client-name">
-                                @(appt.Client?.FullName ?? "Walk-In")
-                            </h4>
-                            <span class="badge badge-status">@appt.Status</span>
-                        </div>
-                        <div class="appt-meta">
-                            <span class="meta-item"><i class="bi bi-palette"></i> @appt.ArtistName</span>
-                            <span class="meta-item"><i class="bi bi-stars"></i> @appt.ServiceType</span>
-                        </div>
-                        @if(!string.IsNullOrEmpty(appt.Notes)) {
-                            <div class="appt-notes small text-muted mt-2">@appt.Notes</div>
-                        }
-                    </div>
-                    <div class="appt-actions">
-                        <a asp-page="/Appointments/Edit" asp-route-id="@appt.Id" class="btn btn-sm btn-infernal-outline">Edit</a>
-                    </div>
+                <div class="text-muted small fst-italic text-center py-4">
+                    No souls waiting in limbo...
                 </div>
             }
-        </div>
-    }
+            else
+            {
+                <div class="purgatory-list d-flex flex-column gap-2" style="min-height: 200px;">
+                    @foreach (var appt in Model.WaitlistAppointments)
+                    {
+                        <!-- Compact version of Appointment Card for Sidebar -->
+                        <div class="soul-contract-card p-2 mb-0" data-id="@appt.Id" draggable="true" style="cursor: grab;">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <div class="fw-bold small">@appt.Client?.FullName</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">@appt.ServiceType</div>
+                                </div>
+                                <div class="status-rune rune-pending" style="width: 24px; height: 24px; font-size: 0.8rem;">
+                                    <i class="bi bi-hourglass-split"></i>
+                                </div>
+                            </div>
+                            <div class="mt-2" style="font-size: 0.7rem;">
+                                <i class="bi bi-clock"></i> @appt.StartTime.ToString("MMM dd")
+                                <span class="ms-1 text-warning">(@((int)(appt.EndTime - appt.StartTime).TotalMinutes) m)</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </aside>
+
+        <!-- Main Stage -->
+        <main class="main-stage">
+            <!-- Magma Calendar -->
+            <partial name="_MagmaCalendar" model="Model.SelectedDate" />
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="text-muted small">
+                    Now viewing rituals for <span class="text-white fw-bold">@Model.SelectedDate.ToString("D")</span>
+                </div>
+
+                <!-- Search "Oracle" Trigger -->
+                <button class="btn btn-outline-light btn-sm" title="Consult the Oracle (Search)">
+                    <i class="bi bi-eye me-2"></i>Consult the Oracle
+                </button>
+            </div>
+
+            @if (Model.Appointments.Count == 0)
+            {
+                <div class="text-center py-5 text-muted border rounded border-secondary bg-surface">
+                    <h4>No rituals scheduled for @Model.SelectedDate.ToString("D")</h4>
+                    <p class="mb-0">The studio is silent...</p>
+                </div>
+            }
+            else
+            {
+                <div class="appointments-timeline gig-time-track">
+                    @foreach (var appt in Model.Appointments)
+                    {
+                        <partial name="_AppointmentCard" model="appt" />
+                    }
+                </div>
+            }
+        </main>
+    </div>
 </section>
+
+<!-- Floating "Summon" Button -->
+<div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000">
+    <a asp-page="/Appointments/Edit"
+        class="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center"
+        style="width: 60px; height: 60px; font-size: 24px;">
+        <i class="bi bi-plus-lg"></i>
+    </a>
+</div>
+
+@section Scripts {
+    <script src="~/js/appointments.js"></script>
+}
+

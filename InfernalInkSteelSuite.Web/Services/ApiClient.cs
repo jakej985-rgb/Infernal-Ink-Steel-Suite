@@ -162,12 +162,13 @@ public class ApiClient
         }
     }
 
-    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null)
+    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null, string? status = null)
     {
         ApplyAuthHeader();
         var query = new List<string>();
         if (date.HasValue) query.Add($"date={date.Value:O}");
         if (artistId.HasValue) query.Add($"artistId={artistId.Value}");
+        if (!string.IsNullOrWhiteSpace(status)) query.Add($"status={status}");
         var qs = query.Count > 0 ? "?" + string.Join("&", query) : string.Empty;
 
         var result = await _http.GetFromJsonAsync<List<AppointmentDto>>($"api/appointments{qs}");

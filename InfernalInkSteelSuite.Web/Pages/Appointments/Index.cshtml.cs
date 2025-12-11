@@ -15,6 +15,7 @@ public class IndexModel(ApiClient api) : PageModel
 
     public DateOnly SelectedDate { get; set; }
     public List<AppointmentDto> Appointments { get; set; } = [];
+    public List<AppointmentDto> WaitlistAppointments { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -37,6 +38,10 @@ public class IndexModel(ApiClient api) : PageModel
 
         // Sort by time
         Appointments = [.. Appointments.OrderBy(a => a.StartTime)];
+
+        // Fetch Waitlist (Pending/Purgatory)
+        // We fetch all "Pending" appointments to show in the sidebar.
+        WaitlistAppointments = await _api.GetAppointmentsAsync(status: "Pending");
 
         return Page();
     }

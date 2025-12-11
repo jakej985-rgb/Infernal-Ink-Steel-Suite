@@ -1,0 +1,62 @@
+@model DateOnly
+
+@{
+    var year = Model.Year;
+    var month = Model.Month;
+    var firstDay = new DateOnly(year, month, 1);
+    var daysInMonth = DateTime.DaysInMonth(year, month);
+    var startDayOfWeek = (int)firstDay.DayOfWeek; // 0 = Sunday
+
+    // Mock heat data for visual demo (Random intensity)
+    var rnd = new Random(year * month);
+}
+
+<div class="magma-calendar-wrapper mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="m-0 text-uppercase" style="letter-spacing: 2px;">@firstDay.ToString("MMMM yyyy")</h5>
+        <div class="btn-group btn-group-sm">
+            <a asp-route-Date="@firstDay.AddMonths(-1).ToString("yyyy-MM-dd")"
+                class="btn btn-outline-secondary border-0">&lt;</a>
+            <a asp-route-Date="@firstDay.AddMonths(1).ToString("yyyy-MM-dd")"
+                class="btn btn-outline-secondary border-0">&gt;</a>
+        </div>
+    </div>
+
+    <div class="magma-calendar">
+        <!-- Weekday Headers -->
+        @foreach (var dayName in new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" })
+        {
+            <div class="text-center text-muted small fw-bold">@dayName</div>
+        }
+
+        <!-- Empty cells for start of month -->
+        @for (int i = 0; i < startDayOfWeek; i++)
+        {
+            <div class="magma-day empty disabled"></div>
+        }
+
+        <!-- Days -->
+        @for (int day = 1; day <= daysInMonth; day++)
+        {
+            var currentDay = new DateOnly(year, month, day);
+            var isSelected = currentDay == Model;
+            var isToday = currentDay == DateOnly.FromDateTime(DateTime.Today);
+
+            // Random heat (Mock)
+            var heatLevel = rnd.Next(0, 4); // 0=none, 1=low, 2=med, 3=high
+            var heatClass = heatLevel switch
+            {
+                3 => "has-appointments-high",
+                2 => "has-appointments-med",
+                1 => "has-appointments-low",
+                _ => ""
+            };
+
+            <a asp-route-Date="@currentDay.ToString("yyyy-MM-dd")"
+                class="magma-day text-decoration-none @(isSelected ? "selected" : "") @heatClass"
+                title="@currentDay.ToString("D")">
+                @day
+            </a>
+        }
+    </div>
+</div>

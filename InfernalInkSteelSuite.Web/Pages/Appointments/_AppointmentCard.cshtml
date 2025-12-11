@@ -1,0 +1,97 @@
+@model InfernalInkSteelSuite.Api.Dtos.AppointmentDto
+
+@{
+    var now = DateTime.Now;
+    var isPast = Model.EndTime < now;
+    var statusClass = Model.Status switch
+    {
+        "Confirmed" => "rune-confirmed",
+        "Pending" => "rune-pending",
+        "Cancelled" => "rune-cancelled",
+        _ => "rune-completed"
+    };
+    var statusIcon = Model.Status switch
+    {
+        "Confirmed" => "bi-check-lg",
+        "Pending" => "bi-hourglass-split",
+        "Cancelled" => "bi-x-lg",
+        _ => "bi-check-all"
+    };
+    var duration = (Model.EndTime - Model.StartTime).TotalMinutes;
+}
+
+<div class="soul-contract-card @(isPast ? "appointment-past" : "")" data-id="@Model.Id">
+    <!-- Seal watermark -->
+    <div class="card-header-seal">
+        <i class="bi bi-vector-pen"></i>
+    </div>
+
+    <!-- Main Flex content -->
+    <div class="d-flex justify-content-between align-items-start position-relative" style="z-index: 2;">
+
+        <!-- Left: Time & Status -->
+        <div class="d-flex flex-column align-items-center me-3">
+            <div class="status-rune @statusClass mb-2" title="@Model.Status" style="cursor: pointer;"
+                onclick="toggleStatus(this, @Model.Id)">
+                <i class="bi @statusIcon"></i>
+            </div>
+            <div class="text-center">
+                <div class="fw-bold fs-5">@Model.StartTime.ToString("h:mm")</div>
+                <div class="small text-muted">@Model.StartTime.ToString("tt")</div>
+            </div>
+            <div class="mt-2 small text-muted">(@duration m)</div>
+        </div>
+
+        <!-- Middle: Info -->
+        <div class="flex-grow-1">
+            <h4 class="mb-1 client-name position-relative"
+                style="font-family: 'Oswald', sans-serif; text-transform: uppercase;">
+                @(Model.Client?.FullName ?? "Walk-In Soul")
+                <!-- Mugshot Popup Placeholder -->
+                <div class="client-mugshot-popover rounded">
+                    <div class="small text-uppercase text-muted mb-1">Criminally Good Ink</div>
+                    <div class="fw-bold text-white">@(Model.Client?.Phone ?? "No Contact")</div>
+                </div>
+            </h4>
+
+            <div class="d-flex align-items-center gap-3 mb-2 text-muted small">
+                <span>
+                    <span class="metal-frame me-1" style="width:24px; height:24px; vertical-align: middle;">
+                        <!-- Ideally this is a realimg, placeholder for now -->
+                        <img src="https://ui-avatars.com/api/?name=@(Model.ArtistName)&background=random"
+                            alt="@Model.ArtistName" />
+                    </span>
+                    @Model.ArtistName
+                </span>
+                <span><i class="bi bi-stars"></i> @Model.ServiceType</span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="p-2 bg-light bg-opacity-10 rounded border border-secondary small fst-italic">
+                    "@Model.Notes"
+                </div>
+            }
+
+            <div class="mt-3 d-flex gap-3 small">
+                <!-- Blood Money (Deposit) - Mocked for now until field exists -->
+                <span class="@(Model.Status == "Confirmed" ? "blood-money-paid" : "blood-money-due")">
+                    <i class="bi bi-cash-coin"></i> Deposit: @(Model.Status == "Confirmed" ? "PAID" : "DUE")
+                </span>
+
+                <!-- Waiver -->
+                <span class="text-muted">
+                    <i class="bi bi-file-earmark-medical"></i> Waiver: Pending
+                </span>
+            </div>
+        </div>
+
+        <!-- Right: Actions -->
+        <div class="d-flex flex-column gap-2 ms-3">
+            <a asp-page="/Appointments/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark border-0">
+                <i class="bi bi-pencil-square fs-5"></i>
+            </a>
+            <!-- Expansion: "Summon" more details or Quick Actions -->
+        </div>
+    </div>
+</div>
