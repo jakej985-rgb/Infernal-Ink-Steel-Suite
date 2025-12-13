@@ -16,6 +16,7 @@ public class IndexModel(ApiClient api) : PageModel
     public DateOnly SelectedDate { get; set; }
     public List<AppointmentDto> Appointments { get; set; } = [];
     public List<AppointmentDto> WaitlistAppointments { get; set; } = [];
+    public Dictionary<DateOnly, int> AppointmentCounts { get; set; } = [];
 
     public async Task<IActionResult> OnGetAsync()
     {
@@ -26,22 +27,32 @@ public class IndexModel(ApiClient api) : PageModel
         if (string.IsNullOrEmpty(Date) || !DateOnly.TryParse(Date, out var parsedDate))
         {
             SelectedDate = DateOnly.FromDateTime(DateTime.Today);
-            // Optionally redirect to include nice URL, but keeping simple for now
         }
         else
         {
             SelectedDate = parsedDate;
         }
 
-        // Pass DateTime to API (start of day)
-        Appointments = await _api.GetAppointmentsAsync(date: SelectedDate.ToDateTime(TimeOnly.MinValue));
+        // Fetch ALL appointments to populate the Calendar Heatmap & Filter locally
+        // This avoids multiple API calls and enables the heatmap counts.
+        var allAppointments = await _api.GetAppointmentsAsync();
 
-        // Sort by time
-        Appointments = [.. Appointments.OrderBy(a => a.StartTime)];
+        // 1. Populate Calendar Counts
+        AppointmentCounts = allAppointments
+            .GroupBy(a => DateOnly.FromDateTime(a.StartTime))
+            .ToDictionary(g => g.Key, g => g.Count());
 
-        // Fetch Waitlist (Pending/Purgatory)
-        // We fetch all "Pending" appointments to show in the sidebar.
-        WaitlistAppointments = await _api.GetAppointmentsAsync(status: "Pending");
+        // 2. Filter for Main Stage (Selected Date)
+        Appointments = allAppointments
+            .Where(a => DateOnly.FromDateTime(a.StartTime) == SelectedDate)
+            .OrderBy(a => a.StartTime)
+            .ToList();
+
+        // 3. Filter Waitlist (Pending status)
+        WaitlistAppointments = allAppointments
+            .Where(a => a.Status == "Pending")
+            .OrderBy(a => a.StartTime)
+            .ToList();
 
         return Page();
     }

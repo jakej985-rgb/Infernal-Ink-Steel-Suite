@@ -1,14 +1,15 @@
-@model DateOnly
+@model InfernalInkSteelSuite.Web.Pages.Appointments.IndexModel
 
 @{
-    var year = Model.Year;
-    var month = Model.Month;
+    var now = Model.SelectedDate;
+    var year = now.Year;
+    var month = now.Month;
     var firstDay = new DateOnly(year, month, 1);
     var daysInMonth = DateTime.DaysInMonth(year, month);
     var startDayOfWeek = (int)firstDay.DayOfWeek; // 0 = Sunday
 
-    // Mock heat data for visual demo (Random intensity)
-    var rnd = new Random(year * month);
+    // Use Real Data
+    var counts = Model.AppointmentCounts ?? [];
 }
 
 <div class="magma-calendar-wrapper mb-4">
@@ -39,23 +40,31 @@
         @for (int day = 1; day <= daysInMonth; day++)
         {
             var currentDay = new DateOnly(year, month, day);
-            var isSelected = currentDay == Model;
+            var isSelected = currentDay == Model.SelectedDate;
             var isToday = currentDay == DateOnly.FromDateTime(DateTime.Today);
 
-            // Random heat (Mock)
-            var heatLevel = rnd.Next(0, 4); // 0=none, 1=low, 2=med, 3=high
-            var heatClass = heatLevel switch
+            // Check real counts
+            int count = 0;
+            counts.TryGetValue(currentDay, out count);
+
+            var heatClass = "";
+            if (count > 0)
             {
-                3 => "has-appointments-high",
-                2 => "has-appointments-med",
-                1 => "has-appointments-low",
-                _ => ""
-            };
+                if (count >= 5) heatClass = "has-appointments-high";
+                else if (count >= 3) heatClass = "has-appointments-med";
+                else heatClass = "has-appointments-low";
+            }
 
             <a asp-route-Date="@currentDay.ToString("yyyy-MM-dd")"
-                class="magma-day text-decoration-none @(isSelected ? "selected" : "") @heatClass"
-                title="@currentDay.ToString("D")">
+                class="magma-day text-decoration-none @(isSelected ? "selected" : "") @heatClass position-relative"
+                title="@currentDay.ToString("D") - @count Rituals">
+
                 @day
+
+                @if (count > 1)
+                {
+                    <span class="magma-count-badge">@count</span>
+                }
             </a>
         }
     </div>

@@ -14,6 +14,7 @@ namespace InfernalInkSteelSuite.Web.Models
         public decimal? FinalPrice { get; set; }
         public string? Notes { get; set; }
         public ClientDto? Client { get; set; }
+        public string ClientName { get; set; } = "";
         public string ArtistName { get; set; } = "";
     }
 

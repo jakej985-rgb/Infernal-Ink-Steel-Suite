@@ -4,7 +4,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - InfernalInkSteelSuite.Web</title>
+    <title>@ViewData["Title"] - Infernal Ink & Steel</title>
+
+    <!-- PWA & Mobile -->
+    <link rel="manifest" href="~/manifest.json">
+    <meta name="theme-color" content="#8a0000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InfernalInkSteelSuite.Web.styles.css" asp-append-version="true" />
@@ -17,31 +24,136 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-glass border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Dashboard/Index">InfernalInkSteelSuite.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-glass border-bottom box-shadow mb-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand" asp-area="" asp-page="/Dashboard/Index">Infernal Ink & Steel Suite</a>
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Mobile Logout (Visible only on < lg) -->
+                    <a class="nav-link d-lg-none d-flex align-items-center text-secondary" asp-area=""
+                        asp-page="/Account/Logout" title="Sign Out">
+                        <i class="bi bi-box-arrow-right fs-3"></i>
+                    </a>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+                <div class="navbar-collapse collapse justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Dashboard/Index">Dashboard</a>
+                            <a class="nav-link d-flex align-items-center gap-2" asp-area="" asp-page="/Dashboard/Index">
+                                <i class="bi bi-house-door-fill"></i>
+                                <span>Home</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Appointments" asp-action="Index">Appointments</a>
+                            <a class="nav-link d-flex align-items-center gap-2" asp-controller="Appointments"
+                                asp-action="Index">
+                                <i class="bi bi-calendar-event-fill"></i>
+                                <span>Appointments</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Clients" asp-action="Index">Clients</a>
+                            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Appointments/Purgatory">
+                                <i class="bi bi-hourglass-split"></i>
+                                <span>Purgatory</span>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Settings/Index">Settings</a>
+                            <a class="nav-link d-flex align-items-center gap-2" asp-controller="Clients"
+                                asp-action="Index">
+                                <i class="bi bi-people-fill"></i>
+                                <span>Clients</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Quotes/Index">
+                                <i class="bi bi-receipt"></i>
+                                <span>Quotes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Documents/Index">
+                                <i class="bi bi-file-earmark-text-fill"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2" asp-page="/Stats/Index">
+                                <i class="bi bi-graph-up-arrow"></i>
+                                <span>Statistics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link d-flex align-items-center gap-2" href="#" id="navbarDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-stars"></i>
+                                <span>Dark Arts <i class="bi bi-chevron-down ms-1 small"
+                                        style="font-size: 0.7em;"></i></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" asp-page="/Financial/Deposits">Blood Oaths</a></li>
+                                <li><a class="dropdown-item" asp-page="/Legal/SoulContract">Soul Contracts</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Portal/Index">Antechamber</a></li>
+                                <li><a class="dropdown-item" asp-page="/Artists/Grimoire">Grimoires</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Communications/HealingSpells">Healing Spells</a>
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Inventory/TheHoard">The Hoard</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Tools/FleshCanvas">Flesh Canvas</a></li>
+                                <li><a class="dropdown-item" asp-page="/Communications/CovenChat">Coven Chat</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Marketing/Whispers">Whispers (Reviews)</a></li>
+                                <li><a class="dropdown-item" asp-page="/Marketing/SoulShards">Soul Shards</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Tools/ImageAlchemy">Image Alchemy</a></li>
+                                <li><a class="dropdown-item" asp-page="/Tools/PainEstimator">Pain Estimator</a></li>
+                                <li><a class="dropdown-item" asp-page="/Tools/RitualBeats">Ritual Beats</a></li>
+                                <li><a class="dropdown-item" asp-page="/Tools/FlashRoulette">Flash Roulette</a></li>
+                                <li><a class="dropdown-item" asp-page="/Tools/SkinToneSim">Skin Tone Simulator</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Marketing/Infection">Infection (Referrals)</a>
+                                </li>
+                                <li><a class="dropdown-item" asp-page="/Admin/MarkOfTheBeast">Mark of the Beast</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/Achievements">Achievements</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/CrystalBall">Crystal Ball</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/SoulJar">Soul Jar (Backups)</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/KarmaLogs">Karma Logs</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/Webhooks">Webhooks</a></li>
+                                <li><a class="dropdown-item" asp-page="/Admin/Heartbeat">Heartbeat Monitor</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2" asp-area="" asp-page="/Settings/Index">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Settings</span>
+                            </a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-center d-none d-lg-flex">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-page="/Account/Logout">Sign Out</a>
+                            <a class="nav-link d-flex align-items-center gap-2" asp-area="" asp-page="/Account/Logout">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -89,6 +201,12 @@
         </div>
     </div>
 
+    <!-- Ember Cursor Container -->
+    <div id="ember-container"></div>
+
+    <!-- Omen Toast Container -->
+    <div id="omen-container"></div>
+
     <!-- Ritual Spinner -->
     <div id="ritual-spinner" class="ritual-overlay d-none">
         <div class="ritual-circle"></div>
@@ -98,6 +216,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/telepathy.js" asp-append-version="true"></script>
 
     <script>
         // Simple loading interception
