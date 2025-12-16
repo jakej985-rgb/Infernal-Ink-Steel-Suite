@@ -32,6 +32,9 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
         [BindProperty]
         public LinkedAccountsModel LinkedAccounts { get; set; } = new();
 
+        public List<UserDto> Users { get; set; } = [];
+        public string CurrentUser_Username { get; set; } = string.Empty;
+
         public async Task<IActionResult> OnGetAsync()
         {
             var token = HttpContext.Session.GetString("ApiToken");
@@ -54,8 +57,13 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
                 LoadShopHours(Settings.ShopHoursJson);
                 LoadNotificationSettings(Settings.NotificationSettingsJson);
                 LoadBackupSettings(Settings.BackupSettingsJson);
+                LoadBackupSettings(Settings.BackupSettingsJson);
                 LoadLinkedAccounts(Settings.LinkedAccountsJson);
             }
+
+            // Fetch Users for Staff Management
+            Users = await _api.GetUsersAsync();
+            CurrentUser_Username = HttpContext.Session.GetString("Username") ?? "Unknown";
 
             return Page();
         }

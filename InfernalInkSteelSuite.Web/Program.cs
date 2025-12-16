@@ -52,6 +52,7 @@ builder.Services.AddScoped<IAppointmentRepository>(sp => new AppointmentReposito
 builder.Services.AddScoped<IDocumentRepository>(sp => new DocumentRepository(connectionString));
 builder.Services.AddScoped<IShopSettingsRepository>(sp => new ShopSettingsRepository(connectionString));
 
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -77,5 +78,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+app.MapControllers();
 
 app.Run();

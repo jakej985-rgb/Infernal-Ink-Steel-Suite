@@ -24,7 +24,13 @@ public class ApiClient
         _httpContextAccessor = httpContextAccessor;
         _options = options.Value;
 
-        if (!string.IsNullOrWhiteSpace(_options.ApiBaseUrl))
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            var request = _httpContextAccessor.HttpContext.Request;
+            var baseUrl = $"{request.Scheme}://{request.Host}";
+            _http.BaseAddress = new Uri(baseUrl);
+        }
+        else if (!string.IsNullOrWhiteSpace(_options.ApiBaseUrl))
         {
             _http.BaseAddress = new Uri(_options.ApiBaseUrl);
         }
@@ -217,6 +223,13 @@ public class ApiClient
         ApplyAuthHeader();
         // Updated endpoint to match new controller if needed, but the new controller exposes "api/Documents/by-client/{clientId}"
         var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"api/Documents/by-client/{clientId}");
+        return result ?? [];
+    }
+
+    public async Task<List<UserDto>> GetUsersAsync()
+    {
+        ApplyAuthHeader();
+        var result = await _http.GetFromJsonAsync<List<UserDto>>("api/Users");
         return result ?? [];
     }
 

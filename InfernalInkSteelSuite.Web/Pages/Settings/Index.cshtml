@@ -1,332 +1,225 @@
 @page
 @model InfernalInkSteelSuite.Web.Pages.Settings.IndexModel
 @{
-    ViewData["Title"] = "Settings";
+    ViewData["Title"] = "Establishment Configuration";
+    Layout = "_Layout";
 }
 
-<section class="settings-page">
-    <header class="page-header mb-4 d-flex justify-content-between align-items-center">
-        <h1>Shop Settings</h1>
-        <button type="submit" form="settingsForm" class="btn btn-primary">
-            <i class="bi bi-save me-2"></i>Save Changes
-        </button>
-    </header>
+<div class="row g-4 fade-in">
+    <!-- Sidebar Navigation -->
+    <div class="col-lg-3 col-md-4">
+        <div class="glass-panel p-3 sticky-top" style="top: 80px; min-height: 80vh;">
+            <div class="d-flex align-items-center mb-4 px-2">
+                <i class="bi bi-gear-wide-connected fs-2 text-gradient-gold me-3"></i>
+                <h5 class="mb-0 text-uppercase fw-bold text-light">Settings</h5>
+            </div>
 
-    @if (TempData["Message"] != null)
-    {
-        var msg = TempData["Message"]?.ToString();
-        var alertClass = msg?.Contains("Failed") == true ? "alert-danger" : "alert-success";
-        <div class="alert @alertClass alert-dismissible fade show" role="alert">
-            @msg
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <nav class="nav flex-column settings-nav gap-2">
+                <!-- Shop Section -->
+                <div class="nav-item">
+                    <a class="nav-link text-uppercase text-muted small fw-bold mb-1" data-bs-toggle="collapse" href="#shopSubmenu">
+                        Shop
+                    </a>
+                    <div class="collapse show" id="shopSubmenu">
+                         <a href="#" class="nav-link active" data-section="shop-profile">
+                            <i class="bi bi-shop me-2"></i> Profile
+                        </a>
+                        <a href="#" class="nav-link" data-section="shop-branding">
+                            <i class="bi bi-palette me-2"></i> Branding
+                        </a>
+                        <a href="#" class="nav-link" data-section="shop-hours">
+                            <i class="bi bi-clock me-2"></i> Hours
+                        </a>
+                        <a href="#" class="nav-link" data-section="shop-services">
+                             <i class="bi bi-tag me-2"></i> Services
+                        </a>
+                        <a href="#" class="nav-link" data-section="shop-inventory">
+                            <i class="bi bi-box-seam me-2"></i> Inventory
+                        </a>
+                    </div>
+                </div>
+                
+                <hr class="border-secondary my-2 opacity-50" />
+
+                <!-- Staff Section -->
+                 <div class="nav-item">
+                    <div class="text-uppercase text-muted small fw-bold px-3 mb-2">Staff</div>
+                    <a href="#" class="nav-link" data-section="staff-users">
+                        <i class="bi bi-people me-2"></i> User Management
+                    </a>
+                    <a href="#" class="nav-link" data-section="staff-schedule">
+                         <i class="bi bi-calendar-week me-2"></i> Schedule
+                    </a>
+                </div>
+
+                <hr class="border-secondary my-2 opacity-50" />
+
+                <!-- Operations -->
+                <div class="nav-item">
+                     <div class="text-uppercase text-muted small fw-bold px-3 mb-2">Operations</div>
+                    <a href="#" class="nav-link" data-section="notifications">
+                        <i class="bi bi-bell me-2"></i> Notifications
+                    </a>
+                    <a href="#" class="nav-link" data-section="integrations">
+                        <i class="bi bi-plug me-2"></i> Integrations
+                    </a>
+                </div>
+
+                <hr class="border-secondary my-2 opacity-50" />
+
+                <!-- Personal -->
+                <div class="nav-item">
+                     <div class="text-uppercase text-muted small fw-bold px-3 mb-2">Personal</div>
+                    <a href="#" class="nav-link" data-section="account">
+                        <i class="bi bi-person-badge me-2"></i> My Account
+                    </a>
+                </div>
+
+                <hr class="border-secondary my-2 opacity-50" />
+                
+                <!-- System (Admin Only) -->
+                 @if (HttpContext.Session.GetString("Role") == "Admin")
+                {
+                    <div class="nav-item">
+                        <div class="text-uppercase text-muted small fw-bold px-3 mb-2">System</div>
+                        <a href="#" class="nav-link" data-section="system-backup">
+                            <i class="bi bi-hdd-network me-2"></i> Backup
+                        </a>
+                        <a href="#" class="nav-link" data-section="system-audit">
+                            <i class="bi bi-clipboard-data me-2"></i> Audit Log
+                        </a>
+                    </div>
+                }
+            </nav>
         </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="col-lg-9 col-md-8">
+        <form method="post" id="settingsForm">
+             <div id="settings-content-wrapper">
+                <!-- Sections are hidden by default, JS toggles visibility -->
+                
+                <div id="shop-profile" class="settings-section">
+                    <partial name="Partials/_Shop_Profile" model="Model" />
+                </div>
+                
+                <div id="shop-branding" class="settings-section d-none">
+                    <partial name="Partials/_Shop_Branding" model="Model" />
+                </div>
+                
+                <div id="shop-hours" class="settings-section d-none">
+                    <partial name="Partials/_Shop_Hours" model="Model" />
+                </div>
+                
+                <div id="shop-services" class="settings-section d-none">
+                    <partial name="Partials/_Shop_Services" model="Model" />
+                </div>
+
+                <div id="shop-inventory" class="settings-section d-none">
+                    <partial name="Partials/_Shop_Inventory" model="Model" />
+                </div>
+
+                <!-- Staff -->
+                <div id="staff-users" class="settings-section d-none">
+                    <partial name="Partials/_Staff_UserManagement" model="Model" />
+                </div>
+                 <div id="staff-schedule" class="settings-section d-none">
+                    <partial name="Partials/_Staff_Schedule" model="Model" />
+                </div>
+
+                <!-- Operations -->
+                <div id="notifications" class="settings-section d-none">
+                    <partial name="Partials/_Notifications" model="Model" />
+                </div>
+                <div id="integrations" class="settings-section d-none">
+                    <partial name="Partials/_Integrations" model="Model" />
+                </div>
+
+                <!-- Personal -->
+                <div id="account" class="settings-section d-none">
+                    <partial name="Partials/_Account" model="Model" />
+                </div>
+
+                <!-- System -->
+                 <div id="system-backup" class="settings-section d-none">
+                    <partial name="Partials/_System_Backup" model="Model" />
+                </div>
+                 <div id="system-audit" class="settings-section d-none">
+                    <partial name="Partials/_System_Audit" model="Model" />
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast show bg-dark border-success" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">System Message</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body text-light">
+                @TempData["Message"]
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .settings-nav .nav-link {
+        color: rgba(255, 255, 255, 0.7);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
     }
+    .settings-nav .nav-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        transform: translateX(5px);
+    }
+    .settings-nav .nav-link.active {
+        background: var(--primary-color-alpha);
+        color: var(--primary-color);
+        font-weight: bold;
+        border-left: 3px solid var(--primary-color);
+    }
+    .settings-nav .nav-link i {
+        width: 20px;
+        text-align: center;
+        display: inline-block;
+    }
+</style>
 
-    <form method="post" id="settingsForm">
-        <div class="row">
-            <!-- Sidebar Control Panel -->
-            <div class="col-md-3 mb-4">
-                <div class="settings-control-panel sticky-top" style="top: 2rem;">
-                    <div class="panel-label">System Specs</div>
-                    <div class="nav flex-column nav-pills settings-nav" id="settings-tab" role="tablist">
-                        <button class="nav-link active" id="list-general-list" data-bs-toggle="pill"
-                            data-bs-target="#list-general" type="button" role="tab">
-                            <i class="bi bi-gear-fill"></i> General
-                        </button>
-                        <button class="nav-link" id="list-schedule-list" data-bs-toggle="pill"
-                            data-bs-target="#list-schedule" type="button" role="tab">
-                            <i class="bi bi-clock-history"></i> Schedule
-                        </button>
-                        <button class="nav-link" id="list-branding-list" data-bs-toggle="pill"
-                            data-bs-target="#list-branding" type="button" role="tab">
-                            <i class="bi bi-palette-fill"></i> Branding
-                        </button>
-                        <button class="nav-link" id="list-notifications-list" data-bs-toggle="pill"
-                            data-bs-target="#list-notifications" type="button" role="tab">
-                            <i class="bi bi-bell-fill"></i> Alerts
-                        </button>
-                        <button class="nav-link" id="list-integrations-list" data-bs-toggle="pill"
-                            data-bs-target="#list-integrations" type="button" role="tab">
-                            <i class="bi bi-hdd-network-fill"></i> Uplink
-                        </button>
-                        <button class="nav-link" id="list-backup-list" data-bs-toggle="pill"
-                            data-bs-target="#list-backup" type="button" role="tab">
-                            <i class="bi bi-save-fill"></i> Archives
-                        </button>
-                    </div>
-                </div>
-            </div>
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.settings-nav .nav-link[data-section]');
+            const sections = document.querySelectorAll('.settings-section');
 
-            <!-- Content Area -->
-            <div class="col-md-9">
-                <div class="tab-content" id="nav-tabContent">
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active state
+                    document.querySelectorAll('.settings-nav .nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
 
-                    <!-- General Settings -->
-                    <div class="tab-pane fade show active" id="list-general" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">General Configuration</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label asp-for="Settings.ShopName" class="form-label">Shop Name</label>
-                                    <input asp-for="Settings.ShopName" class="form-control" />
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.TattooPerHour" class="form-label">Tattoo Rate
-                                            ($/hr)</label>
-                                        <input asp-for="Settings.TattooPerHour" type="number" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.ShopMinimumRate" class="form-label">Shop Minimum
-                                            ($)</label>
-                                        <input asp-for="Settings.ShopMinimumRate" type="number" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.PiercingSingle" class="form-label">Piercing (Single)
-                                            ($)</label>
-                                        <input asp-for="Settings.PiercingSingle" type="number" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.PiercingMulti" class="form-label">Piercing (Multi)
-                                            ($)</label>
-                                        <input asp-for="Settings.PiercingMulti" type="number" class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="Settings.TaxRate" class="form-label">Tax Rate (%)</label>
-                                    <input asp-for="Settings.TaxRate" type="number" step="0.01" class="form-control" />
-                                </div>
-                                <hr />
-                                <h6>Booking & Deposits</h6>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.DepositType" class="form-label">Deposit Type</label>
-                                        <select asp-for="Settings.DepositType" class="form-select">
-                                            <option value="Percentage">Percentage</option>
-                                            <option value="Fixed">Fixed Amount</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Settings.DepositAmount" class="form-label">Deposit Value</label>
-                                        <input asp-for="Settings.DepositAmount" type="number" class="form-control" />
-                                        <div class="form-text">Percentage (e.g., 20) or Dollar Amount</div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="Settings.CancellationPolicy" class="form-label">Cancellation
-                                        Policy</label>
-                                    <textarea asp-for="Settings.CancellationPolicy" class="form-control"
-                                        rows="3"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Shop Schedule -->
-                    <div class="tab-pane fade" id="list-schedule" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">Weekly Schedule</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table align-middle">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 150px;">Day</th>
-                                                <th style="width: 100px;">Open?</th>
-                                                <th>Hours</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @for (int i = 0; i < Model.ShopHours.Count; i++)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        <input type="hidden" asp-for="ShopHours[i].Day" />
-                                                        <strong>@Model.ShopHours[i].Day</strong>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                asp-for="ShopHours[i].IsOpen">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="input-group">
-                                                            <input type="time" class="form-control"
-                                                                asp-for="ShopHours[i].StartTime" />
-                                                            <span class="input-group-text">-</span>
-                                                            <input type="time" class="form-control"
-                                                                asp-for="ShopHours[i].EndTime" />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Branding -->
-                    <div class="tab-pane fade" id="list-branding" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">Theme & Login Branding</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-4">
-                                    <label asp-for="SelectedTheme" class="form-label">Application Theme</label>
-                                    <select asp-for="SelectedTheme" class="form-select">
-                                        <option value="Neon">Neon (Default)</option>
-                                        <option value="Steampunk">Steampunk</option>
-                                        <option value="Minimal">High Contrast</option>
-                                    </select>
-                                    <div class="form-text">Choose the visual style for the dashboard.</div>
-                                </div>
-                                <hr />
-                                <h6>Login Screen</h6>
-                                <div class="mb-3">
-                                    <label asp-for="Settings.LoginBackgroundPath" class="form-label">Background Image
-                                        URL</label>
-                                    <input asp-for="Settings.LoginBackgroundPath" class="form-control"
-                                        placeholder="https://..." />
-                                    <div class="form-text">Enter a URL for the login background image.</div>
-                                </div>
-                                <div class="mb-3 form-check form-switch">
-                                    <input class="form-check-input" type="checkbox"
-                                        asp-for="Settings.IsSpecialMessageEnabled">
-                                    <label class="form-check-label" asp-for="Settings.IsSpecialMessageEnabled">Enable
-                                        Special Message</label>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="Settings.SpecialMessageText" class="form-label">Special Message /
-                                        Tagline</label>
-                                    <input asp-for="Settings.SpecialMessageText" class="form-control" />
-                                    <div class="form-text">Displayed on the login screen if enabled.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Notifications -->
-                    <div class="tab-pane fade" id="list-notifications" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">Notifications</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox"
-                                        asp-for="NotificationSettings.EmailAppointmentReminders">
-                                    <label class="form-check-label"
-                                        asp-for="NotificationSettings.EmailAppointmentReminders">Email Appointment
-                                        Reminders</label>
-                                </div>
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox"
-                                        asp-for="NotificationSettings.SmsAppointmentReminders">
-                                    <label class="form-check-label"
-                                        asp-for="NotificationSettings.SmsAppointmentReminders">SMS Appointment
-                                        Reminders</label>
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="NotificationSettings.ReminderTiming" class="form-label">Default
-                                        Reminder Timing</label>
-                                    <select asp-for="NotificationSettings.ReminderTiming" class="form-select">
-                                        <option value="1 hour before">1 hour before</option>
-                                        <option value="2 hours before">2 hours before</option>
-                                        <option value="4 hours before">4 hours before</option>
-                                        <option value="1 day before">1 day before</option>
-                                        <option value="2 days before">2 days before</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Integrations -->
-                    <div class="tab-pane fade" id="list-integrations" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">Social Media & Integrations</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.InstagramUrl" class="form-label"><i
-                                            class="bi bi-instagram me-2"></i>Instagram URL</label>
-                                    <input asp-for="LinkedAccounts.InstagramUrl" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.FacebookUrl" class="form-label"><i
-                                            class="bi bi-facebook me-2"></i>Facebook URL</label>
-                                    <input asp-for="LinkedAccounts.FacebookUrl" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.TwitterUrl" class="form-label"><i
-                                            class="bi bi-twitter me-2"></i>Twitter / X URL</label>
-                                    <input asp-for="LinkedAccounts.TwitterUrl" class="form-control" />
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="LinkedAccounts.WebsiteUrl" class="form-label"><i
-                                            class="bi bi-globe me-2"></i>Website URL</label>
-                                    <input asp-for="LinkedAccounts.WebsiteUrl" class="form-control" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Backup -->
-                    <div class="tab-pane fade" id="list-backup" role="tabpanel">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-transparent">
-                                <h5 class="mb-0">Backup Configuration</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>Backups happen on the server. Changing these
-                                    settings affects the server behavior.
-                                </div>
-                                <div class="mb-3">
-                                    <label asp-for="BackupSettings.BackupPath" class="form-label">Server Backup
-                                        Path</label>
-                                    <input asp-for="BackupSettings.BackupPath" class="form-control" />
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="BackupSettings.BackupFrequency"
-                                            class="form-label">Frequency</label>
-                                        <select asp-for="BackupSettings.BackupFrequency" class="form-select">
-                                            <option value="Daily">Daily</option>
-                                            <option value="Weekly">Weekly</option>
-                                            <option value="Monthly">Monthly</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="BackupSettings.RetentionDays" class="form-label">Retention
-                                            (Days)</label>
-                                        <input asp-for="BackupSettings.RetentionDays" type="number"
-                                            class="form-control" />
-                                    </div>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox"
-                                        asp-for="BackupSettings.AutoBackupEnabled">
-                                    <label class="form-check-label" asp-for="BackupSettings.AutoBackupEnabled">Enable
-                                        Automatic Backups</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </form>
-</section>
+                    // Show section
+                    const targetId = this.getAttribute('data-section');
+                    sections.forEach(sec => {
+                        if(sec.id === targetId) {
+                            sec.classList.remove('d-none');
+                            sec.classList.add('fade-in'); 
+                        } else {
+                            sec.classList.add('d-none');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
