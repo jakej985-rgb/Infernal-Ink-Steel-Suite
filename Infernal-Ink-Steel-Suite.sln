@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Api", "InfernalInkSteelSuite.Api\InfernalInkSteelSuite.Api.csproj", "{FABDB08C-4C11-E0F9-FE3C-DB80B874B35D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Web", "InfernalInkSteelSuite.Web\InfernalInkSteelSuite.Web.csproj", "{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfernalInkSteelSuite.Data.Tests", "InfernalInkSteelSuite.Data.Tests\InfernalInkSteelSuite.Data.Tests.csproj", "{C68EB677-3FAB-45DF-A472-AE18DDB7B719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E82963E-DB8E-25F2-1128-81A15E5F1A4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68EB677-3FAB-45DF-A472-AE18DDB7B719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68EB677-3FAB-45DF-A472-AE18DDB7B719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68EB677-3FAB-45DF-A472-AE18DDB7B719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68EB677-3FAB-45DF-A472-AE18DDB7B719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
