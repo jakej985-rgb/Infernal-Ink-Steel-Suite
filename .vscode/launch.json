@@ -10,6 +10,59 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Infernal-Ink-Steel-Suite.manager/bin/Debug/net8.0-windows10.0.19041/Infernal-Ink-Steel-Suite.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Infernal-Ink-Steel-Suite.manager",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": "Launch Web",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-solution",
+            "program": "${workspaceFolder}/InfernalInkSteelSuite.Web/bin/Debug/net8.0/InfernalInkSteelSuite.Web.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/InfernalInkSteelSuite.Web",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/InfernalInkSteelSuite.Web/Views"
+            }
+        },
+        {
+            "name": "Launch Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-solution",
+            "program": "${workspaceFolder}/InfernalInkSteelSuite.Api/bin/Debug/net8.0/InfernalInkSteelSuite.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/InfernalInkSteelSuite.Api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/InfernalInkSteelSuite.Api/Views"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Full Stack",
+            "configurations": [
+                "Launch Web",
+                "Launch Api"
+            ]
         }
     ]
 }

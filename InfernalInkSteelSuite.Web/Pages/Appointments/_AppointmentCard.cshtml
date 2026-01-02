@@ -20,7 +20,8 @@
     var duration = (Model.EndTime - Model.StartTime).TotalMinutes;
 }
 
-<div class="soul-contract-card @(isPast ? "appointment-past" : "")" data-id="@Model.Id">
+<div class="soul-contract-card @(isPast ? "appointment-past" : "")" data-id="@Model.Id"
+    onclick="openAppointmentDetails(@Model.Id)">
     <!-- Seal watermark -->
     <div class="card-header-seal">
         <i class="bi bi-vector-pen"></i>
@@ -32,7 +33,7 @@
         <!-- Left: Time & Status -->
         <div class="d-flex flex-column align-items-center me-3">
             <div class="status-rune @statusClass mb-2" title="@Model.Status" style="cursor: pointer;"
-                onclick="toggleStatus(this, @Model.Id)">
+                onclick="event.stopPropagation(); toggleStatus(this, @Model.Id)">
                 <i class="bi @statusIcon"></i>
             </div>
             <div class="text-center">
@@ -86,12 +87,6 @@
             </div>
         </div>
 
-        <!-- Right: Actions -->
-        <div class="d-flex flex-column gap-2 ms-3">
-            <a asp-page="/Appointments/Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-dark border-0">
-                <i class="bi bi-pencil-square fs-5"></i>
-            </a>
-            <!-- Expansion: "Summon" more details or Quick Actions -->
-        </div>
+
     </div>
 </div>

@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
         private readonly IAppointmentRepository _appointments = appointments;
 
         [HttpGet]
-        public ActionResult<List<AppointmentDto>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId)
+        public ActionResult<List<AppointmentDto>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId, [FromQuery] int? clientId)
         {
             List<Appointment> appointments;
 

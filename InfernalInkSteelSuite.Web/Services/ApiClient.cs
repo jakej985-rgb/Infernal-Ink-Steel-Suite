@@ -24,13 +24,7 @@ public class ApiClient
         _httpContextAccessor = httpContextAccessor;
         _options = options.Value;
 
-        if (_httpContextAccessor.HttpContext != null)
-        {
-            var request = _httpContextAccessor.HttpContext.Request;
-            var baseUrl = $"{request.Scheme}://{request.Host}";
-            _http.BaseAddress = new Uri(baseUrl);
-        }
-        else if (!string.IsNullOrWhiteSpace(_options.ApiBaseUrl))
+        if (!string.IsNullOrWhiteSpace(_options.ApiBaseUrl))
         {
             _http.BaseAddress = new Uri(_options.ApiBaseUrl);
         }
@@ -168,12 +162,13 @@ public class ApiClient
         }
     }
 
-    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null, string? status = null)
+    public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null, string? status = null, int? clientId = null)
     {
         ApplyAuthHeader();
         var query = new List<string>();
         if (date.HasValue) query.Add($"date={date.Value:O}");
         if (artistId.HasValue) query.Add($"artistId={artistId.Value}");
+        if (clientId.HasValue) query.Add($"clientId={clientId.Value}");
         if (!string.IsNullOrWhiteSpace(status)) query.Add($"status={status}");
         var qs = query.Count > 0 ? "?" + string.Join("&", query) : string.Empty;
 

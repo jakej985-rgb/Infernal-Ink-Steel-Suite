@@ -142,3 +142,160 @@ function initializeDragDrop() {
         });
     });
 }
+
+function openAppointmentDetails(id) {
+    const modalElement = document.getElementById('appointmentDetailsModal');
+    const contentContainer = document.getElementById('appointmentDetailsModalContent');
+    const modal = new bootstrap.Modal(modalElement);
+
+    // Show spinner
+    contentContainer.innerHTML = `
+        <div class="modal-body text-center py-5">
+             <div class="spinner-border text-accent" role="status">
+                 <span class="visually-hidden">Summoning details...</span>
+             </div>
+             <div class="mt-3 text-muted small text-uppercase" style="letter-spacing: 2px;">Consulting the Ledger...</div>
+        </div>`;
+
+    modal.show();
+
+    // Fetch Partial
+    fetch(`/Appointments/Index?handler=DetailsPartial&id=${id}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to summon details');
+            return response.text();
+        })
+        .then(html => {
+            contentContainer.innerHTML = html;
+        })
+        .catch(error => {
+            contentContainer.innerHTML = `
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title text-danger">Ritual Failure</h5>
+                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="text-muted">The spirits are silent. (Error loading details)</p>
+                </div>`;
+            console.error(error);
+        });
+}
+
+
+function markCompleted(id) {
+    if (!confirm("Are you sure you want to seal this pact as COMPLETED?")) return;
+
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenInput ? tokenInput.value : '';
+
+    const formData = new FormData();
+    formData.append('__RequestVerificationToken', token);
+
+    fetch(`/Appointments/Index?handler=Complete&id=${id}`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (response.ok) {
+                const modalElement = document.getElementById('appointmentDetailsModal');
+                const modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+                location.reload();
+            } else {
+                alert("The ritual failed. The spirits reject your offering.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("A communication error occurred.");
+        });
+}
+
+function selectSmartQuote(element, price) {
+    if (price > 0) {
+        document.getElementById('inputQuotedPrice').value = price.toFixed(2);
+    }
+
+    // Update Button Text with the clicked item's text (minus the date span if simpler)
+    // We can just grab the text content directly
+    const text = element.textContent.trim();
+    const btn = document.getElementById('smartQuoteDropdown');
+    const span = btn.querySelector('span');
+    if (span) span.textContent = text;
+}
+
+function updateFinancials(id) {
+    const quotedPrice = document.getElementById('inputQuotedPrice').value;
+
+    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+    const token = tokenInput ? tokenInput.value : '';
+
+    const formData = new FormData();
+    formData.append('__RequestVerificationToken', token);
+    formData.append('quotedPrice', quotedPrice);
+
+    fetch(`/Appointments/Index?handler=UpdateFinancials&id=${id}`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (response.ok) {
+                // Flash success styling or toast
+                const btn = document.querySelector('button[onclick^="updateFinancials"]');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+                btn.classList.remove('btn-outline-success');
+                btn.classList.add('btn-success');
+                setTimeout(() => {
+                    btn.innerHTML = originalHtml;
+                    btn.classList.add('btn-outline-success');
+                    btn.classList.remove('btn-success');
+                }, 1000);
+            } else {
+                alert("Failed to update financials. The ledger rejects these numbers.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Communication error with the underworld.");
+        });
+}
+
+function openQuotePopup(clientId) {
+    const width = 800;
+    const height = 900;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    window.open(
+        `/Quotes/New?clientId=${clientId}&isPopup=true`,
+        'CreateQuote',
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+}
+
+function refreshAppointmentDetails(id) {
+    const contentContainer = document.getElementById('appointmentDetailsModalContent');
+
+    // Show local loading state within the modal body if we wanted, 
+    // but for a refresh, maybe just a spinner on the button?
+    // Let's just do a silent refresh or replace content.
+
+    // For visual feedback, let's blur the content slightly
+    contentContainer.style.opacity = '0.5';
+
+    fetch(`/Appointments/Index?handler=DetailsPartial&id=${id}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to refresh details');
+            return response.text();
+        })
+        .then(html => {
+            contentContainer.innerHTML = html;
+            contentContainer.style.opacity = '1';
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Failed to refresh the pact details.");
+            contentContainer.style.opacity = '1';
+        });
+}

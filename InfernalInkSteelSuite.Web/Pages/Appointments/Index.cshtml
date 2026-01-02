@@ -9,6 +9,7 @@
 }
 
 <section class="appointments-page">
+    @Html.AntiForgeryToken()
     <header class="page-header d-flex justify-content-between align-items-center mb-4">
         <h1>Appointments</h1>
         <div class="d-flex gap-2">
@@ -92,6 +93,20 @@
         </main>
     </div>
 </section>
+
+<!-- Details Modal -->
+<div class="modal fade" id="appointmentDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content infernal-modal-content" id="appointmentDetailsModalContent">
+            <!-- Content loaded via AJAX -->
+            <div class="modal-body text-center py-5">
+                <div class="spinner-border text-accent" role="status">
+                    <span class="visually-hidden">Summoning details...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Floating "Summon" Button -->
 <div class="position-fixed bottom-0 end-0 p-4" style="z-index: 1000">

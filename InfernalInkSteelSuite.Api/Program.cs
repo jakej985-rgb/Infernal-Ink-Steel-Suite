@@ -133,7 +133,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "ok" })).AllowAnonymous();
 
 
 // ---- Users ----
-app.MapGet("/users", async (AppDbContext db) =>
+app.MapGet("/api/users", async (AppDbContext db) =>
 {
     var users = await db.Users.ToListAsync();
     return Results.Ok(users.Select(u =>
@@ -143,7 +143,7 @@ app.MapGet("/users", async (AppDbContext db) =>
     }));
 }).RequireAuthorization("IsAdmin");
 
-app.MapGet("/users/{id:int}", async (int id, AppDbContext db) =>
+app.MapGet("/api/users/{id:int}", async (int id, AppDbContext db) =>
 {
     var user = await db.Users.FindAsync(id);
     if (user is null) return Results.NotFound();
@@ -152,7 +152,8 @@ app.MapGet("/users/{id:int}", async (int id, AppDbContext db) =>
     return Results.Ok(new { user.Id, user.Username, DisplayName = user.Username, Role = roleEnum, user.IsActive });
 }).RequireAuthorization("IsAdmin");
 
-app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
+
+app.MapPost("/api/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
 {
     var user = new User
     {
@@ -164,10 +165,10 @@ app.MapPost("/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDb
     };
     db.Users.Add(user);
     await db.SaveChangesAsync();
-    return Results.Created($"/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, newUser.Role, user.IsActive });
+    return Results.Created($"/api/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, newUser.Role, user.IsActive });
 }).RequireAuthorization("IsAdmin");
 
-app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
+app.MapPut("/api/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
 {
     var existing = await db.Users.FindAsync(id);
     if (existing is null) return Results.NotFound();
@@ -181,7 +182,7 @@ app.MapPut("/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbConte
     return Results.Ok(new { existing.Id, existing.Username, DisplayName = existing.Username, updateDto.Role, existing.IsActive });
 }).RequireAuthorization("IsAdmin");
 
-app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
+app.MapPut("/api/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
 {
     var existing = await db.Users.FindAsync(id);
     if (existing is null) return Results.NotFound();
@@ -193,7 +194,7 @@ app.MapPut("/users/{id:int}/password", async (int id, UserUpdatePasswordDto pass
 }).RequireAuthorization("IsAdmin");
 
 
-app.MapDelete("/users/{id:int}", async (int id, AppDbContext db) =>
+app.MapDelete("/api/users/{id:int}", async (int id, AppDbContext db) =>
 {
     var existing = await db.Users.FindAsync(id);
     if (existing is null) return Results.NotFound();

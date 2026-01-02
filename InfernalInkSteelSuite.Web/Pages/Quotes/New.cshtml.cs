@@ -11,6 +11,9 @@ public class NewModel(ApiClient api) : PageModel
 {
     private readonly ApiClient _api = api;
 
+    [BindProperty(SupportsGet = true)]
+    public bool IsPopup { get; set; }
+
     [BindProperty]
     public QuoteInput Quote { get; set; } = new();
 
@@ -32,13 +35,18 @@ public class NewModel(ApiClient api) : PageModel
         new("Fine Line", "Fine Line")
     ];
 
-    public async Task<IActionResult> OnGetAsync()
+    public async Task<IActionResult> OnGetAsync(int? clientId)
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
             return RedirectToPage("/Account/Login");
 
         await LoadDropdowns();
+
+        if (clientId.HasValue)
+        {
+            Quote.ClientId = clientId;
+        }
 
         // Default complexity
         Quote.CoverageLevel = 1;
@@ -75,6 +83,11 @@ public class NewModel(ApiClient api) : PageModel
         var result = await _api.CreateQuoteAsync(Quote);
         if (result != null)
         {
+            if (IsPopup)
+            {
+                // Close the window directly
+                return Content("<script>window.close();</script>", "text/html");
+            }
             return RedirectToPage("/Quotes/Index");
         }
 

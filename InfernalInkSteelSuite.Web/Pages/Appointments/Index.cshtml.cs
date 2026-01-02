@@ -56,4 +56,76 @@ public class IndexModel(ApiClient api) : PageModel
 
         return Page();
     }
+    public async Task<IActionResult> OnGetDetailsPartialAsync(int id)
+    {
+        var token = HttpContext.Session.GetString("ApiToken");
+        if (string.IsNullOrEmpty(token)) return Unauthorized();
+
+        var appt = await _api.GetAppointmentAsync(id);
+        if (appt == null) return NotFound();
+
+        List<AppointmentDto> history = [];
+        if (appt.ClientId > 0)
+        {
+            // Pass clientId to GetAppointmentsAsync to filter
+            history = await _api.GetAppointmentsAsync(clientId: appt.ClientId);
+        }
+
+        var viewModel = new AppointmentDetailsViewModel
+        {
+            CurrentAppointment = appt,
+            PastSessions = history,
+            AvailableQuotes = []
+        };
+
+        if (appt.ClientId > 0)
+        {
+            var quotes = await _api.GetAllQuotesAsync();
+            viewModel.AvailableQuotes = quotes.Where(q => q.ClientId == appt.ClientId).OrderByDescending(q => q.CreatedAt).ToList();
+        }
+
+        return Partial("_AppointmentDetailsModal", viewModel);
+    }
+
+    public async Task<IActionResult> OnPostCompleteAsync(int id)
+    {
+        var token = HttpContext.Session.GetString("ApiToken");
+        if (string.IsNullOrEmpty(token)) return Unauthorized();
+
+        var appt = await _api.GetAppointmentAsync(id);
+        if (appt == null) return NotFound();
+
+        var updateDto = appt with { Status = "Completed" };
+
+        try
+        {
+            await _api.UpdateAppointmentAsync(updateDto);
+            return new OkResult();
+        }
+        catch (Exception)
+        {
+            return BadRequest();
+        }
+    }
+
+    public async Task<IActionResult> OnPostUpdateFinancialsAsync(int id, decimal quotedPrice)
+    {
+        var token = HttpContext.Session.GetString("ApiToken");
+        if (string.IsNullOrEmpty(token)) return Unauthorized();
+
+        var appt = await _api.GetAppointmentAsync(id);
+        if (appt == null) return NotFound();
+
+        var updateDto = appt with { QuotedPrice = quotedPrice };
+
+        try
+        {
+            await _api.UpdateAppointmentAsync(updateDto);
+            return new OkResult();
+        }
+        catch (Exception)
+        {
+            return BadRequest();
+        }
+    }
 }

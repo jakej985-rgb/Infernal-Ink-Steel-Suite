@@ -1,6 +1,6 @@
 namespace InfernalInkSteelSuite.Web.Models
 {
-    public class AppointmentDto
+    public record AppointmentDto
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
