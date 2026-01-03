@@ -77,7 +77,11 @@ namespace InfernalInkSteelSuite.Api.Controllers
                     a.FinalPrice,
                     a.Notes,
                     clientDto,
-                    a.Artist?.Username ?? ""
+                    a.Artist?.Username ?? "",
+                    a.PriceType,
+                    a.PriceCharged,
+                    a.Color,
+                    a.IsBlockOff
                 );
             }).ToList();
 
@@ -149,16 +153,16 @@ namespace InfernalInkSteelSuite.Api.Controllers
             entity.QuotedPrice = dto.QuotedPrice;
             entity.FinalPrice = dto.FinalPrice;
 
-            // Other fields not in DTO or handled by defaults:
-            // PriceType, PriceCharged, Color, IsBlockOff, etc.
-            // We might want to preserve existing values if updating, 
-            // but for now we are mapping what we have.
+            // Mapped fields
+            entity.PriceType = string.IsNullOrWhiteSpace(dto.PriceType) ? "Hourly" : dto.PriceType;
+            entity.PriceCharged = dto.PriceCharged;
+            entity.Color = dto.Color ?? string.Empty;
+            entity.IsBlockOff = dto.IsBlockOff;
 
             // If new (Id=0), set some defaults if needed
             if (entity.Id == 0)
             {
-                // entity.CreatedBy = "API"; // Property does not exist
-                entity.PriceType = "Hourly"; // Default
+                if (string.IsNullOrEmpty(entity.PriceType)) entity.PriceType = "Hourly";
             }
         }
 

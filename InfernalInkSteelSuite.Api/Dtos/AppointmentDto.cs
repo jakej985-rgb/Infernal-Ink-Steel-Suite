@@ -15,5 +15,9 @@ public record AppointmentDto(
     decimal? FinalPrice,
     string? Notes,
     ClientDto? Client,
-    string? ArtistName
+    string? ArtistName,
+    string PriceType,
+    decimal PriceCharged,
+    string Color,
+    bool IsBlockOff
 );
