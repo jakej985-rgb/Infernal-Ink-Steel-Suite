@@ -87,10 +87,14 @@ a:hover {
 /* --- Components --- */
 
 /* Navbar */
+.navbar {
+  z-index: 1030;
+}
+
 .bg-glass {
-  background-color: rgba(10, 10, 10, 0.95) !important;
-  backdrop-filter: blur(12px);
-  border-bottom: var(--glass-border) !important;
+  background-color: rgba(20, 20, 20, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--primary-color) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -107,18 +111,47 @@ a:hover {
 }
 
 .nav-link {
-  color: var(--text-secondary) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-heading);
   font-weight: 500;
   text-transform: uppercase;
   font-size: 0.9rem;
   letter-spacing: 1px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover,
+.nav-link:focus,
 .nav-link.active {
-  color: var(--text-primary) !important;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+}
+
+/* Dropdowns */
+.dropdown-menu {
+  background-color: #000 !important;
+  border: 1px solid var(--primary-color) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  margin-top: 0;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  color: #ccc !important;
+  padding: 10px 20px;
+  transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  padding-left: 25px;
+  /* Slide effect */
+}
+
+.dropdown-divider {
+  border-top: 1px solid #333;
 }
 
 /* Buttons */
@@ -2425,65 +2458,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .otp-digit:focus {
   border-color: var(--primary-color) !important;
   box-shadow: 0 0 10px var(--primary-color);
-}
-
-/* --- EMERGENCY NAVBAR FIXES --- */
-/* Ensure visibility of navigation elements */
-.navbar {
-  background-color: rgba(20, 20, 20, 0.95) !important;
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--primary-color) !important;
-  z-index: 1030;
-  /* Ensure it's on top */
-}
-
-/* Force link visibility */
-.nav-link {
-  color: var(--text-primary) !important;
-  font-family: 'Oswald', sans-serif;
-  letter-spacing: 1px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.nav-link:hover,
-.nav-link:focus,
-.nav-link.active {
-  color: var(--accent-color) !important;
-  text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
-}
-
-/* Dropdown visibility */
-.dropdown-menu {
-  background-color: #000 !important;
-  border: 1px solid var(--primary-color) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-  margin-top: 0;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.dropdown-item {
-  color: #ccc !important;
-  padding: 10px 20px;
-  transition: all 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: var(--primary-color) !important;
-  color: white !important;
-  padding-left: 25px;
-  /* Slide effect */
-}
-
-.dropdown-divider {
-  border-top: 1px solid #333;
-}
-
-.hover-accent:hover {
-  color: var(--accent-color) !important;
-  padding-left: 5px;
-  transition: all 0.2s;
 }
 
 /* --- Utility Classes (Added for Top Bar Icons) --- */
