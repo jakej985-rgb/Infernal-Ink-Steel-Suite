@@ -80,7 +80,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
     {
         private readonly IUserRepository _userRepository;
         private readonly IShopSettingsRepository _shopSettingsRepository;
-        private readonly ShopSettings _shopSettings;
+        private ShopSettings _shopSettings;
 
         public override string Header => "Admin";
 
@@ -521,6 +521,42 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             AddSpecialDayCommand = new RelayCommand(AddSpecialDay);
             RemoveSpecialDayCommand = new RelayCommand(RemoveSpecialDay);
             CopyToAllDaysCommand = new RelayCommand(CopyToAllDays);
+
+            SettingsUpdateService.OnSettingsChanged += OnExternalSettingsChanged;
+        }
+
+        private void OnExternalSettingsChanged()
+        {
+            if (HasUnsavedChanges) return;
+            RefreshSettings();
+        }
+
+        private void RefreshSettings()
+        {
+            var newSettings = _shopSettingsRepository.LoadSettings();
+            if (newSettings != null)
+            {
+                _shopSettings = newSettings;
+                OnPropertyChanged(nameof(ShopName));
+                OnPropertyChanged(nameof(IsSpecialMessageEnabled));
+                OnPropertyChanged(nameof(SpecialMessageText));
+                OnPropertyChanged(nameof(LoginBackgroundPath));
+                OnPropertyChanged(nameof(TattooRate));
+                OnPropertyChanged(nameof(PiercingSingle));
+                OnPropertyChanged(nameof(ShopMinimumRate));
+                OnPropertyChanged(nameof(TaxRate));
+                OnPropertyChanged(nameof(DepositType));
+                OnPropertyChanged(nameof(DepositAmount));
+                OnPropertyChanged(nameof(BookingBufferMinutes));
+                OnPropertyChanged(nameof(CancellationPolicy));
+                OnPropertyChanged(nameof(SidebarArtworkPath));
+                OnPropertyChanged(nameof(EnableHolidayThemes));
+                OnPropertyChanged(nameof(AppFontSize));
+
+                LoadShopHours();
+                LoadDurationPresets();
+                LoadSpecialHours();
+            }
         }
 
         private void CopyToAllDays(object? obj)
@@ -778,14 +814,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             // Save the updated settings object
             _shopSettingsRepository.SaveSettings(latestSettings);
 
-            // Update local reference (optional, but good for consistency)
-            // Note: We don't replace _shopSettings entirely to avoid breaking bindings if they were bound directly,
-            // but here we are binding to ViewModel properties which wrap _shopSettings, so we should update the backing fields if we want to reflect external changes?
-            // Actually, for this specific bug fix, we just want to ensure OUTGOING save is correct.
-            // INCOMING changes from other tabs won't be reflected in UI until reload, but that's acceptable for now.
-
-            SettingsUpdateService.NotifySettingsChanged();
             HasUnsavedChanges = false;
+            SettingsUpdateService.NotifySettingsChanged();
             LastSavedTimestamp = DateTime.Now;
         }
 
