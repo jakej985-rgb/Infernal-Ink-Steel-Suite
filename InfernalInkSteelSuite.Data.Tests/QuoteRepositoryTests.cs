@@ -1,6 +1,7 @@
 using Xunit;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
+using System.Linq;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
@@ -48,15 +49,16 @@ namespace InfernalInkSteelSuite.Data.Tests
 
             // Assert
             Assert.True(success);
-
-            // This assertion is what we WANT to pass after the fix.
-            // For now, it will fail if the ID is 0.
-            // Since this is "demonstrating the bug", I will assert NotEqual(0) and expect it to fail currently if I ran it.
-            // But wait, the task is to verify the fix.
-            // So I should write a test that fails NOW and passes LATER.
-
-            // If I assert Assert.NotEqual(0, quote.Id), it will fail now.
             Assert.NotEqual(0, quote.Id);
+
+            // Verify the quote was actually saved to the database with the correct ID
+            var allQuotes = repository.GetAllQuotes();
+            var savedQuote = allQuotes.FirstOrDefault(q => q.Id == quote.Id);
+
+            Assert.NotNull(savedQuote);
+            Assert.Equal(quote.ArtistId, savedQuote.ArtistId);
+            Assert.Equal(quote.Placement, savedQuote.Placement);
+            Assert.Equal(quote.Style, savedQuote.Style);
         }
     }
 }
