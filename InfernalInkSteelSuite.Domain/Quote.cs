@@ -25,6 +25,8 @@ namespace InfernalInkSteelSuite.Domain
         public decimal RecommendedDeposit { get; set; }
         public double ConfidenceScore { get; set; }
         public int SimilarJobsCount { get; set; }
+        public string? Notes { get; set; }
+        public string? PhotoPath { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

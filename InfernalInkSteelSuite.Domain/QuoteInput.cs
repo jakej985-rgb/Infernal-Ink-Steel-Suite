@@ -21,5 +21,9 @@ namespace InfernalInkSteelSuite.Domain
 
         // Artist
         public int ArtistId { get; set; }
+
+        // Optional Fields
+        public string? Notes { get; set; }
+        public string? PhotoPath { get; set; }
     }
 }

@@ -15,6 +15,7 @@ using System.Security.Claims;
 using InfernalInkSteelSuite.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+Console.WriteLine("\n\n!!! API VERSION DEBUG CHECK: NEW BINARY LOADED !!!\n\n");
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)

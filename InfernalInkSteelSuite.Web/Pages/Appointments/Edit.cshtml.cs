@@ -29,22 +29,21 @@ public class EditModel(ApiClient api) : PageModel
     public string Title { get; set; } = "New Appointment";
     public string? ErrorMessage { get; set; }
 
+    [BindProperty]
+    public bool IsPopup { get; set; }
+
     public async Task<IActionResult> OnGetAsync(int? id)
     {
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
             return RedirectToPage("/Account/Login");
 
+        if (bool.TryParse(Request.Query["isPopup"], out var isPopup)) IsPopup = isPopup;
+
         await LoadDropdowns();
 
         if (id.HasValue && id.Value > 0)
         {
-            // We need GetAppointmentById. ApiClient only had list.
-            // I'll assume GetAppointmentAsync(id) exists or I need to add it.
-            // Wait, Step 15 showed GetAppointmentsAsync(date, artistId). No GetById.
-            // I need to add GetAppointmentAsync(int id) to ApiClient.
-            // For now, I'll write the code assuming it exists and will update ApiClient next.
-
             var existing = await _api.GetAppointmentAsync(id.Value);
             if (existing != null)
             {
@@ -87,6 +86,13 @@ public class EditModel(ApiClient api) : PageModel
             else
             {
                 await _api.CreateAppointmentAsync(Appointment);
+            }
+
+            if (IsPopup)
+            {
+                // Refresh parent if opener exists, then close
+                string script = $"<script>if(window.opener) {{ window.opener.refreshAppointmentDetails({Appointment.Id}); }} window.close();</script>";
+                return Content(script, "text/html");
             }
         }
         catch (ApiException ex)

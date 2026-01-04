@@ -2502,3 +2502,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   vertical-align: -0.125em;
   fill: currentColor;
 }
+/* --- Modal Overrides --- */
+.infernal-modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: var(--glass-border);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+}
+
+.infernal-modal-content .modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.infernal-modal-content .modal-footer {
+  border-top-color: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.infernal-modal-content .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+

@@ -320,9 +320,9 @@ namespace InfernalInkSteelSuite.Repositories
             command.Parameters.AddWithValue("$lastName", client.LastName);
             command.Parameters.AddWithValue("$phone", client.Phone);
             command.Parameters.AddWithValue("$email", client.Email);
-            command.Parameters.AddWithValue("$notes", client.Notes);
+            command.Parameters.AddWithValue("$notes", (object)client.Notes ?? DBNull.Value);
             command.Parameters.AddWithValue("$visits", client.Visits);
-            command.Parameters.AddWithValue("$photoPath", client.PhotoPath ?? "");
+            command.Parameters.AddWithValue("$photoPath", (object)client.PhotoPath ?? DBNull.Value);
 
             await command.ExecuteNonQueryAsync();
 

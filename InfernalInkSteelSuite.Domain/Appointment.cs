@@ -93,11 +93,18 @@ namespace InfernalInkSteelSuite.Domain
             set { _finalPrice = value; OnPropertyChanged(nameof(FinalPrice)); }
         }
 
-        private string _notes = "";
-        public string Notes
+        private string? _notes;
+        public string? Notes
         {
             get { return _notes; }
             set { _notes = value; OnPropertyChanged(nameof(Notes)); }
+        }
+
+        private string? _photoPath;
+        public string? PhotoPath
+        {
+            get { return _photoPath; }
+            set { _photoPath = value; OnPropertyChanged(nameof(PhotoPath)); }
         }
 
         private string _clientName = "";

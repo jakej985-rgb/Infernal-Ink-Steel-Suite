@@ -14,6 +14,7 @@ namespace InfernalInkSteelSuite.Repositories
             var conn = new SqliteConnection(_connectionString);
             conn.Open();
             EnsureColumnExists(conn, "IsBlockOff", "INTEGER");
+            EnsureColumnExists(conn, "photoPath", "TEXT");
             return conn;
         }
 
@@ -46,7 +47,8 @@ namespace InfernalInkSteelSuite.Repositories
         private const string SelectSql = @"
             SELECT 
                 a.*, 
-                c.firstName as c_firstName, c.lastName as c_lastName, c.phone as c_phone, c.email as c_email,
+                a.photoPath,
+                c.firstName as c_firstName, c.middleName as c_middleName, c.lastName as c_lastName, c.phone as c_phone, c.email as c_email,
                 u.username as u_username
             FROM appointments a
             LEFT JOIN clients c ON a.clientId = c.id
@@ -66,10 +68,11 @@ namespace InfernalInkSteelSuite.Repositories
                 ServiceCategory = reader.GetString(reader.GetOrdinal("serviceCategory")),
                 PriceType = reader.GetString(reader.GetOrdinal("priceType")),
                 PriceCharged = reader.GetDecimal(reader.GetOrdinal("priceCharged")),
-                Notes = reader.GetString(reader.GetOrdinal("notes")),
+                Notes = reader.IsDBNull(reader.GetOrdinal("notes")) ? "" : reader.GetString(reader.GetOrdinal("notes")),
                 Color = reader.GetString(reader.GetOrdinal("color")),
                 Status = reader.GetString(reader.GetOrdinal("status")),
-                IsBlockOff = reader.GetInt32(reader.GetOrdinal("IsBlockOff")) == 1
+                IsBlockOff = reader.GetInt32(reader.GetOrdinal("IsBlockOff")) == 1,
+                PhotoPath = reader.IsDBNull(reader.GetOrdinal("photoPath")) ? null : reader.GetString(reader.GetOrdinal("photoPath"))
             };
 
             // Populate Client
@@ -79,12 +82,12 @@ namespace InfernalInkSteelSuite.Repositories
                 {
                     Id = appt.ClientId,
                     FirstName = reader.GetString(reader.GetOrdinal("c_firstName")),
+                    MiddleName = reader.IsDBNull(reader.GetOrdinal("c_middleName")) ? "" : reader.GetString(reader.GetOrdinal("c_middleName")),
                     LastName = reader.GetString(reader.GetOrdinal("c_lastName")),
                     Phone = reader.IsDBNull(reader.GetOrdinal("c_phone")) ? "" : reader.GetString(reader.GetOrdinal("c_phone")),
                     Email = reader.IsDBNull(reader.GetOrdinal("c_email")) ? "" : reader.GetString(reader.GetOrdinal("c_email"))
                 };
             }
-
             // Populate Artist (User)
             if (!reader.IsDBNull(reader.GetOrdinal("u_username")))
             {
@@ -130,7 +133,7 @@ namespace InfernalInkSteelSuite.Repositories
         {
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status, IsBlockOff) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status, @IsBlockOff)";
+            cmd.CommandText = "INSERT INTO appointments (clientId, userId, clientName, dateTime, durationMinutes, serviceType, serviceCategory, priceType, priceCharged, notes, color, status, IsBlockOff, photoPath) VALUES (@clientId, @userId, @clientName, @dateTime, @durationMinutes, @serviceType, @serviceCategory, @priceType, @priceCharged, @notes, @color, @status, @IsBlockOff, @photoPath)";
             cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
             cmd.Parameters.AddWithValue("@userId", appointment.UserId);
             cmd.Parameters.AddWithValue("@clientName", appointment.ClientName);
@@ -140,10 +143,11 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
             cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
             cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-            cmd.Parameters.AddWithValue("@notes", appointment.Notes);
+            cmd.Parameters.AddWithValue("@notes", (object)appointment.Notes ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
             cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
+            cmd.Parameters.AddWithValue("@photoPath", (object)appointment.PhotoPath ?? DBNull.Value);
             cmd.ExecuteNonQuery();
         }
 
@@ -151,7 +155,7 @@ namespace InfernalInkSteelSuite.Repositories
         {
             using var conn = OpenConnection();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status, IsBlockOff = @IsBlockOff WHERE id = @id";
+            cmd.CommandText = "UPDATE appointments SET clientId = @clientId, userId = @userId, clientName = @clientName, dateTime = @dateTime, durationMinutes = @durationMinutes, serviceType = @serviceType, serviceCategory = @serviceCategory, priceType = @priceType, priceCharged = @priceCharged, notes = @notes, color = @color, status = @status, IsBlockOff = @IsBlockOff, photoPath = @photoPath WHERE id = @id";
             cmd.Parameters.AddWithValue("@id", appointment.Id);
             cmd.Parameters.AddWithValue("@clientId", appointment.ClientId);
             cmd.Parameters.AddWithValue("@userId", appointment.UserId);
@@ -162,10 +166,11 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
             cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
             cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-            cmd.Parameters.AddWithValue("@notes", appointment.Notes);
+            cmd.Parameters.AddWithValue("@notes", (object)appointment.Notes ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
             cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
+            cmd.Parameters.AddWithValue("@photoPath", (object)appointment.PhotoPath ?? DBNull.Value);
             cmd.ExecuteNonQuery();
         }
 

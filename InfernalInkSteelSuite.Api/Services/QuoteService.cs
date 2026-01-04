@@ -89,6 +89,8 @@ public class QuoteService(IQuoteRepository repository, IShopSettingsRepository s
             RecommendedDeposit = estimate.RecommendedDeposit,
             ConfidenceScore = estimate.ConfidenceScore,
             SimilarJobsCount = estimate.SimilarJobsCount,
+            Notes = input.Notes,
+            PhotoPath = input.PhotoPath,
             CreatedAt = DateTime.UtcNow
         };
 

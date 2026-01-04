@@ -274,6 +274,32 @@ function openQuotePopup(clientId) {
     );
 }
 
+function openClientEditPopup(clientId, apptId) {
+    const width = 1000;
+    const height = 900;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    window.open(
+        `/Clients/Edit/${clientId}?isPopup=true&returnApptId=${apptId || ''}`,
+        'EditClient',
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+}
+
+function openAppointmentEditPopup(apptId) {
+    const width = 800;
+    const height = 900;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    window.open(
+        `/Appointments/Edit/${apptId}?isPopup=true`,
+        'EditAppointment',
+        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+}
+
 function refreshAppointmentDetails(id) {
     const contentContainer = document.getElementById('appointmentDetailsModalContent');
 

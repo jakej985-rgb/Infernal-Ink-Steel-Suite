@@ -27,6 +27,12 @@ public class EditModel(ApiClient api) : PageModel
     public string? AvatarBase64 { get; set; }
 
     [BindProperty]
+    public bool IsPopup { get; set; }
+
+    [BindProperty]
+    public int? ReturnApptId { get; set; }
+
+    [BindProperty]
     public IFormFile? Upload { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int? id)
@@ -34,7 +40,10 @@ public class EditModel(ApiClient api) : PageModel
         var token = HttpContext.Session.GetString("ApiToken");
         if (string.IsNullOrEmpty(token))
             return RedirectToPage("/Account/Login");
-
+            
+        // Populate IsPopup from query if available (fallback)
+        if (bool.TryParse(Request.Query["isPopup"], out var isPopup)) IsPopup = isPopup;
+        if (int.TryParse(Request.Query["returnApptId"], out var rId)) ReturnApptId = rId;
 
         if (id.HasValue && id.Value > 0)
         {
@@ -86,6 +95,16 @@ public class EditModel(ApiClient api) : PageModel
 
                 using var stream = new MemoryStream(bytes);
                 await _api.UploadAvatarAsync(savedClient.Id, stream, "avatar.jpg");
+            }
+            
+            if (IsPopup)
+            {
+                string script = "<script>window.close();</script>";
+                if (ReturnApptId.HasValue && ReturnApptId.Value > 0)
+                {
+                    script = $"<script>if(window.opener) {{ window.opener.refreshAppointmentDetails({ReturnApptId.Value}); }} window.close();</script>";
+                }
+                return Content(script, "text/html");
             }
 
             if (Client.Id == 0) return RedirectToPage("/Clients/Edit", new { id = savedClient.Id });

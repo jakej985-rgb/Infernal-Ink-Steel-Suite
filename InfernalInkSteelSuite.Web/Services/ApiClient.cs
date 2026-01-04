@@ -85,6 +85,8 @@ public class ApiClient
         public int ColorComplexity { get; set; }
         public int Difficulty { get; set; }
         public int ArtistId { get; set; }
+        public string? Notes { get; set; }
+        public string? PhotoPath { get; set; }
     }
 
     public class QuoteEstimate
@@ -114,6 +116,8 @@ public class ApiClient
         public int ShadingComplexity { get; set; }
         public int ColorComplexity { get; set; }
         public int Difficulty { get; set; }
+        public string? Notes { get; set; }
+        public string? PhotoPath { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
