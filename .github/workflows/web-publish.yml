@@ -1,0 +1,30 @@
+name: Web Publish
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore InfernalInkSteelSuite.Web/InfernalInkSteelSuite.Web.csproj
+
+    - name: Publish
+      run: dotnet publish InfernalInkSteelSuite.Web/InfernalInkSteelSuite.Web.csproj -c Release -r win-x64 --self-contained false -o ./publish
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: InfernalInkSteelSuite.Web
+        path: ./publish

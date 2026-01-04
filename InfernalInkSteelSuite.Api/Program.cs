@@ -256,7 +256,11 @@ app.MapGet("/appointments", async (DateTime? date, int? artistId, AppDbContext d
             a.FinalPrice,
             a.Notes,
             new ClientDto(client.Id, client.FirstName, client.LastName, client.Phone, client.Email),
-            artist.Username // Domain.User doesn't have DisplayName
+            artist.Username, // Domain.User doesn't have DisplayName
+            a.PriceType,
+            a.PriceCharged,
+            a.Color,
+            a.IsBlockOff
         );
     }).ToList();
 

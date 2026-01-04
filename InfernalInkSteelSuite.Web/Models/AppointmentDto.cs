@@ -16,6 +16,10 @@ namespace InfernalInkSteelSuite.Web.Models
         public ClientDto? Client { get; set; }
         public string ClientName { get; set; } = "";
         public string ArtistName { get; set; } = "";
+        public string PriceType { get; set; } = "";
+        public decimal PriceCharged { get; set; }
+        public string Color { get; set; } = "";
+        public bool IsBlockOff { get; set; }
     }
 
 }
