@@ -227,7 +227,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             // Set default permissions based on role
             if (SelectedUser == null) return;
 
-            switch (SelectedUser.Role.ToLower())
+            switch ((SelectedUser.Role ?? string.Empty).ToLower())
             {
                 case "admin":
                     CanViewReports = true;

@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeOracle();
     initializeDragDrop();
     checkForClashes();
+    initializeViewOptions();
+    initializeCalendarToggle();
 });
 
 // --- The Oracle (Search) ---
@@ -324,4 +326,76 @@ function refreshAppointmentDetails(id) {
             alert("Failed to refresh the pact details.");
             contentContainer.style.opacity = '1';
         });
+}
+
+// --- View Options Logic ---
+function initializeViewOptions() {
+    const toolbar = document.getElementById('viewOptionsToolbar');
+    const container = document.getElementById('appointmentsList');
+    if (!toolbar || !container) return;
+
+    const buttons = toolbar.querySelectorAll('.view-option-btn');
+    
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active state
+            buttons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Apply View Class
+            const viewMode = this.getAttribute('data-view');
+            container.classList.remove('view-grid', 'view-small', 'view-medium', 'view-large');
+            
+            // Medium is default, so no class needed, but adding view-medium is fine if CSS supports it
+            // My CSS uses .view-grid, .view-small, .view-large. 
+            if (viewMode !== 'medium') {
+                container.classList.add(`view-${viewMode}`);
+            }
+        });
+    });
+}
+
+// --- Calendar Toggle Logic ---
+function initializeCalendarToggle() {
+    console.log("Initializing Calendar Toggle (Event Delegation + Persistence)...");
+    
+    // 1. Restore State on Load
+    const pageContainer = document.querySelector('.appointments-container');
+    const icon = document.getElementById('calendarToggleIcon');
+    const storedState = localStorage.getItem('infernal_calendar_mode');
+
+    // Default is 'compact' (class present in HTML). 
+    // If storedState is 'expanded', we remove the class.
+    if (pageContainer && storedState === 'expanded') {
+        pageContainer.classList.remove('compact-calendar-mode');
+        // If compact is default (icon points right?), expanded might need rotation?
+        // Let's rely on CSS or toggle logic. 
+        // If default icon is 'chevron-right', and we are expanded, maybe rotate it?
+        if(icon) icon.classList.add('rotate-180');
+    }
+
+    // 2. Event Handler with Persistence
+    document.body.addEventListener('click', function(e) {
+        const toggleBtn = e.target.closest('#toggleCalendarBtn');
+        if (!toggleBtn) return; // Not our button
+        
+        e.preventDefault();
+        
+        const container = document.querySelector('.appointments-container');
+        const toggleIcon = document.getElementById('calendarToggleIcon');
+
+        if(container) {
+            container.classList.toggle('compact-calendar-mode');
+            
+            // Save new state
+            const isCompact = container.classList.contains('compact-calendar-mode');
+            localStorage.setItem('infernal_calendar_mode', isCompact ? 'compact' : 'expanded');
+            
+            console.log(`Calendar mode toggled. New state: ${isCompact ? 'compact' : 'expanded'}`);
+        }
+
+        if (toggleIcon) {
+            toggleIcon.classList.toggle('rotate-180');
+        }
+    });
 }

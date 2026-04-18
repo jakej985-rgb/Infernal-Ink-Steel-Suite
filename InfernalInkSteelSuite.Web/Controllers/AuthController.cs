@@ -49,7 +49,7 @@ public class AuthController(IUserRepository userRepository) : ControllerBase
                     matchedUser.Id,
                     matchedUser.Username,
                     matchedUser.DisplayName,
-                    matchedUser.Role,
+                    matchedUser.Role ?? string.Empty,
                     Guid.NewGuid().ToString() // Dummy token
                 );
 

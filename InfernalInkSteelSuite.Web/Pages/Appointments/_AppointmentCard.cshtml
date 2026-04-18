@@ -58,7 +58,7 @@
             </h4>
 
             <!-- Row 2: Artist -->
-            <div class="d-flex align-items-center text-muted small">
+            <div class="artist-row d-flex align-items-center text-muted small">
                 <span class="metal-frame me-2" style="width:28px; height:28px; display: inline-flex; align-items: center; justify-content: center;">
                     <img src="https://ui-avatars.com/api/?name=@(Model.ArtistName)&background=random&color=fff&length=2"
                         alt="@Model.ArtistName" style="width: 100%; height: 100%;" />
@@ -68,13 +68,13 @@
 
             @if (!string.IsNullOrEmpty(Model.Notes))
             {
-                <div class="p-2 my-1 bg-light bg-opacity-10 rounded border border-secondary small fst-italic">
+                <div class="card-notes p-2 my-1 bg-light bg-opacity-10 rounded border border-secondary small fst-italic">
                     "@Model.Notes"
                 </div>
             }
 
             <!-- Row 3: Financials -->
-            <div class="d-flex gap-3 small my-1">
+            <div class="financials-row d-flex gap-3 small my-1">
                 <span class="@(Model.Status == "Confirmed" ? "blood-money-paid" : "blood-money-due")" style="font-family: 'Courier New', monospace; font-weight: 600;">
                     <i class="bi bi-cash-coin me-1"></i>Deposit: @(Model.Status == "Confirmed" ? "PAID" : "DUE")
                 </span>
@@ -84,7 +84,7 @@
             </div>
 
             <!-- Row 4: Service Type (Bottom) -->
-            <div class="mt-1">
+            <div class="service-badge-row mt-1">
                 <span class="badge bg-transparent border border-secondary text-uppercase text-secondary" 
                       style="font-family: 'Oswald', sans-serif; letter-spacing: 2px; padding: 4px 8px; border-radius: 4px;">
                     @Model.ServiceType

@@ -1963,7 +1963,7 @@ a:hover {
   flex: 1;
 }
 
-.purgatory-sidebar {
+.appointments-sidebar {
   width: 300px;
   background: rgba(10, 10, 10, 0.6);
   border-left: 1px solid #333;
@@ -1973,13 +1973,13 @@ a:hover {
 }
 
 @media (min-width: 992px) {
-  .purgatory-sidebar {
+  .appointments-sidebar {
     display: block;
   }
 }
 
 /* 9. Mobile "Stage View" */
-.stage-view-mobile .purgatory-sidebar,
+.stage-view-mobile .appointments-sidebar,
 .stage-view-mobile .page-header,
 .stage-view-mobile .magma-calendar-wrapper {
   display: none !important;
@@ -2497,4 +2497,166 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .infernal-modal-content .btn-close {
   filter: invert(1) grayscale(100%) brightness(200%);
 }
+
+/* --- APPOINTMENT VIEW MODES --- */
+/* View Option Controls */
+.view-option-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #666;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+  padding: 0;
+  font-size: 0.8rem;
+}
+.view-option-btn:hover, .view-option-btn.active {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 5px rgba(255, 51, 51, 0.2);
+}
+
+/* Base list is column flex by default in sidebar */
+.appointments-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Grid View */
+.appointments-list-container.view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.view-grid .soul-contract-card {
+  height: auto;
+  min-height: 80px;
+  padding: 0.75rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.view-grid .soul-contract-card > div.d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+}
+.view-grid .soul-contract-card > div.d-flex > div:first-child {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.2rem;
+}
+/* Hide extra elements in grid view */
+.view-grid .card-notes,
+.view-grid .financials-row,
+.view-grid .artist-row,
+.view-grid .service-badge-row,
+.view-grid .status-rune,
+.view-grid .client-mugshot-popover,
+.view-grid .d-flex.align-items-center.text-muted.small {
+  display: none !important;
+}
+.view-grid .client-name {
+    font-size: 0.9rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.view-grid .fw-bold.fs-5 {
+    font-size: 0.9rem !important;
+}
+.view-grid .small.text-muted {
+    font-size: 0.7rem !important;
+}
+
+
+/* Small List View */
+.view-small .soul-contract-card {
+  padding: 0.5rem 0.75rem;
+  min-height: auto;
+}
+.view-small .metal-frame {
+  width: 20px !important;
+  height: 20px !important;
+}
+.view-small .status-rune {
+  width: 24px !important;
+  height: 24px !important;
+  font-size: 0.8rem;
+}
+.view-small .client-name {
+  font-size: 1rem !important;
+}
+.view-small .card-notes, 
+.view-small .financials-row {
+  display: none !important;
+}
+
+/* Medium (Default) - No special class needed */
+
+/* Large List View */
+.view-large .soul-contract-card {
+  padding: 2rem;
+}
+.view-large .client-name {
+  font-size: 1.8rem !important;
+}
+.view-large .card-notes {
+    font-size: 1rem !important;
+}
+
+/* Calendar Layout Modes */
+/* Default: Sidebar fixed, Main Stage fills */
+.appointments-sidebar {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* initial width set elsewhere */
+}
+.main-stage {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Compact Mode (Sidebar Grows, Main Stage Shrinks) */
+.appointments-container.compact-calendar-mode .appointments-sidebar {
+    flex: 1;
+    width: auto !important; /* Override fixed width */
+    max-width: none !important;
+}
+
+.appointments-container.compact-calendar-mode .main-stage {
+    flex: 0 0 400px; /* Fixed small width for Side Calendar */
+    min-width: 320px;
+    border-left: 1px solid rgba(255,255,255,0.1);
+    padding-left: 1rem;
+}
+
+/* Adjust Calendar for Compact Mode */
+.appointments-container.compact-calendar-mode #magmaCalendarContainer {
+    max-width: 100%; /* Ensure it fills the new smaller container */
+}
+
+/* Optional: Hide some calendar details in compact mode */
+.appointments-container.compact-calendar-mode .magma-day {
+    font-size: 0.7rem;
+    height: 40px; /* Smaller cells */
+}
+
+/* Icon Rotation */
+.rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+.rotate-90 {
+    transform: rotate(90deg);
+    transition: transform 0.3s ease;
+}
+
 

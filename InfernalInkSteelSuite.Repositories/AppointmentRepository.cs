@@ -143,11 +143,11 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
             cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
             cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-            cmd.Parameters.AddWithValue("@notes", (object)appointment.Notes ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@notes", (object?)appointment.Notes ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
             cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
-            cmd.Parameters.AddWithValue("@photoPath", (object)appointment.PhotoPath ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@photoPath", (object?)appointment.PhotoPath ?? DBNull.Value);
             cmd.ExecuteNonQuery();
         }
 
@@ -166,11 +166,11 @@ namespace InfernalInkSteelSuite.Repositories
             cmd.Parameters.AddWithValue("@serviceCategory", appointment.ServiceCategory);
             cmd.Parameters.AddWithValue("@priceType", appointment.PriceType);
             cmd.Parameters.AddWithValue("@priceCharged", appointment.PriceCharged);
-            cmd.Parameters.AddWithValue("@notes", (object)appointment.Notes ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@notes", (object?)appointment.Notes ?? DBNull.Value);
             cmd.Parameters.AddWithValue("@color", appointment.Color);
             cmd.Parameters.AddWithValue("@status", appointment.Status);
             cmd.Parameters.AddWithValue("@IsBlockOff", appointment.IsBlockOff ? 1 : 0);
-            cmd.Parameters.AddWithValue("@photoPath", (object)appointment.PhotoPath ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@photoPath", (object?)appointment.PhotoPath ?? DBNull.Value);
             cmd.ExecuteNonQuery();
         }
 

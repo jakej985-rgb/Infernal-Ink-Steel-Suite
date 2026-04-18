@@ -20,7 +20,7 @@ public class UsersController(IUserRepository userRepository) : ControllerBase
             Id = u.Id,
             Username = u.Username,
             DisplayName = u.DisplayName,
-            Role = u.Role,
+            Role = u.Role ?? string.Empty,
             Skills = "Both",
             CreatedAt = u.CreatedAt
         });

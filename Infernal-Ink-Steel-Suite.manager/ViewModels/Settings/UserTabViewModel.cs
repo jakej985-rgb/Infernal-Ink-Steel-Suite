@@ -38,7 +38,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        private string _role;
+        private string _role = string.Empty;
         public string Role
         {
             get => _role;
@@ -141,7 +141,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
             _username = _currentUser.Username;
             _avatarPath = _currentUser.AvatarPath;
-            _role = _currentUser.Role;
+            _role = _currentUser.Role ?? string.Empty;
             _department = _currentUser.Department;
             _fontSize = _currentUser.FontSize;
 

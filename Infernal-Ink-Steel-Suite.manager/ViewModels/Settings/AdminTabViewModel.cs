@@ -709,7 +709,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 var lowerSearch = SearchText.ToLower();
                 FilteredUsers = new ObservableCollection<User>(Users.Where(u =>
                     u.Username.Contains(lowerSearch, StringComparison.OrdinalIgnoreCase) ||
-                    u.Role.Contains(lowerSearch, StringComparison.OrdinalIgnoreCase)));
+                    (u.Role ?? string.Empty).Contains(lowerSearch, StringComparison.OrdinalIgnoreCase)));
             }
         }
 
@@ -737,7 +737,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             if (SelectedUser != null)
             {
-                _userRepository.UpdateRole(SelectedUser.Username, SelectedUser.Role);
+                _userRepository.UpdateRole(SelectedUser.Username, SelectedUser.Role ?? string.Empty);
                 // Refresh list to ensure consistency
                 LoadUsers();
             }

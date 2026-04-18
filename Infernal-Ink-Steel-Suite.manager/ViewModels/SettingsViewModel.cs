@@ -42,11 +42,13 @@ namespace InfernalInkSteelSuite.ViewModels
             Tabs.Add(new BackupDataTabViewModel(shopSettingsRepository));
             Tabs.Add(new AccessibilityTabViewModel(userRepository, currentUser));
 
-            if (currentUser.Role.Contains("Manager") || currentUser.Role.Contains("Admin"))
+            var role = currentUser.Role ?? string.Empty;
+
+            if (role.Contains("Manager") || role.Contains("Admin"))
             {
                 Tabs.Insert(2, new ManagerTabViewModel(userRepository));
             }
-            if (currentUser.Role.Contains("Admin"))
+            if (role.Contains("Admin"))
             {
                 Tabs.Insert(1, new AdminTabViewModel(userRepository, shopSettingsRepository));
             }
