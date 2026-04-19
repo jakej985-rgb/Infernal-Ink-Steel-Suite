@@ -1,5 +1,5 @@
-using System;
-using System.IO;
+using Microsoft.EntityFrameworkCore;
+using InfernalInkSteelSuite.Data;
 using Microsoft.Data.Sqlite;
 
 namespace InfernalInkSteelSuite.Data.Tests
@@ -7,6 +7,7 @@ namespace InfernalInkSteelSuite.Data.Tests
     public class DatabaseFixture : IDisposable
     {
         public string ConnectionString { get; }
+        public AppDbContext Context { get; }
 
         public DatabaseFixture()
         {
@@ -18,6 +19,12 @@ namespace InfernalInkSteelSuite.Data.Tests
                 File.Delete(dbPath);
             }
 
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlite(ConnectionString);
+            Context = new AppDbContext(optionsBuilder.Options);
+            Context.Database.EnsureCreated();
+
+            // Seed default data if needed
             var databaseManager = new DatabaseManager(ConnectionString);
             databaseManager.InitializeDatabase();
         }
@@ -29,6 +36,7 @@ namespace InfernalInkSteelSuite.Data.Tests
             {
                 File.Delete(dbPath);
             }
+            GC.SuppressFinalize(this);
         }
     }
 

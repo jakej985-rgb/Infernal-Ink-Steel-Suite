@@ -4,26 +4,29 @@ using InfernalInkSteelSuite.Views.Appointments;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Views
 {
     public partial class AppointmentsView : UserControl
     {
+        private readonly AppDbContext _db;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
 
-        public AppointmentsView(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public AppointmentsView(AppDbContext db)
         {
             InitializeComponent();
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _db = db;
+            _appointmentRepository = new AppointmentRepository(db);
+            _clientRepository = new ClientRepository(db);
 
-            UpcomingTab.Content = new UpcomingAppointmentsTab(_appointmentRepository, _clientRepository);
-            PendingTab.Content = new PendingAppointmentsTab(_appointmentRepository, _clientRepository);
-            CompletedTab.Content = new CompletedAppointmentsTab(_appointmentRepository, _clientRepository);
+            UpcomingTab.Content = new UpcomingAppointmentsTab(_db);
+            PendingTab.Content = new PendingAppointmentsTab(_db);
+            CompletedTab.Content = new CompletedAppointmentsTab(_db);
             var calendarTab = new CalendarTab
             {
-                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_appointmentRepository, _clientRepository)
+                DataContext = new ViewModels.Appointments.CalendarTabViewModel(_db)
             };
             CalendarTabItem.Content = calendarTab;
 
@@ -35,7 +38,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository);
+            var dialog = new AppointmentDialog(_db);
             if (dialog.ShowDialog() == true)
             {
                 RefreshAppointments();
@@ -50,7 +53,7 @@ namespace InfernalInkSteelSuite.Views
                 var selectedAppointment = tabView.SelectedAppointment;
                 if (selectedAppointment != null)
                 {
-                    var dialog = new EditAppointmentDialog(selectedAppointment, _appointmentRepository, _clientRepository);
+                    var dialog = new EditAppointmentDialog(selectedAppointment, _db);
                     if (dialog.ShowDialog() == true)
                     {
                         RefreshAppointments();

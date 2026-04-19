@@ -4,12 +4,15 @@ using SQLitePCL;
 using System;
 using InfernalInkSteelSuite.Services;
 using InfernalInkSteelSuite.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace InfernalInkSteelSuite
 {
     public partial class App : Application
     {
         public static string ConnectionString { get; private set; } = "";
+        public static AppDbContext? LocalDb { get; private set; }
+        public static BackgroundSyncService? SyncService { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -27,10 +30,22 @@ namespace InfernalInkSteelSuite
                 }
                 ConnectionString = $"Data Source={dbPath}";
 
-                var databaseManager = new DatabaseManager(ConnectionString);
-                databaseManager.InitializeDatabase();
+                // Initialize EF Core Context for Desktop (SQLite)
+                var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+                optionsBuilder.UseSqlite(ConnectionString);
+                LocalDb = new AppDbContext(optionsBuilder.Options);
+                LocalDb.Database.EnsureCreated();
 
-                HolidayThemeService.Initialize(ConnectionString);
+                // Initialize Sync Services
+                var settingsRepo = new ShopSettingsRepository(LocalDb);
+                var syncClient = new SyncClient();
+                SyncService = new BackgroundSyncService(LocalDb, syncClient, settingsRepo);
+                SyncService.Start();
+
+                if (LocalDb != null)
+                {
+                    HolidayThemeService.Initialize(LocalDb as InfernalInkSteelSuite.Data.AppDbContext);
+                }
 
                 ThemeManager.ApplyTheme(ThemeId.InfernalNeon);
 
@@ -55,7 +70,8 @@ namespace InfernalInkSteelSuite
         {
             try
             {
-                var repo = new ShopSettingsRepository(ConnectionString);
+                if (LocalDb == null) return;
+                var repo = new ShopSettingsRepository(LocalDb);
                 var settings = repo.LoadSettings();
                 if (settings != null)
                 {
@@ -63,6 +79,12 @@ namespace InfernalInkSteelSuite
                 }
             }
             catch { }
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            SyncService?.Stop();
+            base.OnExit(e);
         }
     }
 }

@@ -12,6 +12,7 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Services;
 using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite
 {
@@ -20,15 +21,21 @@ namespace InfernalInkSteelSuite
         private readonly UserRepository _userRepository;
         private readonly ShopSettingsRepository _settingsRepository;
         private User _currentUser;
-        private readonly string _connectionString;
 
         public Login()
         {
             InitializeComponent();
-            _connectionString = App.ConnectionString;
             _currentUser = null!;
-            _userRepository = new UserRepository(_connectionString);
-            _settingsRepository = new ShopSettingsRepository(_connectionString);
+            if (App.LocalDb != null)
+            {
+                _userRepository = new UserRepository(App.LocalDb);
+                _settingsRepository = new ShopSettingsRepository(App.LocalDb);
+            }
+            else
+            {
+                // Fallback for design-time or error states
+                throw new InvalidOperationException("Database not initialized.");
+            }
             BuildUserGrid();
             ApplyBranding();
         }
@@ -157,7 +164,8 @@ namespace InfernalInkSteelSuite
             // Apply the user's theme BEFORE showing main window
             ThemeManager.ApplyTheme(_currentUser.ThemeKey);
 
-            var dashboard = new DashboardWindow(_connectionString, _currentUser);
+            if (App.LocalDb == null) return;
+            var dashboard = new DashboardWindow(App.LocalDb, _currentUser);
             dashboard.Show();
             Close();
         }

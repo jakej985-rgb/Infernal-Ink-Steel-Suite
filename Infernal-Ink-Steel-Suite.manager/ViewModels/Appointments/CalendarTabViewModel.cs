@@ -8,19 +8,23 @@ using System.Windows.Input;
 using InfernalInkSteelSuite.Views.Appointments;
 using InfernalInkSteelSuite.Views;
 
+using InfernalInkSteelSuite.Data;
+
 namespace InfernalInkSteelSuite.ViewModels.Appointments
 {
     public class CalendarTabViewModel : BaseViewModel
     {
+        private readonly AppDbContext _db;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
         private DateTime _currentDate = DateTime.Today;
         private ObservableCollection<CalendarDay> _days = [];
 
-        public CalendarTabViewModel(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public CalendarTabViewModel(AppDbContext db)
         {
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _db = db;
+            _appointmentRepository = new AppointmentRepository(db);
+            _clientRepository = new ClientRepository(db);
             PreviousMonthCommand = new RelayCommand(_ => PreviousMonth());
             NextMonthCommand = new RelayCommand(_ => NextMonth());
             TodayCommand = new RelayCommand(_ => GoToToday());
@@ -82,7 +86,7 @@ namespace InfernalInkSteelSuite.ViewModels.Appointments
                 {
                     DateTime = date.Date.AddHours(12) // Default to noon
                 };
-                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, newAppointment);
+                var dialog = new AppointmentDialog(_db, newAppointment);
 
                 if (dialog.ShowDialog() == true)
                 {

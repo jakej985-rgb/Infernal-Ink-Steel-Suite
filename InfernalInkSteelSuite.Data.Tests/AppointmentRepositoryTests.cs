@@ -1,4 +1,5 @@
 using Xunit;
+using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System;
@@ -14,7 +15,7 @@ namespace InfernalInkSteelSuite.Data.Tests
         public AppointmentRepositoryTests(DatabaseFixture fixture)
         {
             _fixture = fixture;
-            _repository = new AppointmentRepository(_fixture.ConnectionString);
+            _repository = new AppointmentRepository(_fixture.Context);
         }
 
         [Fact]

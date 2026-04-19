@@ -1,5 +1,6 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -75,11 +76,11 @@ namespace InfernalInkSteelSuite.Views
             }
         }
 
-        public EditAppointmentDialog(Appointment appointment, IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public EditAppointmentDialog(Appointment appointment, AppDbContext db)
         {
             InitializeComponent();
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _appointmentRepository = new AppointmentRepository(db);
+            _clientRepository = new ClientRepository(db);
 
             _allClients = [.. _clientRepository.GetAll()];
             FilterClients();

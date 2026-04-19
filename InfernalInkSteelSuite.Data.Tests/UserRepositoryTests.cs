@@ -1,30 +1,32 @@
 using Xunit;
 using InfernalInkSteelSuite.Repositories;
+using Microsoft.EntityFrameworkCore;
 using InfernalInkSteelSuite.Data;
-using Microsoft.Data.Sqlite;
-using System.Data.Common;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
     public class UserRepositoryTests : IDisposable
     {
         private readonly UserRepository _repository;
-        private readonly DbConnection _connection;
+        private readonly AppDbContext _context;
 
         public UserRepositoryTests()
         {
-            var connectionString = "Data Source=UserTestDb;Mode=Memory;Cache=Shared";
-            _connection = new SqliteConnection(connectionString);
-            _connection.Open();
+            var options = new DbContextOptionsBuilder<AppDbContext>()
+                .UseSqlite("Data Source=:memory:")
+                .Options;
+            _context = new AppDbContext(options);
+            _context.Database.OpenConnection();
+            _context.Database.EnsureCreated();
 
-            var databaseManager = new DatabaseManager(connectionString);
-            databaseManager.InitializeDatabase();
-            _repository = new UserRepository(connectionString);
+            _repository = new UserRepository(_context);
         }
 
         public void Dispose()
         {
-            _connection.Dispose();
+            _context.Database.CloseConnection();
+            _context.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         [Fact]

@@ -2,21 +2,24 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System;
 using System.Windows.Controls;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Views.Appointments
 {
     public partial class CompletedAppointmentsTab : UserControl, IAppointmentTabView
     {
-        public Appointment? SelectedAppointment => CompletedAppointmentsGrid.SelectedItem as Appointment;
+        public InfernalInkSteelSuite.Domain.Appointment? SelectedAppointment => CompletedAppointmentsGrid.SelectedItem as InfernalInkSteelSuite.Domain.Appointment;
 
-        private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IClientRepository _clientRepository;
+        private readonly InfernalInkSteelSuite.Data.AppDbContext _db;
+        private readonly InfernalInkSteelSuite.Repositories.IAppointmentRepository _appointmentRepository;
+        private readonly InfernalInkSteelSuite.Repositories.IClientRepository _clientRepository;
 
-        public CompletedAppointmentsTab(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public CompletedAppointmentsTab(InfernalInkSteelSuite.Data.AppDbContext db)
         {
             InitializeComponent();
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _db = db;
+            _appointmentRepository = new InfernalInkSteelSuite.Repositories.AppointmentRepository(db);
+            _clientRepository = new InfernalInkSteelSuite.Repositories.ClientRepository(db);
             Refresh();
         }
 
@@ -27,9 +30,9 @@ namespace InfernalInkSteelSuite.Views.Appointments
 
         private void Edit_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (CompletedAppointmentsGrid.SelectedItem is Appointment appointment)
+            if (CompletedAppointmentsGrid.SelectedItem is InfernalInkSteelSuite.Domain.Appointment appointment)
             {
-                var dialog = new EditAppointmentDialog(appointment, _appointmentRepository, _clientRepository);
+                var dialog = new EditAppointmentDialog(appointment, _db);
                 if (dialog.ShowDialog() == true)
                 {
                     Refresh();

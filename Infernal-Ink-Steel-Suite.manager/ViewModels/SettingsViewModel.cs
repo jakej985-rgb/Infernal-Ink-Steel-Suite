@@ -1,5 +1,6 @@
 using InfernalInkSteelSuite.ViewModels.Settings;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Data;
 using System.Collections.ObjectModel;
 using InfernalInkSteelSuite.Domain;
 
@@ -7,6 +8,10 @@ namespace InfernalInkSteelSuite.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
+        private readonly User _user;
+        private readonly IUserRepository _userRepository;
+        private readonly IShopSettingsRepository _shopSettingsRepository;
+
         private ObservableCollection<SettingsTabViewModel> _tabs;
         public ObservableCollection<SettingsTabViewModel> Tabs
         {
@@ -29,28 +34,25 @@ namespace InfernalInkSteelSuite.ViewModels
             }
         }
 
-        public SettingsViewModel(string connectionString, User currentUser)
+        public SettingsViewModel(AppDbContext db, User user)
         {
+            _user = user;
+            _shopSettingsRepository = new ShopSettingsRepository(db);
+            _userRepository = new UserRepository(db);
             _tabs = [];
             _selectedTab = null!;
-            var shopSettingsRepository = new ShopSettingsRepository(connectionString);
-            var userRepository = new UserRepository(connectionString);
 
-            Tabs.Add(new UserTabViewModel(userRepository, shopSettingsRepository, currentUser));
-            Tabs.Add(new LinkedAccountsTabViewModel(shopSettingsRepository));
-            Tabs.Add(new NotificationSettingsTabViewModel(shopSettingsRepository));
-            Tabs.Add(new BackupDataTabViewModel(shopSettingsRepository));
-            Tabs.Add(new AccessibilityTabViewModel(userRepository, currentUser));
+            Tabs.Add(new UserTabViewModel(_userRepository, _shopSettingsRepository, _user));
+            Tabs.Add(new LinkedAccountsTabViewModel(_shopSettingsRepository));
+            Tabs.Add(new NotificationSettingsTabViewModel(_shopSettingsRepository));
+            Tabs.Add(new BackupDataTabViewModel(_shopSettingsRepository));
+            Tabs.Add(new AccessibilityTabViewModel(_userRepository, _user));
 
-            var role = currentUser.Role ?? string.Empty;
-
-            if (role.Contains("Manager") || role.Contains("Admin"))
+            var role = _user.Role ?? string.Empty;
+            if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                Tabs.Insert(2, new ManagerTabViewModel(userRepository));
-            }
-            if (role.Contains("Admin"))
-            {
-                Tabs.Insert(1, new AdminTabViewModel(userRepository, shopSettingsRepository));
+                Tabs.Add(new ManagerTabViewModel(_userRepository));
+                Tabs.Add(new AdminTabViewModel(_userRepository, _shopSettingsRepository));
             }
 
             SelectedTab = Tabs[0];

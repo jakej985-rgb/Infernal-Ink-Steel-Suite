@@ -1,4 +1,4 @@
-using InfernalInkSteelSuite.ViewModels;
+using InfernalInkSteelSuite.ViewModels; // refresh
 using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Repositories;
 using System.Windows;
@@ -6,12 +6,13 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Services;
 using InfernalInkSteelSuite.Views.Dashboard;
 using InfernalInkSteelSuite.ViewModels.Dashboard;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Views
 {
     public partial class DashboardWindow : Window
     {
-        private readonly string _connectionString;
+        private readonly AppDbContext _db;
         private readonly AppointmentRepository _appointmentRepository;
         private readonly ClientRepository _clientRepository;
         private readonly DocumentRepository _documentRepository;
@@ -22,28 +23,47 @@ namespace InfernalInkSteelSuite.Views
 
         private readonly User _currentUser;
 
-        public DashboardWindow(string connectionString, User currentUser)
+        public DashboardWindow(AppDbContext db, User currentUser)
         {
-            _connectionString = connectionString;
+            _db = db;
             _currentUser = currentUser;
-            _appointmentRepository = new AppointmentRepository(_connectionString);
-            _clientRepository = new ClientRepository(_connectionString);
-            _documentRepository = new DocumentRepository(_connectionString);
-            _shopSettingsRepository = new ShopSettingsRepository(_connectionString);
-            _userRepository = new UserRepository(_connectionString);
-            _quoteRepository = new QuoteRepository(_connectionString);
+            _appointmentRepository = new AppointmentRepository(_db);
+            _clientRepository = new ClientRepository(_db);
+            _documentRepository = new DocumentRepository(_db);
+            _shopSettingsRepository = new ShopSettingsRepository(_db);
+            _userRepository = new UserRepository(_db);
+            _quoteRepository = new QuoteRepository(_db);
             _imageComplexityService = new ImageComplexityService();
 
             InitializeComponent();
             LoadShopSettings();
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _db);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
             };
             MainContent.Content = homeDashboardView;
             SettingsUpdateService.OnSettingsChanged += LoadShopSettings;
-            Closed += (s, e) => SettingsUpdateService.OnSettingsChanged -= LoadShopSettings;
+
+            if (App.SyncService != null)
+            {
+                App.SyncService.OnSyncStatusChanged += UpdateSyncStatus;
+                SyncStatusLabel.Text = "Ready";
+            }
+
+            Closed += (s, e) => 
+            {
+                SettingsUpdateService.OnSettingsChanged -= LoadShopSettings;
+                if (App.SyncService != null)
+                {
+                    App.SyncService.OnSyncStatusChanged -= UpdateSyncStatus;
+                }
+            };
+        }
+
+        private void UpdateSyncStatus(string status)
+        {
+            Dispatcher.Invoke(() => SyncStatusLabel.Text = status);
         }
 
         private void LoadShopSettings()
@@ -67,7 +87,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _shopSettingsRepository, _appointmentRepository, _clientRepository);
+            var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _db);
             var homeDashboardView = new HomeDashboardView
             {
                 DataContext = homeDashboardViewModel
@@ -77,12 +97,12 @@ namespace InfernalInkSteelSuite.Views
 
         private void Clients_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new ClientsView(_connectionString);
+            MainContent.Content = new ClientsView(_db);
         }
 
         private void Appointments_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new AppointmentsView(_appointmentRepository, _clientRepository);
+            MainContent.Content = new AppointmentsView(_db);
         }
 
         private void Quotes_Click(object sender, RoutedEventArgs e)
@@ -98,7 +118,7 @@ namespace InfernalInkSteelSuite.Views
         private void CreateQuote_Click(object sender, RoutedEventArgs e)
         {
             var pricingService = new TattooPricingService(_shopSettingsRepository, _userRepository);
-            var quoteCreateViewModel = new QuoteCreateViewModel(pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
+            var quoteCreateViewModel = new QuoteCreateViewModel(_db, pricingService, _quoteRepository, _clientRepository, _userRepository, _appointmentRepository, _imageComplexityService);
             var quoteCreateView = new QuoteCreateView
             {
                 DataContext = quoteCreateViewModel
@@ -118,7 +138,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            var settingsViewModel = new SettingsViewModel(_connectionString, _currentUser);
+            var settingsViewModel = new SettingsViewModel(_db, _currentUser);
             var settingsView = new SettingsView
             {
                 DataContext = settingsViewModel
@@ -128,7 +148,7 @@ namespace InfernalInkSteelSuite.Views
 
         private void Statistics_Click(object sender, RoutedEventArgs e)
         {
-            MainContent.Content = new StatsView(_connectionString);
+            MainContent.Content = new StatsView(_db);
         }
     }
 }

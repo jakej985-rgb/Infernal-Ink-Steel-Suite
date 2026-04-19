@@ -2,9 +2,16 @@ using System;
 
 namespace InfernalInkSteelSuite.Domain
 {
-    public class Quote
+    public class Quote : ISyncEntity
     {
         public int Id { get; set; }
+
+        // Sync Properties
+        public Guid SyncId { get; set; } = Guid.NewGuid();
+        public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
+        public string LastModifiedBy { get; set; } = "";
+        public bool IsDeleted { get; set; }
+        public byte[]? RowVersion { get; set; }
         public int? ClientId { get; set; }
         public int ArtistId { get; set; }
         public string Placement { get; set; } = string.Empty;

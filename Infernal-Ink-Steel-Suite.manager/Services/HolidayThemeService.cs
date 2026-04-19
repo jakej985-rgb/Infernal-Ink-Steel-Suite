@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using InfernalInkSteelSuite.Repositories;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Services
 {
@@ -14,9 +15,9 @@ namespace InfernalInkSteelSuite.Services
         {
             InitializeHolidayRanges(DateTime.Now.Year);
         }
-        public static void Initialize(string connectionString)
+        public static void Initialize(AppDbContext db)
         {
-            var shopSettingsRepository = new ShopSettingsRepository(connectionString);
+            var shopSettingsRepository = new ShopSettingsRepository(db);
             var settings = shopSettingsRepository.LoadSettings();
             _holidayThemesEnabled = settings.EnableAutomaticHolidayThemes;
         }

@@ -2,21 +2,24 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System;
 using System.Windows.Controls;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Views.Appointments
 {
     public partial class PendingAppointmentsTab : UserControl, IAppointmentTabView
     {
-        public Appointment? SelectedAppointment => PendingAppointmentsGrid.SelectedItem as Appointment;
+        public InfernalInkSteelSuite.Domain.Appointment? SelectedAppointment => PendingAppointmentsGrid.SelectedItem as InfernalInkSteelSuite.Domain.Appointment;
 
+        private readonly InfernalInkSteelSuite.Data.AppDbContext _db;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
 
-        public PendingAppointmentsTab(IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public PendingAppointmentsTab(InfernalInkSteelSuite.Data.AppDbContext db)
         {
             InitializeComponent();
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _db = db;
+            _appointmentRepository = new AppointmentRepository(db);
+            _clientRepository = new ClientRepository(db);
             Refresh();
         }
 
@@ -29,7 +32,7 @@ namespace InfernalInkSteelSuite.Views.Appointments
         {
             if (PendingAppointmentsGrid.SelectedItem is Appointment appointment)
             {
-                var dialog = new EditAppointmentDialog(appointment, _appointmentRepository, _clientRepository);
+                var dialog = new EditAppointmentDialog(appointment, _db);
                 if (dialog.ShowDialog() == true)
                 {
                     Refresh();

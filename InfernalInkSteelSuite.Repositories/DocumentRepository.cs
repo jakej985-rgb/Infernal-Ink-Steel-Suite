@@ -1,160 +1,61 @@
 using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Domain;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class DocumentRepository(string connectionString) : IDocumentRepository
+    public class DocumentRepository(AppDbContext dbContext) : IDocumentRepository
     {
-        private readonly string _connectionString = connectionString;
+        private readonly AppDbContext _db = dbContext;
 
-        public Document? Get(int id)
-        {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, userId, clientId, title, filePath, createdAt FROM documents WHERE id = $id";
-            command.Parameters.AddWithValue("$id", id);
+        public Document? Get(int id) => _db.Documents.Find(id);
 
-            using var reader = command.ExecuteReader();
-            if (reader.Read())
-            {
-                return new Document
-                {
-                    Id = reader.GetInt32(0),
-                    UploadedByUserId = reader.GetInt32(1),
-                    ClientId = reader.GetInt32(2),
-                    Title = reader.GetString(3),
-                    FilePath = reader.GetString(4),
-                    CreatedAt = DateTime.Parse(reader.GetString(5))
-                };
-            }
-            return null;
-        }
-
-        public List<Document> GetAll()
-        {
-            var result = new List<Document>();
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT id, userId, clientId, title, filePath, createdAt FROM documents ORDER BY createdAt DESC";
-
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                result.Add(new Document
-                {
-                    Id = reader.GetInt32(0),
-                    UploadedByUserId = reader.GetInt32(1),
-                    ClientId = reader.GetInt32(2),
-                    Title = reader.GetString(3),
-                    FilePath = reader.GetString(4),
-                    CreatedAt = DateTime.Parse(reader.GetString(5))
-                });
-            }
-            return result;
-        }
+        public List<Document> GetAll() => _db.Documents.OrderByDescending(d => d.CreatedAt).ToList();
 
         public List<Document> GetDocuments(int userId, string role, int maxDocuments, out bool truncated)
         {
-            var result = new List<Document>();
             truncated = false;
+            if (maxDocuments <= 0) return new List<Document>();
 
-            if (maxDocuments <= 0)
-            {
-                return result;
-            }
+            var query = _db.Documents.OrderByDescending(d => d.CreatedAt).AsQueryable();
 
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            if (role == "Admin" || role == "Manager")
+            if (role != "Admin" && role != "Manager")
             {
-                command.CommandText = "SELECT * FROM documents ORDER BY createdAt DESC";
-            }
-            else
-            {
-                command.CommandText = "SELECT * FROM documents WHERE userId = $userId ORDER BY createdAt DESC";
-                command.Parameters.AddWithValue("$userId", userId);
+                query = query.Where(d => d.UploadedByUserId == userId);
             }
 
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
+            var results = query.Take(maxDocuments + 1).ToList();
+            if (results.Count > maxDocuments)
             {
-                if (result.Count >= maxDocuments)
-                {
-                    truncated = true;
-                    break;
-                }
-                result.Add(new Document
-                {
-                    Id = reader.GetInt32(0),
-                    UploadedByUserId = reader.GetInt32(1),
-                    ClientId = reader.GetInt32(2),
-                    Title = reader.GetString(3),
-                    FilePath = reader.GetString(4),
-                    CreatedAt = DateTime.Parse(reader.GetString(5))
-                });
+                truncated = true;
+                return results.Take(maxDocuments).ToList();
             }
-            return result;
+
+            return results;
         }
 
         public void Insert(Document document)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"INSERT INTO documents (userId, clientId, title, filePath, createdAt)
-                  VALUES ($userId, $clientId, $title, $filePath, $createdAt);";
-
-            command.Parameters.AddWithValue("$userId", document.UploadedByUserId);
-            command.Parameters.AddWithValue("$clientId", document.ClientId);
-            command.Parameters.AddWithValue("$title", document.Title);
-            command.Parameters.AddWithValue("$filePath", document.FilePath);
-            command.Parameters.AddWithValue("$createdAt", document.CreatedAt.ToString("o"));
-
-            command.ExecuteNonQuery();
-
-            command.CommandText = "SELECT last_insert_rowid();";
-            document.Id = Convert.ToInt32(command.ExecuteScalar());
+            _db.Documents.Add(document);
+            _db.SaveChanges();
         }
 
         public void Update(Document document)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText =
-                @"UPDATE documents
-                  SET userId = $userId,
-                      clientId = $clientId,
-                      title = $title,
-                      filePath = $filePath,
-                      createdAt = $createdAt
-                  WHERE id = $id;";
-
-            command.Parameters.AddWithValue("$userId", document.UploadedByUserId);
-            command.Parameters.AddWithValue("$clientId", document.ClientId);
-            command.Parameters.AddWithValue("$title", document.Title);
-            command.Parameters.AddWithValue("$filePath", document.FilePath);
-            command.Parameters.AddWithValue("$createdAt", document.CreatedAt.ToString("o"));
-            command.Parameters.AddWithValue("$id", document.Id);
-
-            command.ExecuteNonQuery();
+            _db.Documents.Update(document);
+            _db.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            using var connection = new SqliteConnection(_connectionString);
-            connection.Open();
-            var command = connection.CreateCommand();
-            command.CommandText = "DELETE FROM documents WHERE id = $id;";
-            command.Parameters.AddWithValue("$id", id);
-            command.ExecuteNonQuery();
+            var doc = _db.Documents.Find(id);
+            if (doc != null)
+            {
+                _db.Documents.Remove(doc);
+                _db.SaveChanges();
+            }
         }
     }
 }

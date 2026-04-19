@@ -1,22 +1,25 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.ViewModels;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Views
 {
     public partial class ClientsView : UserControl
     {
+        private readonly AppDbContext _db;
         private readonly ClientRepository _clientRepo;
         public ObservableCollection<Client> Clients { get; } = [];
 
-        public ClientsView(string connectionString)
+        public ClientsView(AppDbContext db)
         {
             InitializeComponent();
-            _clientRepo = new ClientRepository(connectionString);
+            _db = db;
+            _clientRepo = new ClientRepository(_db);
             LoadClients();
             ClientsGrid.ItemsSource = Clients;
         }

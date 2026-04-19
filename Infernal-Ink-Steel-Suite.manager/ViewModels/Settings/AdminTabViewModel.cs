@@ -694,7 +694,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void LoadUsers()
         {
-            Users = [.. _userRepository.GetAllUsers().Where(u => !u.IsDeleted)];
+            Users = [.. _userRepository.GetAllUsers().Where(u => !((ISyncEntity)u).IsDeleted)];
             FilterUsers();
         }
 

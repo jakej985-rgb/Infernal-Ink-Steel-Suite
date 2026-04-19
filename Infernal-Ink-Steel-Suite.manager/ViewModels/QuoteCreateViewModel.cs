@@ -8,11 +8,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using InfernalInkSteelSuite.Views;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
     public class QuoteCreateViewModel : BaseViewModel
     {
+        private readonly AppDbContext _db;
         private readonly ITattooPricingService _pricingService;
         private readonly IQuoteRepository _quoteRepository;
         private readonly IClientRepository _clientRepository;
@@ -160,8 +162,9 @@ namespace InfernalInkSteelSuite.ViewModels
         public ICommand ApplyComplexityCommand { get; }
         public ICommand DropImageCommand { get; }
 
-        public QuoteCreateViewModel(ITattooPricingService pricingService, IQuoteRepository quoteRepository, IClientRepository clientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository, IImageComplexityService imageComplexityService)
+        public QuoteCreateViewModel(AppDbContext db, ITattooPricingService pricingService, IQuoteRepository quoteRepository, IClientRepository clientRepository, IUserRepository userRepository, IAppointmentRepository appointmentRepository, IImageComplexityService imageComplexityService)
         {
+            _db = db;
             _pricingService = pricingService;
             _quoteRepository = quoteRepository;
             _clientRepository = clientRepository;
@@ -286,7 +289,7 @@ namespace InfernalInkSteelSuite.ViewModels
                 DurationMinutes = (int)(_quoteEstimate.EstimatedHoursHigh * 60),
                 DateTime = System.DateTime.Now
             };
-            var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment);
+            var dialog = new AppointmentDialog(_db, appointment);
             dialog.ShowDialog();
         }
 

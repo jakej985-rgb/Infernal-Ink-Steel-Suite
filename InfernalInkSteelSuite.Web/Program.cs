@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Web.Services;
 using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,11 +47,15 @@ if (!string.IsNullOrEmpty(dbDir) && !Directory.Exists(dbDir))
 // var dbManager = new DatabaseManager(connectionString);
 // dbManager.InitializeDatabase();
 
-builder.Services.AddScoped<IUserRepository>(sp => new UserRepository(connectionString));
-builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
-builder.Services.AddScoped<IAppointmentRepository>(sp => new AppointmentRepository(connectionString));
-builder.Services.AddScoped<IDocumentRepository>(sp => new DocumentRepository(connectionString));
-builder.Services.AddScoped<IShopSettingsRepository>(sp => new ShopSettingsRepository(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
+builder.Services.AddScoped<IShopSettingsRepository, ShopSettingsRepository>();
+builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
 
 
 var app = builder.Build();

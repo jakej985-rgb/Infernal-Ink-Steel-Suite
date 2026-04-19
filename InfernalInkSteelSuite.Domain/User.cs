@@ -1,10 +1,19 @@
 using System;
+using System.Collections.Generic;
 
 namespace InfernalInkSteelSuite.Domain
 {
-    public class User
+    public class User : ISyncEntity
     {
         public int Id { get; set; }
+
+        // Sync Properties
+        public Guid SyncId { get; set; } = Guid.NewGuid();
+        public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
+        public string LastModifiedBy { get; set; } = "";
+        bool ISyncEntity.IsDeleted { get => IsDeleted; set => IsDeleted = value; }
+        public bool IsDeleted { get; set; }
+        public byte[]? RowVersion { get; set; }
         public string Username { get; set; } = "";
         public string DisplayName { get; set; } = "";
         public string PasswordHash { get; set; } = string.Empty;
@@ -19,7 +28,6 @@ namespace InfernalInkSteelSuite.Domain
         // New Properties - Phase 1
         public DateTime? LastLoginAt { get; set; } = null;
         public bool IsActive { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; } = null;
         public string Department { get; set; } = string.Empty;
         public decimal CommissionRate { get; set; } = 0m;

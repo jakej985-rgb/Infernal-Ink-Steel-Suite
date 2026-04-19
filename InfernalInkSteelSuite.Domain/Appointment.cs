@@ -20,6 +20,21 @@ namespace InfernalInkSteelSuite.Domain
         public bool IsDeleted { get; set; }
         public byte[]? RowVersion { get; set; }
 
+        // Sync Conflict Management
+        private bool _hasSyncConflict;
+        public bool HasSyncConflict
+        {
+            get => _hasSyncConflict;
+            set { _hasSyncConflict = value; OnPropertyChanged(nameof(HasSyncConflict)); }
+        }
+
+        private string? _syncConflictNotes;
+        public string? SyncConflictNotes
+        {
+            get => _syncConflictNotes;
+            set { _syncConflictNotes = value; OnPropertyChanged(nameof(SyncConflictNotes)); }
+        }
+
         private int _clientId;
         public int ClientId
         {

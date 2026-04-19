@@ -13,6 +13,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAc
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Appointment> Appointments => Set<Appointment>();
     public DbSet<Document> Documents => Set<Document>();
+    public DbSet<Quote> Quotes => Set<Quote>();
+    public DbSet<ShopSettings> ShopSettings => Set<ShopSettings>();
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -103,6 +105,34 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAc
 
         modelBuilder.Entity<Appointment>()
             .Property(a => a.FinalPrice)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Quote>()
+            .Property(q => q.PriceLow)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Quote>()
+            .Property(q => q.PriceHigh)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Quote>()
+            .Property(q => q.ShopMinimum)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<Quote>()
+            .Property(q => q.RecommendedDeposit)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<ShopSettings>()
+            .Property(s => s.TattooPerHour)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<ShopSettings>()
+            .Property(s => s.ShopMinimumRate)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<ShopSettings>()
+            .Property(s => s.PiercingSingle)
             .HasColumnType("decimal(18,2)");
     }
 }

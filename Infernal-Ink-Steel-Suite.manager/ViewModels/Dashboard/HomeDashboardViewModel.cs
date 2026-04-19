@@ -7,14 +7,16 @@ using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Views;
 using InfernalInkSteelSuite.Views.Dashboard;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.ViewModels.Dashboard
 {
     public class HomeDashboardViewModel : BaseViewModel
     {
+        private readonly AppDbContext _db;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
-        private readonly IShopSettingsRepository _shopSettingsRepository;
+        private readonly ShopSettingsRepository _shopSettingsRepository;
 
         // Properties for Data Binding
         public string Greeting { get; private set; }
@@ -44,11 +46,12 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
         public ICommand OpenShopSettingsCommand { get; }
         public ICommand ResolveActionItemCommand { get; }
 
-        public HomeDashboardViewModel(User currentUser, IShopSettingsRepository shopSettingsRepository, IAppointmentRepository appointmentRepository, IClientRepository clientRepository)
+        public HomeDashboardViewModel(User currentUser, AppDbContext db)
         {
-            _shopSettingsRepository = shopSettingsRepository;
-            _appointmentRepository = appointmentRepository;
-            _clientRepository = clientRepository;
+            _db = db;
+            _shopSettingsRepository = new ShopSettingsRepository(db);
+            _appointmentRepository = new AppointmentRepository(db);
+            _clientRepository = new ClientRepository(db);
 
             // Initialize Collections
             TodayAppointments = [];
@@ -59,7 +62,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             UserName = currentUser.Username ?? "User";
             UserInitials = string.IsNullOrEmpty(UserName) ? "?" : UserName[..1].ToUpper();
             UserRole = currentUser.Role ?? "Guest";
-            var shopSettings = shopSettingsRepository.LoadSettings();
+            var shopSettings = _shopSettingsRepository.LoadSettings();
             ShopName = string.IsNullOrEmpty(shopSettings.ShopName) ? "Infernal Ink & Steel" : shopSettings.ShopName;
             CurrentDate = DateTime.Now.ToString("ddd, MMM dd, yyyy");
             Greeting = string.Empty;
@@ -95,7 +98,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             CreateNewAppointmentCommand = new RelayCommand(p =>
             {
                 var appointment = new Appointment { DateTime = DateTime.Today };
-                var dialog = new AppointmentDialog(_appointmentRepository, _clientRepository, appointment)
+                var dialog = new AppointmentDialog(_db, appointment)
                 {
                     Owner = Application.Current.MainWindow
                 };

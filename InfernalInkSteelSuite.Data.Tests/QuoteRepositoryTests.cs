@@ -2,24 +2,20 @@ using Xunit;
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System.Linq;
+using InfernalInkSteelSuite.Data;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
     [Collection("Database collection")]
-    public class QuoteRepositoryTests
+    public class QuoteRepositoryTests(DatabaseFixture fixture)
     {
-        private readonly DatabaseFixture _fixture;
-
-        public QuoteRepositoryTests(DatabaseFixture fixture)
-        {
-            _fixture = fixture;
-        }
+        private readonly DatabaseFixture _fixture = fixture;
 
         [Fact]
         public void AddQuote_ShouldUpdateId_AfterInsert()
         {
              // Arrange
-            var repository = new QuoteRepository(_fixture.ConnectionString);
+            var repository = new QuoteRepository(_fixture.Context);
             var quote = new Quote
             {
                 ArtistId = 1,

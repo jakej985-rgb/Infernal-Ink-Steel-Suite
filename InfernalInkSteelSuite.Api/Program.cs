@@ -31,18 +31,19 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlite(connectionString);
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<ISyncService, SyncService>();
-builder.Services.AddScoped<IShopSettingsRepository>(sp => new ShopSettingsRepository(connectionString));
-builder.Services.AddScoped<IAppointmentRepository>(sp => new AppointmentRepository(connectionString));
-builder.Services.AddScoped<IClientRepository>(sp => new ClientRepository(connectionString));
-builder.Services.AddScoped<IDocumentRepository>(sp => new DocumentRepository(connectionString));
+// Repositories will be transitioned to use AppDbContext internally or via injection
+builder.Services.AddScoped<IShopSettingsRepository, ShopSettingsRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<DocumentService>();
-builder.Services.AddScoped<IQuoteRepository>(sp => new QuoteRepository(connectionString));
+builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
 builder.Services.AddScoped<QuoteService>();
 builder.Services.AddScoped<StatsService>();
 builder.Services.AddHttpContextAccessor();
@@ -317,17 +318,7 @@ using (var scope = app.Services.CreateScope())
     // db.Database.Migrate();
     db.Database.EnsureCreated();
 
-    // Ensure non-EF tables are created (like Quotes, ShopSettings)
-    var dbManager = new DatabaseManager(connectionString);
-    dbManager.InitializeDatabase();
-
-    var adminUser = db.Users.FirstOrDefault(u => u.Username == "admin");
-    if (adminUser != null)
-    {
-        // FORCE PASSWORD RESET FOR DEBUGGING/RECOVERY
-        adminUser.PasswordHash = hasher.HashPassword("password");
-        db.SaveChanges();
-    }
+    // DatabaseManager is retired in favor of EF Core for Postgres (Phase 1 Audit Fix)
 
     if (!db.Users.Any())
     {
