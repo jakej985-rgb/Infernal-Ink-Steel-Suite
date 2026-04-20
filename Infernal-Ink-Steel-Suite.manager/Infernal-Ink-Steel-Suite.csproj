@@ -38,11 +38,4 @@
     <Resource Include="Assets\Images\eye_open.png" />
     <Resource Include="Assets\Images\eye_closed.png" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="Views\Settings\UserManagementTabView.xaml" />
-    <Page Include="Views\Settings\ShopHoursTabView.xaml" />
-    <Page Include="Views\Settings\PricingTabView.xaml" />
-    <Page Include="Views\Settings\ShopProfileTabView.xaml" />
-  </ItemGroup>
 </Project>

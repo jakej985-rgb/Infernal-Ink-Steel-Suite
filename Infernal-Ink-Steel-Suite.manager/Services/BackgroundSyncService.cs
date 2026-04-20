@@ -142,13 +142,13 @@ namespace InfernalInkSteelSuite.Services
             {
                 var batch = new SyncBatchRequestDto<Client>
                 {
-                    Changes = localClientChanges.Select(c => new SyncChangeDto<Client>
+                    Changes = [.. localClientChanges.Select(c => new SyncChangeDto<Client>
                     {
                         EntityId = c.SyncId,
                         Operation = "Update",
                         Payload = c,
                         ClientTimestampUtc = c.LastModifiedUtc
-                    }).ToList()
+                    })]
                 };
                 await _syncClient.PushBatchAsync("api/sync/clients", batch);
             }
@@ -162,13 +162,13 @@ namespace InfernalInkSteelSuite.Services
             {
                 var batch = new SyncBatchRequestDto<Appointment>
                 {
-                    Changes = localApptChanges.Select(a => new SyncChangeDto<Appointment>
+                    Changes = [.. localApptChanges.Select(a => new SyncChangeDto<Appointment>
                     {
                         EntityId = a.SyncId,
                         Operation = "Update",
                         Payload = a,
                         ClientTimestampUtc = a.LastModifiedUtc
-                    }).ToList()
+                    })]
                 };
                 await _syncClient.PushBatchAsync("api/sync/appointments", batch);
             }
