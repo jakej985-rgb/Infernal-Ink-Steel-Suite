@@ -12,21 +12,14 @@ using System.Threading.Tasks;
 
 namespace InfernalInkSteelSuite.Services
 {
-    public class BackgroundSyncService
+    public class BackgroundSyncService(AppDbContext localDb, SyncClient syncClient, IShopSettingsRepository settingsRepo)
     {
-        private readonly AppDbContext _localDb;
-        private readonly SyncClient _syncClient;
-        private readonly IShopSettingsRepository _settingsRepo;
+        private readonly AppDbContext _localDb = localDb;
+        private readonly SyncClient _syncClient = syncClient;
+        private readonly IShopSettingsRepository _settingsRepo = settingsRepo;
         private CancellationTokenSource? _cts;
 
         public event Action<string>? OnSyncStatusChanged;
-
-        public BackgroundSyncService(AppDbContext localDb, SyncClient syncClient, IShopSettingsRepository settingsRepo)
-        {
-            _localDb = localDb;
-            _syncClient = syncClient;
-            _settingsRepo = settingsRepo;
-        }
 
         public void Start()
         {
@@ -58,7 +51,7 @@ namespace InfernalInkSteelSuite.Services
 
         public async Task PerformSyncAsync()
         {
-            var settings = _settingsRepo.LoadSettings();
+            InfernalInkSteelSuite.Domain.ShopSettings settings = _settingsRepo.LoadSettings();
             if (string.IsNullOrEmpty(settings.LinkedAccountsJson)) return;
 
             // Simplified deserialization since we just need the URL and Key
@@ -145,7 +138,7 @@ namespace InfernalInkSteelSuite.Services
                 .Where(c => c.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
-            if (localClientChanges.Any())
+            if (localClientChanges.Count > 0)
             {
                 var batch = new SyncBatchRequestDto<Client>
                 {
@@ -165,7 +158,7 @@ namespace InfernalInkSteelSuite.Services
                 .Where(a => a.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
-            if (localApptChanges.Any())
+            if (localApptChanges.Count > 0)
             {
                 var batch = new SyncBatchRequestDto<Appointment>
                 {

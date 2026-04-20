@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Text.Json;
 using System.Windows;
+using InfernalInkSteelSuite.ViewModels;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {

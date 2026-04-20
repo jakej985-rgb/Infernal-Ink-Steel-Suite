@@ -55,7 +55,7 @@ namespace InfernalInkSteelSuite.ViewModels
                 Tabs.Add(new UserManagementTabViewModel(_userRepository));
                 Tabs.Add(new ShopHoursTabViewModel(_shopSettingsRepository));
                 Tabs.Add(new PricingTabViewModel(_shopSettingsRepository));
-                Tabs.Add(new ShopProfileTabViewModel(_shopSettingsRepository));
+                Tabs.Add(new InfernalInkSteelSuite.ViewModels.Settings.ShopProfileTabViewModel(_shopSettingsRepository));
             }
 
             SelectedTab = Tabs[0];

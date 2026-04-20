@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters;assembly=Infernal-Ink-Steel-Suite"
              mc:Ignorable="d"
              d:DesignHeight="800" d:DesignWidth="900">
     <UserControl.Resources>
@@ -47,7 +46,7 @@
                     </Grid>
 
                     <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredUsers}" SelectedItem="{Binding SelectedUser}" 
-                              AutoGenerateColumns="False" CanUserAddRows="False" MaxHeight="250" SelectionMode="Single" HeadersVisibility="Column">
+                               AutoGenerateColumns="False" CanUserAddRows="False" MaxHeight="250" SelectionMode="Single" HeadersVisibility="Column">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Username" Binding="{Binding Username}" IsReadOnly="True" Width="*"/>
                             <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="100" IsReadOnly="True"/>

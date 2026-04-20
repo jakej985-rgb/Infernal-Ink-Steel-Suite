@@ -33,4 +33,12 @@ namespace InfernalInkSteelSuite.Domain
         public int RetentionDays { get; set; } = 30;
         public bool AutoBackupEnabled { get; set; } = true;
     }
+
+    public class UserPermissions
+    {
+        public bool CanViewReports { get; set; }
+        public bool CanManageSchedule { get; set; }
+        public bool CanViewFinancials { get; set; }
+        public bool CanManageInventory { get; set; }
+    }
 }

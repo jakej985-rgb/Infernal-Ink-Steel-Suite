@@ -40,6 +40,8 @@ namespace InfernalInkSteelSuite.Domain
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        // Force refresh for compiler metadata
     }
 
     public class ShopDaySetting

@@ -71,7 +71,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void Save(object? parameter)
         {
-            var user = _userRepository.GetUserByUsername(_username);
+            InfernalInkSteelSuite.Domain.User? user = _userRepository.GetUserByUsername(_username);
             if (user != null)
             {
                 user.AvatarPath = SelectedAvatar;

@@ -1,3 +1,5 @@
+using InfernalInkSteelSuite.ViewModels;
+
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
     public abstract class SettingsTabViewModel : BaseViewModel
