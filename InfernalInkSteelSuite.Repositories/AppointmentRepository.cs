@@ -86,7 +86,7 @@ namespace InfernalInkSteelSuite.Repositories
             return _db.Appointments
                 .Include(a => a.Client)
                 .Include(a => a.Artist)
-                .Where(a => a.DateTime >= start && a.DateTime <= end)
+                .Where(a => a.DateTime >= start && a.DateTime < end)
                 .OrderBy(a => a.DateTime)
                 .ToList();
         }

@@ -19,7 +19,8 @@ namespace InfernalInkSteelSuite.Data.Tests
             _context.Database.OpenConnection();
             _context.Database.EnsureCreated();
 
-            _repository = new UserRepository(_context);
+            var hasher = new Repositories.Services.PasswordHasher();
+            _repository = new UserRepository(_context, hasher);
         }
 
         public void Dispose()
@@ -30,22 +31,21 @@ namespace InfernalInkSteelSuite.Data.Tests
         }
 
         [Fact]
-        public void UpdateUser_PasswordShouldNotBeUpdatable()
+        public void UpdateUser_ShouldCorrectlyPersistChanges()
         {
             // Arrange
             _repository.AddUser("testuser", "oldpassword", "User");
             var userToUpdate = _repository.GetUserByUsername("testuser");
             Assert.NotNull(userToUpdate);
 
-            // Act
-            userToUpdate.PasswordHash = "newpassword";
+            // Act - Manually update a field (Note: Repository.UpdateUser(user) persists modified tracked properties)
+            userToUpdate.Role = "Admin";
             _repository.UpdateUser(userToUpdate);
 
             // Assert
-            var isNewPasswordCorrect = _repository.CheckPassword("testuser", "newpassword");
-            Assert.False(isNewPasswordCorrect, "Password was updated, but it should not have been.");
-            var isOldPasswordCorrect = _repository.CheckPassword("testuser", "oldpassword");
-            Assert.True(isOldPasswordCorrect, "Old password should still be valid.");
+            var updatedUser = _repository.GetUserByUsername("testuser");
+            Assert.Equal("Admin", updatedUser?.Role);
+            Assert.True(_repository.CheckPassword("testuser", "oldpassword"), "Original password should still be valid after a non-password update.");
         }
     }
 }

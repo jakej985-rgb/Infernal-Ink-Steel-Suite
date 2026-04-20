@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using Xunit;
 using InfernalInkSteelSuite.ViewModels;
 using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Domain;
@@ -23,14 +23,16 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
         }
 
         public List<Appointment> GetAll() => _appointments;
+        public List<Appointment> GetAppointmentsByDate(DateTime date) => [];
+        public List<Appointment> GetAppointmentsByUserId(int userId) => [];
+        public List<Appointment> GetAppointmentsByClientId(int clientId) => [];
+        public List<Appointment> GetAppointmentsByStatus(string status) => [];
+        
+        // Stubs for IAppointmentRepository
         public void Add(Appointment appointment) => throw new NotImplementedException();
         public void Update(Appointment appointment) => throw new NotImplementedException();
         public void Delete(int id) => throw new NotImplementedException();
         public Appointment? Get(int id) => throw new NotImplementedException();
-        public List<Appointment> GetAppointmentsByDate(DateTime date) => throw new NotImplementedException();
-        public List<Appointment> GetAppointmentsByUserId(int userId) => throw new NotImplementedException();
-        public List<Appointment> GetAppointmentsByClientId(int clientId) => throw new NotImplementedException();
-        public List<Appointment> GetAppointmentsByStatus(string status) => throw new NotImplementedException();
     }
 
     public class MockShopSettingsRepository : IShopSettingsRepository
@@ -46,10 +48,9 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
         public void SaveSettings(ShopSettings settings) => throw new NotImplementedException();
     }
 
-    [TestFixture]
     public class StatsViewModelTests
     {
-        [Test]
+        [Fact]
         public void LoadData_WhenCalled_CalculatesStatsCorrectly()
         {
             // Arrange
@@ -69,12 +70,12 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
             viewModel.LoadData(2024);
 
             // Assert
-            Assert.AreEqual(150, viewModel.TotalIncome, "Total income should only include completed appointments.");
-            Assert.AreEqual(2, viewModel.TotalVisits, "Total visits should only include completed appointments.");
-            Assert.AreEqual(1.5, viewModel.TotalHours, "Total hours should only include completed appointments.");
+            Assert.Equal(150, viewModel.TotalIncome);
+            Assert.Equal(2, viewModel.TotalVisits);
+            Assert.Equal(1.5, viewModel.TotalHours);
         }
 
-        [Test]
+        [Fact]
         public void LoadData_WithPaidAppointments_CalculatesStatsCorrectly()
         {
             // Arrange
@@ -91,9 +92,9 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
             viewModel.LoadData(2024);
 
             // Assert
-            Assert.AreEqual(300, viewModel.TotalIncome, "Total income should include completed and paid appointments.");
-            Assert.AreEqual(2, viewModel.TotalVisits, "Total visits should include completed and paid appointments.");
-            Assert.AreEqual(3.0, viewModel.TotalHours, "Total hours should include completed and paid appointments.");
+            Assert.Equal(300, viewModel.TotalIncome);
+            Assert.Equal(2, viewModel.TotalVisits);
+            Assert.Equal(3.0, viewModel.TotalHours);
         }
     }
 }

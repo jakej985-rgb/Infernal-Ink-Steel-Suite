@@ -71,7 +71,12 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void Save(object? parameter)
         {
-            _userRepository.UpdateAvatarPath(_username, SelectedAvatar);
+            var user = _userRepository.GetUserByUsername(_username);
+            if (user != null)
+            {
+                user.AvatarPath = SelectedAvatar;
+                _userRepository.UpdateUser(user);
+            }
             CloseAction?.Invoke();
         }
 

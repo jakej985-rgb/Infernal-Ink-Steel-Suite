@@ -16,8 +16,10 @@ namespace InfernalInkSteelSuite.Api.Services
         Task ProcessDocumentBatchAsync(SyncBatchRequestDto<Document> batch);
     }
 
-    public class SyncService(AppDbContext context) : ISyncService
+    public class SyncService(AppDbContext context, ILogger<SyncService> logger) : ISyncService
     {
+        private readonly ILogger<SyncService> _logger = logger;
+
 
         public async Task<List<Client>> GetClientsChangedSinceAsync(DateTime sinceUtc)
         {
@@ -99,6 +101,20 @@ namespace InfernalInkSteelSuite.Api.Services
                     {
                         payload.ClientId = client.Id;
                     }
+                    else
+                    {
+                        _logger.LogError("Sync error: Could not resolve client SyncId {SyncId} for appointment {ApptSyncId}. Skipping.", 
+                            payload.ClientSyncId, change.EntityId);
+                        continue; 
+                    }
+                }
+                else if (change.Operation == "Create" || change.Operation == "Update")
+                {
+                    if (payload.ClientId == 0)
+                    {
+                         _logger.LogWarning("Sync warning: Appointment {ApptSyncId} has no client link. Skipping.", change.EntityId);
+                         continue;
+                    }
                 }
 
                 if (change.Operation == "Create")
@@ -151,6 +167,20 @@ namespace InfernalInkSteelSuite.Api.Services
                     if (client != null)
                     {
                         payload.ClientId = client.Id;
+                    }
+                    else
+                    {
+                        _logger.LogError("Sync error: Could not resolve client SyncId {SyncId} for document {DocSyncId}. Skipping.", 
+                            payload.ClientSyncId, change.EntityId);
+                        continue;
+                    }
+                }
+                else if (change.Operation == "Create" || change.Operation == "Update")
+                {
+                    if (payload.ClientId == 0)
+                    {
+                         _logger.LogWarning("Sync warning: Document {DocSyncId} has no client link. Skipping.", change.EntityId);
+                         continue;
                     }
                 }
 

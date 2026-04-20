@@ -16,6 +16,7 @@
     <Color x:Key="PrimaryTextColor">#FFFFFFFF</Color>
     <Color x:Key="SecondaryTextColor">#FFFFB2FF</Color>
     <Color x:Key="MutedTextColor">#FFFF6EFF</Color>
+    <Color x:Key="AccentTextColor">#FF000000</Color> <!-- Black text on cyan accent -->
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
@@ -33,6 +34,7 @@
     <SolidColorBrush x:Key="PrimaryTextBrush" Color="{StaticResource PrimaryTextColor}" />
     <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource SecondaryTextColor}" />
     <SolidColorBrush x:Key="MutedTextBrush" Color="{StaticResource MutedTextColor}" />
+    <SolidColorBrush x:Key="AccentTextBrush" Color="{StaticResource AccentTextColor}" />
 
     <SolidColorBrush x:Key="InputBackgroundBrush" Color="#1AFFFFFF"/>
 

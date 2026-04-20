@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace InfernalInkSteelSuite.Views.Settings
 {
-    public partial class AdminTabView : UserControl
+    public partial class PricingTabView : UserControl
     {
-        public AdminTabView()
+        public PricingTabView()
         {
             InitializeComponent();
         }

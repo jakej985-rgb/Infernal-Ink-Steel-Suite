@@ -5,22 +5,16 @@ using System.Linq;
 using InfernalInkSteelSuite.ViewModels;
 using System.Text.Json;
 using System;
+using System.Windows;
+using InfernalInkSteelSuite.Views.Settings;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
-    public class UserPermissions
-    {
-        public bool CanViewReports { get; set; }
-        public bool CanManageSchedule { get; set; }
-        public bool CanViewFinancials { get; set; }
-        public bool CanManageInventory { get; set; }
-    }
-
-    public class ManagerTabViewModel : SettingsTabViewModel
+    public class UserManagementTabViewModel : SettingsTabViewModel
     {
         private readonly IUserRepository _userRepository;
 
-        public override string Header => "Manager";
+        public override string Header => "Users";
 
         private ObservableCollection<User> _users = [];
         public ObservableCollection<User> Users
@@ -30,6 +24,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             {
                 _users = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(FilteredUsers));
             }
         }
 
@@ -47,6 +42,32 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         }
 
         public bool HasUserSelected => SelectedUser != null;
+
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(FilteredUsers));
+            }
+        }
+
+        public ObservableCollection<User> FilteredUsers
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(SearchText))
+                    return Users;
+                
+                var lowerSearch = SearchText.ToLower();
+                return new ObservableCollection<User>(Users.Where(u => 
+                    u.Username.Contains(lowerSearch, StringComparison.OrdinalIgnoreCase) ||
+                    (u.Role ?? "").Contains(lowerSearch, StringComparison.OrdinalIgnoreCase)));
+            }
+        }
 
         private ObservableCollection<string> _departments = [];
         public ObservableCollection<string> Departments
@@ -86,55 +107,46 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public bool CanViewReports
         {
             get => _canViewReports;
-            set
-            {
-                _canViewReports = value;
-                OnPropertyChanged();
-            }
+            set { _canViewReports = value; OnPropertyChanged(); }
         }
 
         private bool _canManageSchedule;
         public bool CanManageSchedule
         {
             get => _canManageSchedule;
-            set
-            {
-                _canManageSchedule = value;
-                OnPropertyChanged();
-            }
+            set { _canManageSchedule = value; OnPropertyChanged(); }
         }
 
         private bool _canViewFinancials;
         public bool CanViewFinancials
         {
             get => _canViewFinancials;
-            set
-            {
-                _canViewFinancials = value;
-                OnPropertyChanged();
-            }
+            set { _canViewFinancials = value; OnPropertyChanged(); }
         }
 
         private bool _canManageInventory;
         public bool CanManageInventory
         {
             get => _canManageInventory;
-            set
-            {
-                _canManageInventory = value;
-                OnPropertyChanged();
-            }
+            set { _canManageInventory = value; OnPropertyChanged(); }
         }
 
+        // Commands
+        public RelayCommand AddUserCommand { get; }
+        public RelayCommand ResetPasswordCommand { get; }
+        public RelayCommand DeleteUserCommand { get; }
         public RelayCommand SaveUserSettingsCommand { get; }
         public RelayCommand ResetPermissionsCommand { get; }
 
-        public ManagerTabViewModel(IUserRepository userRepository)
+        public UserManagementTabViewModel(IUserRepository userRepository)
         {
             _userRepository = userRepository;
             LoadUsers();
             LoadDepartments();
 
+            AddUserCommand = new RelayCommand(AddUser);
+            ResetPasswordCommand = new RelayCommand(ResetPassword, CanUpdateOrReset);
+            DeleteUserCommand = new RelayCommand(DeleteUser, CanUpdateOrReset);
             SaveUserSettingsCommand = new RelayCommand(SaveUserSettings, CanSaveUserSettings);
             ResetPermissionsCommand = new RelayCommand(ResetPermissions, CanResetPermissions);
         }
@@ -153,11 +165,9 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         {
             if (SelectedUser == null) return;
 
-            // Load department and commission
             SelectedDepartment = SelectedUser.Department;
             CommissionRate = SelectedUser.CommissionRate;
 
-            // Load permissions from JSON
             if (!string.IsNullOrEmpty(SelectedUser.PermissionsJson))
             {
                 try
@@ -171,27 +181,18 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                         CanManageInventory = permissions.CanManageInventory;
                     }
                 }
-                catch
-                {
-                    // If JSON parsing fails, use defaults
-                    ResetPermissionsToDefaults();
-                }
+                catch { ResetPermissionsToDefaults(); }
             }
-            else
-            {
-                ResetPermissionsToDefaults();
-            }
+            else { ResetPermissionsToDefaults(); }
         }
 
         private void SaveUserSettings(object? obj)
         {
             if (SelectedUser == null) return;
 
-            // Save department and commission
-            _userRepository.UpdateUserDepartment(SelectedUser.Username, SelectedDepartment);
-            _userRepository.UpdateUserCommissionRate(SelectedUser.Username, CommissionRate);
+            SelectedUser.Department = SelectedDepartment;
+            SelectedUser.CommissionRate = CommissionRate;
 
-            // Save permissions as JSON
             var permissions = new UserPermissions
             {
                 CanViewReports = CanViewReports,
@@ -200,52 +201,79 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 CanManageInventory = CanManageInventory
             };
 
-            var permissionsJson = JsonSerializer.Serialize(permissions);
-            _userRepository.UpdateUserPermissions(SelectedUser.Username, permissionsJson);
-
-            // Refresh user list
+            SelectedUser.PermissionsJson = JsonSerializer.Serialize(permissions);
+            _userRepository.UpdateUser(SelectedUser);
             LoadUsers();
+            MessageBox.Show("User settings saved successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private bool CanSaveUserSettings(object? obj)
+        private void AddUser(object? obj)
         {
-            return SelectedUser != null;
+            var addUserDialog = new AddUserDialog();
+            var addUserViewModel = new AddUserDialogViewModel();
+            addUserDialog.DataContext = addUserViewModel;
+
+            if (addUserDialog.ShowDialog() == true)
+            {
+                var newUser = new User
+                {
+                    Username = addUserViewModel.Username,
+                    PasswordHash = _userRepository.HashPassword(addUserViewModel.Password),
+                    Role = addUserViewModel.SelectedRole,
+                    IsActive = true
+                };
+                _userRepository.AddUser(newUser);
+                LoadUsers();
+            }
         }
 
-        private void ResetPermissions(object? obj)
+        private void ResetPassword(object? obj)
         {
-            ResetPermissionsToDefaults();
+            if (SelectedUser == null) return;
+
+            var resetPasswordDialog = new ResetPasswordDialog();
+            var resetPasswordViewModel = new ResetPasswordDialogViewModel();
+            resetPasswordDialog.DataContext = resetPasswordViewModel;
+
+            if (resetPasswordDialog.ShowDialog() == true)
+            {
+                _userRepository.UpdatePassword(SelectedUser.Username, resetPasswordViewModel.Password);
+                MessageBox.Show("Password updated successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
-        private bool CanResetPermissions(object? obj)
+        private void DeleteUser(object? obj)
         {
-            return SelectedUser != null;
+            if (SelectedUser == null) return;
+
+            if (MessageBox.Show($"Are you sure you want to delete user '{SelectedUser.Username}'?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                _userRepository.SoftDeleteUser(SelectedUser.Username);
+                LoadUsers();
+                SelectedUser = null;
+            }
         }
+
+        private bool CanUpdateOrReset(object? obj) => SelectedUser != null;
+        private bool CanSaveUserSettings(object? obj) => SelectedUser != null;
+        private bool CanResetPermissions(object? obj) => SelectedUser != null;
+
+        private void ResetPermissions(object? obj) => ResetPermissionsToDefaults();
 
         private void ResetPermissionsToDefaults()
         {
-            // Set default permissions based on role
             if (SelectedUser == null) return;
-
             switch ((SelectedUser.Role ?? string.Empty).ToLower())
             {
                 case "admin":
-                    CanViewReports = true;
-                    CanManageSchedule = true;
-                    CanViewFinancials = true;
-                    CanManageInventory = true;
+                    CanViewReports = CanManageSchedule = CanViewFinancials = CanManageInventory = true;
                     break;
                 case "manager":
-                    CanViewReports = true;
-                    CanManageSchedule = true;
-                    CanViewFinancials = true;
+                    CanViewReports = CanManageSchedule = CanViewFinancials = true;
                     CanManageInventory = false;
                     break;
-                default: // User
-                    CanViewReports = false;
-                    CanManageSchedule = false;
-                    CanViewFinancials = false;
-                    CanManageInventory = false;
+                default:
+                    CanViewReports = CanManageSchedule = CanViewFinancials = CanManageInventory = false;
                     break;
             }
         }

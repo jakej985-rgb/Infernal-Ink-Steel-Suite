@@ -1,31 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using InfernalInkSteelSuite.Web.Services;
+using InfernalInkSteelSuite.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using InfernalInkSteelSuite.Web.Models;
-// In real app, inject Service/Repo
 
 namespace InfernalInkSteelSuite.Web.Pages.Appointments
 {
-    public class PurgatoryModel : PageModel
+    public class PurgatoryModel(ApiClient apiClient) : PageModel
     {
-        public List<AppointmentDto> PendingAppts { get; set; } = new List<AppointmentDto>();
-        public List<AppointmentDto> ConfirmedAppts { get; set; } = new List<AppointmentDto>();
-        public List<AppointmentDto> CompletedAppts { get; set; } = new List<AppointmentDto>();
+        private readonly ApiClient _apiClient = apiClient;
 
-        public void OnGet()
+        public List<AppointmentDto> PendingAppts { get; set; } = [];
+        public List<AppointmentDto> ConfirmedAppts { get; set; } = [];
+        public List<AppointmentDto> CompletedAppts { get; set; } = [];
+
+        public async Task OnGetAsync()
         {
-            // MOCKED DATA for demonstration
-            // In production, this would use _appointmentRepository.GetAll()
+            var all = await _apiClient.GetAppointmentsAsync();
             
-            PendingAppts.Add(new AppointmentDto { Id = 101, ClientName = "John Doe", ServiceType = "Consultation", StartTime = DateTime.Today.AddHours(14), Status = "Pending" });
-            PendingAppts.Add(new AppointmentDto { Id = 102, ClientName = "Jane Smith", ServiceType = "Flash Tattoo", StartTime = DateTime.Today.AddDays(1), Status = "Pending" });
+            PendingAppts = [.. all.Where(a => a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))];
+            ConfirmedAppts = [.. all.Where(a => a.Status.Equals("Confirmed", StringComparison.OrdinalIgnoreCase))];
+            CompletedAppts = [.. all.Where(a => a.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase))];
+        }
 
-            ConfirmedAppts.Add(new AppointmentDto { Id = 201, ClientName = "Mike Tyson", ServiceType = "Face Tattoo", StartTime = DateTime.Today.AddHours(10), Status = "Confirmed" });
-            
-            CompletedAppts.Add(new AppointmentDto { Id = 301, ClientName = "Old Client", ServiceType = "Cover Up", StartTime = DateTime.Today.AddDays(-5), Status = "Completed" });
+        public async Task<IActionResult> OnPostUpdateStatusAsync(int id, string status)
+        {
+            var appt = await _apiClient.GetAppointmentAsync(id);
+            if (appt == null) return NotFound();
+
+            appt = appt with { Status = status };
+            await _apiClient.UpdateAppointmentAsync(appt);
+
+            return new JsonResult(new { success = true });
         }
     }
 }

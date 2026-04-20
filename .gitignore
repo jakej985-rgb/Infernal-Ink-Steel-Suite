@@ -32,6 +32,7 @@ project.assets.json
 # Environment files
 .env
 appsettings.local.json
+appsettings.Production.json
 
 # Other
 dotnet-install.sh

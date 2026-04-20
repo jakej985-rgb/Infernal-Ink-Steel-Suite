@@ -1,0 +1,117 @@
+<UserControl x:Class="InfernalInkSteelSuite.Views.Settings.UserManagementTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="900">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter"/>
+        
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="User Management" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,20"/>
+
+            <!-- User List & Search -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="👥 User List" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Add New User" Command="{Binding AddUserCommand}" Style="{StaticResource PrimaryButtonStyle}" Margin="0,0,10,0"/>
+                        </StackPanel>
+                        <TextBox Grid.Column="2" Width="200" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Tag="Search users..." Padding="5"/>
+                    </Grid>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredUsers}" SelectedItem="{Binding SelectedUser}" 
+                              AutoGenerateColumns="False" CanUserAddRows="False" MaxHeight="250" SelectionMode="Single" HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Username" Binding="{Binding Username}" IsReadOnly="True" Width="*"/>
+                            <DataGridTextColumn Header="Role" Binding="{Binding Role}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Department" Binding="{Binding Department}" Width="120" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Expander>
+
+            <!-- Selected User Details -->
+            <StackPanel Visibility="{Binding HasUserSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Margin="0,10,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Profile & Actions -->
+                    <StackPanel Grid.Column="0">
+                        <Expander IsExpanded="True" Margin="0,0,0,10">
+                            <Expander.Header>
+                                <TextBlock Text="🛠️ Account Actions" Style="{StaticResource SectionHeaderStyle}"/>
+                            </Expander.Header>
+                            <StackPanel Margin="10">
+                                <Button Content="Reset Password" Command="{Binding ResetPasswordCommand}" Margin="0,0,0,5" HorizontalAlignment="Stretch"/>
+                                <Button Content="Delete User" Command="{Binding DeleteUserCommand}" Margin="0,5,0,0" HorizontalAlignment="Stretch" Foreground="Red" BorderBrush="Red"/>
+                            </StackPanel>
+                        </Expander>
+
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <TextBlock Text="📂 Department &amp; Commission" Style="{StaticResource SectionHeaderStyle}"/>
+                            </Expander.Header>
+                            <StackPanel Margin="10">
+                                <Label Content="Department" Foreground="{DynamicResource TextColor}"/>
+                                <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" Margin="0,0,0,10"/>
+                                <Label Content="Commission Rate (%)" Foreground="{DynamicResource TextColor}"/>
+                                <TextBox Text="{Binding CommissionRate, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+
+                    <!-- Permissions -->
+                    <Expander Grid.Column="2" IsExpanded="True">
+                        <Expander.Header>
+                            <TextBlock Text="🔐 Permissions" Style="{StaticResource SectionHeaderStyle}"/>
+                        </Expander.Header>
+                        <StackPanel Margin="10">
+                            <CheckBox Content="Can View Reports" IsChecked="{Binding CanViewReports}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                            <CheckBox Content="Can Manage Schedule" IsChecked="{Binding CanManageSchedule}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                            <CheckBox Content="Can View Financials" IsChecked="{Binding CanViewFinancials}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                            <CheckBox Content="Can Manage Inventory" IsChecked="{Binding CanManageInventory}" Foreground="{DynamicResource TextColor}" Margin="0,5"/>
+                            
+                            <Button Content="Reset to Role Defaults" Command="{Binding ResetPermissionsCommand}" Margin="0,20,0,0" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Expander>
+                </Grid>
+
+                <Button Content="Save User Changes" Command="{Binding SaveUserSettingsCommand}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Margin="0,20,0,0" Padding="20,10"/>
+            </StackPanel>
+            
+            <TextBlock Text="Select a user to modify their settings." HorizontalAlignment="Center" Margin="0,100,0,0" FontSize="16" Opacity="0.5"
+                       Visibility="{Binding HasUserSelected, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Inverse}"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

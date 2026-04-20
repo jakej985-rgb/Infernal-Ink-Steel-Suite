@@ -1,31 +1,30 @@
 using InfernalInkSteelSuite.Domain;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace InfernalInkSteelSuite.Data.Tests
 {
-    [TestClass]
     public class ClientTests
     {
-        [TestMethod]
-        [DataRow("John", "Doe", "", "John Doe")]
-        [DataRow("John", "Doe", " ", "John Doe")]
-        [DataRow("John", "Doe", null, "John Doe")]
-        [DataRow("John", "", "Smith", "John Smith")]
-        [DataRow("John", " ", "Smith", "John Smith")]
-        [DataRow(null, " ", "Smith", "Smith")]
-        [DataRow(null, null, "Smith", "Smith")]
-        [DataRow("John", "  Michael  ", "Doe", "John Michael Doe")]
+        [Theory]
+        [InlineData("John", "Doe", "", "John Doe")]
+        [InlineData("John", "Doe", " ", "John Doe")]
+        [InlineData("John", "Doe", null, "John Doe")]
+        [InlineData("John", "", "Smith", "John Smith")]
+        [InlineData("John", " ", "Smith", "John Smith")]
+        [InlineData(null, " ", "Smith", "Smith")]
+        [InlineData(null, null, "Smith", "Smith")]
+        [InlineData("John", "  Michael  ", "Doe", "John Michael Doe")]
         public void FullName_ShouldFormatCorrectly(string firstName, string middleName, string lastName, string expected)
         {
             var client = new Client { FirstName = firstName, MiddleName = middleName, LastName = lastName };
-            Assert.AreEqual(expected, client.FullName);
+            Assert.Equal(expected, client.FullName);
         }
 
-        [TestMethod]
+        [Fact]
         public void FullName_ShouldTrimWhitespaceFromAllNameParts()
         {
             var client = new Client { FirstName = "  John  ", MiddleName = "  Michael  ", LastName = "  Doe  " };
-            Assert.AreEqual("John Michael Doe", client.FullName);
+            Assert.Equal("John Michael Doe", client.FullName);
         }
     }
 }

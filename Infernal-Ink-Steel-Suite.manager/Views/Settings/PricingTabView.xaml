@@ -1,0 +1,106 @@
+<UserControl x:Class="InfernalInkSteelSuite.Views.Settings.PricingTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:StringToDoubleConverter x:Key="StringToDoubleConverter"/>
+        <converters:StringToIntConverter x:Key="StringToIntConverter"/>
+        <Style x:Key="SettingLabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Pricing &amp; Presets" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,20"/>
+
+            <!-- Rates -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="💰 Base Rates &amp; Taxes" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="25"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0">
+                        <Label Content="Tattoo Hourly Rate ($/hr)" Style="{StaticResource SettingLabelStyle}"/>
+                        <TextBox Text="{Binding TattooRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Content="Piercing Rate (Single)" Style="{StaticResource SettingLabelStyle}"/>
+                        <TextBox Text="{Binding PiercingSingle, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Content="Shop Minimum Charge ($)" Style="{StaticResource SettingLabelStyle}"/>
+                        <TextBox Text="{Binding ShopMinimumRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Tax Rate (%)" Style="{StaticResource SettingLabelStyle}"/>
+                        <TextBox Text="{Binding TaxRate, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Label Content="Deposit Policy Type" Style="{StaticResource SettingLabelStyle}"/>
+                        <ComboBox SelectedValue="{Binding DepositType}" SelectedValuePath="Content">
+                            <ComboBoxItem Content="Percentage"/>
+                            <ComboBoxItem Content="Fixed"/>
+                        </ComboBox>
+
+                        <Label Content="Standard Deposit Amount" Style="{StaticResource SettingLabelStyle}"/>
+                        <TextBox Text="{Binding DepositAmount, Converter={StaticResource StringToDoubleConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+
+            <!-- Booking Presets -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="⏰ Booking &amp; Duration Presets" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <StackPanel Margin="15">
+                    <Label Content="Booking Buffer (Minutes between appointments)" Style="{StaticResource SettingLabelStyle}"/>
+                    <TextBox Text="{Binding BookingBufferMinutes, Converter={StaticResource StringToIntConverter}, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                    <Label Content="Active Duration Presets (Minutes)" Style="{StaticResource SettingLabelStyle}"/>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl ItemsSource="{Binding AppointmentDurationPresets}" Grid.Column="0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource SurfaceAltBrush}" CornerRadius="6" Margin="0,0,8,8" Padding="10,5" BorderBrush="{DynamicResource PrimaryBorderBrush}" BorderThickness="1">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="0,0,10,0" FontWeight="Bold"/>
+                                            <Button Content="×" Command="{Binding DataContext.RemoveDurationPresetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}" Background="Transparent" BorderThickness="0" Foreground="Red" ToolTip="Remove Preset"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBox Text="{Binding NewDurationPreset, Converter={StaticResource StringToIntConverter}, UpdateSourceTrigger=PropertyChanged}" Width="150" Tag="New preset (min)..."/>
+                        <Button Content="Add Preset" Command="{Binding AddDurationPresetCommand}" Margin="10,0,0,0" Padding="15,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Expander>
+
+            <Button Content="Save Pricing Settings" Command="{Binding SaveSettingsCommand}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Margin="0,25,0,0" Padding="25,10"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

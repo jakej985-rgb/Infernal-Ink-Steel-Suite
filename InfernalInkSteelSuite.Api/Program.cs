@@ -2,6 +2,8 @@ using InfernalInkSteelSuite.Data;
 using InfernalInkSteelSuite.Api.Dtos;
 using InfernalInkSteelSuite.Api.Models;
 using InfernalInkSteelSuite.Api.Services;
+using InfernalInkSteelSuite.Repositories.Services;
+using SharedHasher = InfernalInkSteelSuite.Repositories.Services.PasswordHasher;
 using InfernalInkSteelSuite.Domain;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +33,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(connectionString);
+    options.UseSqlite(connectionString);
 });
 
-builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddSingleton<SharedHasher>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<ISyncService, SyncService>();
 // Repositories will be transitioned to use AppDbContext internally or via injection
@@ -44,6 +46,7 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
 builder.Services.AddScoped<DocumentService>();
 builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<QuoteService>();
 builder.Services.AddScoped<StatsService>();
 builder.Services.AddHttpContextAccessor();
@@ -85,7 +88,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:5001", "https://localhost:5001")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -103,7 +106,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 // ---- Auth (temporary simple login) ----
-app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db, PasswordHasher hasher, TokenService tokenService) =>
+app.MapPost("/auth/login", async (LoginRequest request, AppDbContext db, SharedHasher hasher, TokenService tokenService) =>
 {
     var user = await db.Users
         .FirstOrDefaultAsync(u => u.Username == request.Username);
@@ -141,7 +144,7 @@ app.MapGet("/api/users", async (AppDbContext db) =>
     return Results.Ok(users.Select(u =>
     {
         Enum.TryParse<UserRole>(u.Role, true, out var roleEnum);
-        return new { u.Id, u.Username, DisplayName = u.Username, Role = roleEnum, u.IsActive };
+        return new { u.Id, u.Username, DisplayName = u.DisplayName ?? u.Username, Role = roleEnum, u.IsActive };
     }));
 }).RequireAuthorization("IsAdmin");
 
@@ -155,19 +158,19 @@ app.MapGet("/api/users/{id:int}", async (int id, AppDbContext db) =>
 }).RequireAuthorization("IsAdmin");
 
 
-app.MapPost("/api/users", async (UserCreateDto newUser, PasswordHasher hasher, AppDbContext db) =>
+app.MapPost("/api/users", async (UserCreateDto newUser, SharedHasher hasher, AppDbContext db) =>
 {
     var user = new User
     {
         Username = newUser.Username,
         PasswordHash = hasher.HashPassword(newUser.Password),
-        // Domain.User doesn't have DisplayName, use Username or ignore
+        DisplayName = newUser.DisplayName,
         Role = newUser.Role.ToString(),
         IsActive = true
     };
     db.Users.Add(user);
     await db.SaveChangesAsync();
-    return Results.Created($"/api/users/{user.Id}", new { user.Id, user.Username, DisplayName = user.Username, newUser.Role, user.IsActive });
+    return Results.Created($"/api/users/{user.Id}", new { user.Id, user.Username, user.DisplayName, newUser.Role, user.IsActive });
 }).RequireAuthorization("IsAdmin");
 
 app.MapPut("/api/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbContext db) =>
@@ -176,15 +179,15 @@ app.MapPut("/api/users/{id:int}", async (int id, UserUpdateDto updateDto, AppDbC
     if (existing is null) return Results.NotFound();
 
     existing.Username = updateDto.Username;
-    // existing.DisplayName = updateDto.DisplayName; // Domain.User doesn't have DisplayName
+    existing.DisplayName = updateDto.DisplayName;
     existing.Role = updateDto.Role.ToString();
     existing.IsActive = updateDto.IsActive;
 
     await db.SaveChangesAsync();
-    return Results.Ok(new { existing.Id, existing.Username, DisplayName = existing.Username, updateDto.Role, existing.IsActive });
+    return Results.Ok(new { existing.Id, existing.Username, existing.DisplayName, updateDto.Role, existing.IsActive });
 }).RequireAuthorization("IsAdmin");
 
-app.MapPut("/api/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, PasswordHasher hasher, AppDbContext db) =>
+app.MapPut("/api/users/{id:int}/password", async (int id, UserUpdatePasswordDto passwordDto, SharedHasher hasher, AppDbContext db) =>
 {
     var existing = await db.Users.FindAsync(id);
     if (existing is null) return Results.NotFound();
@@ -314,7 +317,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var db = services.GetRequiredService<AppDbContext>();
-    var hasher = services.GetRequiredService<PasswordHasher>();
+    var hasher = services.GetRequiredService<SharedHasher>();
     // db.Database.Migrate();
     db.Database.EnsureCreated();
 
@@ -327,14 +330,14 @@ using (var scope = app.Services.CreateScope())
             {
                 Username = "admin",
                 PasswordHash = hasher.HashPassword("admin123"),
-                // DisplayName = "Shop Admin", // Domain.User doesn't have DisplayName
+                DisplayName = "Shop Admin",
                 Role = UserRole.Admin.ToString()
             },
             new User
             {
                 Username = "artist1",
                 PasswordHash = hasher.HashPassword("artist123"),
-                // DisplayName = "Artist One",
+                DisplayName = "Artist One",
                 Role = UserRole.Artist.ToString()
             }
         );

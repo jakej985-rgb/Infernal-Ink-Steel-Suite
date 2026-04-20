@@ -5,8 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using InfernalInkSteelSuite.Domain;
 using System.Collections.ObjectModel;
-using ScottPlot.WPF;
-using ScottPlot;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
@@ -38,31 +36,36 @@ namespace InfernalInkSteelSuite.ViewModels
         public int TotalVisits { get; set; }
         public double TotalHours { get; set; }
 
-        public double[] IncomeData { get; set; }
-        public double[] VisitsData { get; set; }
-        public double[] HoursData { get; set; }
+        private double[] _incomeData = [];
+        public double[] IncomeData
+        {
+            get => _incomeData;
+            set { _incomeData = value; OnPropertyChanged(nameof(IncomeData)); }
+        }
 
-        public WpfPlot IncomeChart { get; set; }
-        public WpfPlot VisitsChart { get; set; }
-        public WpfPlot HoursChart { get; set; }
+        private double[] _visitsData = [];
+        public double[] VisitsData
+        {
+            get => _visitsData;
+            set { _visitsData = value; OnPropertyChanged(nameof(VisitsData)); }
+        }
+
+        private double[] _hoursData = [];
+        public double[] HoursData
+        {
+            get => _hoursData;
+            set { _hoursData = value; OnPropertyChanged(nameof(HoursData)); }
+        }
 
         public StatsViewModel(IAppointmentRepository appointmentRepository, IShopSettingsRepository shopSettingsRepository)
         {
             _appointmentRepository = appointmentRepository;
             _shopSettingsRepository = shopSettingsRepository;
 
-            IncomeChart = new WpfPlot();
-            VisitsChart = new WpfPlot();
-            HoursChart = new WpfPlot();
-
-            IncomeData = [];
-            VisitsData = [];
-            HoursData = [];
-
             Years = [];
             PopulateYearSelector();
-            SelectedYear = Years.FirstOrDefault();
-            LoadData(SelectedYear);
+            _selectedYear = Years.FirstOrDefault();
+            LoadData(_selectedYear);
         }
 
         public void PopulateYearSelector()
@@ -124,32 +127,6 @@ namespace InfernalInkSteelSuite.ViewModels
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalVisits));
             OnPropertyChanged(nameof(TotalHours));
-
-            UpdateCharts();
-        }
-
-        private void UpdateCharts()
-        {
-            IncomeChart.Plot.Clear();
-            IncomeChart.Plot.Add.Bars(IncomeData);
-            IncomeChart.Plot.XLabel("Month");
-            IncomeChart.Plot.YLabel("Income");
-            IncomeChart.Plot.Title($"Monthly Income - {SelectedYear}");
-            IncomeChart.Refresh();
-
-            VisitsChart.Plot.Clear();
-            VisitsChart.Plot.Add.Bars(VisitsData);
-            VisitsChart.Plot.XLabel("Month");
-            VisitsChart.Plot.YLabel("Visits");
-            VisitsChart.Plot.Title($"Monthly Visits - {SelectedYear}");
-            VisitsChart.Refresh();
-
-            HoursChart.Plot.Clear();
-            HoursChart.Plot.Add.Bars(HoursData);
-            HoursChart.Plot.XLabel("Month");
-            HoursChart.Plot.YLabel("Hours");
-            HoursChart.Plot.Title($"Monthly Tattoo Hours - {SelectedYear}");
-            HoursChart.Refresh();
         }
 
 

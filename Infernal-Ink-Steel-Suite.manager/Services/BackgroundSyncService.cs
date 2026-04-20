@@ -18,7 +18,6 @@ namespace InfernalInkSteelSuite.Services
         private readonly SyncClient _syncClient;
         private readonly IShopSettingsRepository _settingsRepo;
         private CancellationTokenSource? _cts;
-        private DateTime _lastSyncUtc = DateTime.MinValue;
 
         public event Action<string>? OnSyncStatusChanged;
 
@@ -64,8 +63,8 @@ namespace InfernalInkSteelSuite.Services
 
             // Simplified deserialization since we just need the URL and Key
             var linked = JsonSerializer.Deserialize<JsonElement>(settings.LinkedAccountsJson);
-            string? webAppUrl = linked.GetProperty("WebAppUrl").GetString();
-            string? apiKey = linked.GetProperty("ApiKey").GetString();
+            string? webAppUrl = linked.TryGetProperty("WebAppUrl", out var urlEl) ? urlEl.GetString() : null;
+            string? apiKey = linked.TryGetProperty("ApiKey", out var keyEl) ? keyEl.GetString() : null;
 
             if (string.IsNullOrEmpty(webAppUrl)) return;
 
@@ -74,19 +73,26 @@ namespace InfernalInkSteelSuite.Services
 
             OnSyncStatusChanged?.Invoke("Syncing...");
 
+            var lastSyncUtc = settings.LastSyncUtc;
+            var nextSyncUtc = DateTime.UtcNow;
+
             // 1. Pull Changes from Server
-            await PullChangesAsync();
+            await PullChangesAsync(lastSyncUtc);
 
             // 2. Push Local Changes to Server
-            await PushChangesAsync();
+            await PushChangesAsync(lastSyncUtc);
+
+            // 3. Persist successful sync timestamp
+            settings.LastSyncUtc = nextSyncUtc;
+            _settingsRepo.SaveSettings(settings);
 
             OnSyncStatusChanged?.Invoke("Synced");
         }
 
-        private async Task PullChangesAsync()
+        private async Task PullChangesAsync(DateTime lastSyncUtc)
         {
             // Pull Clients
-            var remoteClients = await _syncClient.GetChangesAsync<Client>("api/sync/clients", _lastSyncUtc);
+            var remoteClients = await _syncClient.GetChangesAsync<Client>("api/sync/clients", lastSyncUtc);
             foreach (var remote in remoteClients)
             {
                 var local = await _localDb.Clients.FirstOrDefaultAsync(c => c.SyncId == remote.SyncId);
@@ -102,7 +108,7 @@ namespace InfernalInkSteelSuite.Services
             }
 
             // Pull Appointments (Conflict resolution logic)
-            var remoteAppts = await _syncClient.GetChangesAsync<Appointment>("api/sync/appointments", _lastSyncUtc);
+            var remoteAppts = await _syncClient.GetChangesAsync<Appointment>("api/sync/appointments", lastSyncUtc);
             foreach (var remote in remoteAppts)
             {
                 var local = await _localDb.Appointments.FirstOrDefaultAsync(a => a.SyncId == remote.SyncId);
@@ -130,14 +136,13 @@ namespace InfernalInkSteelSuite.Services
             }
 
             await _localDb.SaveChangesAsync();
-            _lastSyncUtc = DateTime.UtcNow;
         }
 
-        private async Task PushChangesAsync()
+        private async Task PushChangesAsync(DateTime lastSyncUtc)
         {
             // Push Local Clients
             var localClientChanges = await _localDb.Clients
-                .Where(c => c.LastModifiedUtc > _lastSyncUtc)
+                .Where(c => c.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
             if (localClientChanges.Any())
@@ -157,7 +162,7 @@ namespace InfernalInkSteelSuite.Services
 
             // Push Local Appointments
             var localApptChanges = await _localDb.Appointments
-                .Where(a => a.LastModifiedUtc > _lastSyncUtc)
+                .Where(a => a.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
             if (localApptChanges.Any())

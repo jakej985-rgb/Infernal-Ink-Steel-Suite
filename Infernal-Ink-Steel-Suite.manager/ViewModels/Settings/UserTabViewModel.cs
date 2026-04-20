@@ -174,7 +174,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void SaveFontSize(object? parameter)
         {
-            _userRepository.UpdateUserFontSize(_currentUser.Username, FontSize);
+            _currentUser.FontSize = FontSize;
+            _userRepository.UpdateUser(_currentUser);
         }
 
         private void OpenChangePasswordDialog(object? parameter)

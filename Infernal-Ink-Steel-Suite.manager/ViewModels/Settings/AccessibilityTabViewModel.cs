@@ -68,7 +68,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
 
         private void SaveSettings(object? parameter)
         {
-            _userRepository.UpdateUserFontSize(_currentUser.Username, FontSize);
+            _currentUser.FontSize = FontSize;
+            _userRepository.UpdateUser(_currentUser);
         }
     }
 }

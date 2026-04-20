@@ -26,9 +26,9 @@
                       IsEditable="True" 
                       IsTextSearchEnabled="False"
                       TextSearch.TextPath="FullName"
-                      Text="{Binding ClientSearchText, UpdateSourceTrigger=PropertyChanged}"
-                      ItemsSource="{Binding FilteredClients}" 
-                      SelectedItem="{Binding SelectedClient}">
+                      Text="{Binding ClientSearch.SearchText, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding ClientSearch.FilteredClients}" 
+                      SelectedItem="{Binding ClientSearch.SelectedClient}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding FullName}"/>
@@ -36,8 +36,8 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
             <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                <TextBlock Text="{Binding SelectedClient.Phone}" Margin="0,0,10,0" FontStyle="Italic" Foreground="Gray"/>
-                <TextBlock Text="{Binding SelectedClient.Email}" FontStyle="Italic" Foreground="Gray"/>
+                <TextBlock Text="{Binding ClientSearch.SelectedClient.Phone}" Margin="0,0,10,0" FontStyle="Italic" Foreground="Gray"/>
+                <TextBlock Text="{Binding ClientSearch.SelectedClient.Email}" FontStyle="Italic" Foreground="Gray"/>
             </StackPanel>
         </StackPanel>
 
@@ -46,10 +46,10 @@
 
         <Label Grid.Row="2" Grid.Column="0" Content="Time:"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-            <ComboBox ItemsSource="{Binding Hours}" SelectedItem="{Binding SelectedHour}" Width="50" Margin="0,0,5,0"/>
+            <ComboBox ItemsSource="{Binding TimePicker.Hours}" SelectedItem="{Binding TimePicker.SelectedHour}" Width="50" Margin="0,0,5,0"/>
             <Label Content=":" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding Minutes}" SelectedItem="{Binding SelectedMinute}" Width="50" Margin="5,0,5,0"/>
-            <ComboBox ItemsSource="{Binding AmPmOptions}" SelectedItem="{Binding SelectedAmPm}" Width="60" Margin="5,0,0,0"/>
+            <ComboBox ItemsSource="{Binding TimePicker.Minutes}" SelectedItem="{Binding TimePicker.SelectedMinute}" Width="50" Margin="5,0,5,0"/>
+            <ComboBox ItemsSource="{Binding TimePicker.AmPmOptions}" SelectedItem="{Binding TimePicker.SelectedAmPm}" Width="60" Margin="5,0,0,0"/>
             <CheckBox Content="Block Off Time" IsChecked="{Binding Appointment.IsBlockOff}" VerticalAlignment="Center" Margin="10,0,0,0"/>
         </StackPanel>
 

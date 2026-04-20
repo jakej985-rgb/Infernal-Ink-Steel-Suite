@@ -8,15 +8,16 @@ using System.Text;
 
 namespace InfernalInkSteelSuite.Repositories
 {
-    public class UserRepository(AppDbContext dbContext) : IUserRepository
+    public class UserRepository(AppDbContext dbContext, Services.PasswordHasher passwordHasher) : IUserRepository
     {
         private readonly AppDbContext _db = dbContext;
+        private readonly Services.PasswordHasher _hasher = passwordHasher;
 
         public bool CreateTable() => true;
 
-        public string HashPassword(string plain) => ComputeHash(plain);
+        public string HashPassword(string plain) => _hasher.HashPassword(plain);
 
-        private static string ComputeHash(string plain)
+        private static string ComputeLegacyHash(string plain)
         {
             byte[] bytes = SHA256.HashData(Encoding.UTF8.GetBytes(plain));
             StringBuilder builder = new();
@@ -55,6 +56,8 @@ namespace InfernalInkSteelSuite.Repositories
         public bool UpdateUser(User user)
         {
             _db.Users.Update(user);
+            // Protect the password hash from being overwritten by general updates
+            _db.Entry(user).Property(x => x.PasswordHash).IsModified = false;
             user.LastModifiedUtc = DateTime.UtcNow;
             return _db.SaveChanges() > 0;
         }
@@ -68,7 +71,22 @@ namespace InfernalInkSteelSuite.Repositories
         {
             var user = GetUserByUsername(username);
             if (user == null) return false;
-            return user.PasswordHash == ComputeHash(plainPassword);
+
+            // Legacy Hashing Migration check
+            if (!user.PasswordHash.Contains(':'))
+            {
+                // Check if it matches legacy SHA-256
+                if (user.PasswordHash == ComputeLegacyHash(plainPassword))
+                {
+                    // Migrate to PBKDF2
+                    user.PasswordHash = _hasher.HashPassword(plainPassword);
+                    _db.SaveChanges();
+                    return true;
+                }
+                return false;
+            }
+
+            return _hasher.VerifyPassword(user.PasswordHash, plainPassword);
         }
 
         public bool DeleteUser(string username)
@@ -82,36 +100,12 @@ namespace InfernalInkSteelSuite.Repositories
             return false;
         }
 
-        public bool UpdateRole(string username, string role)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.Role = role;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
         public bool UpdatePassword(string username, string password)
         {
             var user = GetUserByUsername(username);
             if (user != null)
             {
                 user.PasswordHash = HashPassword(password);
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool UpdateAvatarPath(string username, string avatarPath)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.AvatarPath = avatarPath;
                 user.LastModifiedUtc = DateTime.UtcNow;
                 return _db.SaveChanges() > 0;
             }
@@ -133,84 +127,12 @@ namespace InfernalInkSteelSuite.Repositories
             return _db.Users.Where(u => u.IsActive && !((ISyncEntity)u).IsDeleted).ToList();
         }
 
-        public bool UpdateLastLogin(string username)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.LastLoginAt = DateTime.UtcNow;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool SetUserActiveStatus(string username, bool isActive)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.IsActive = isActive;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
         public bool SoftDeleteUser(string username)
         {
             var user = GetUserByUsername(username);
             if (user != null)
             {
                 user.IsDeleted = true;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool UpdateUserPermissions(string username, string permissionsJson)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.PermissionsJson = permissionsJson;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool UpdateUserDepartment(string username, string department)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.Department = department;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool UpdateUserCommissionRate(string username, decimal rate)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.CommissionRate = rate;
-                user.LastModifiedUtc = DateTime.UtcNow;
-                return _db.SaveChanges() > 0;
-            }
-            return false;
-        }
-
-        public bool UpdateUserFontSize(string username, int fontSize)
-        {
-            var user = GetUserByUsername(username);
-            if (user != null)
-            {
-                user.FontSize = fontSize;
                 user.LastModifiedUtc = DateTime.UtcNow;
                 return _db.SaveChanges() > 0;
             }

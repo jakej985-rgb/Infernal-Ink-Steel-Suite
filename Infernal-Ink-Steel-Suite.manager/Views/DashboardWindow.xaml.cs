@@ -31,7 +31,8 @@ namespace InfernalInkSteelSuite.Views
             _clientRepository = new ClientRepository(_db);
             _documentRepository = new DocumentRepository(_db);
             _shopSettingsRepository = new ShopSettingsRepository(_db);
-            _userRepository = new UserRepository(_db);
+            var hasher = new InfernalInkSteelSuite.Repositories.Services.PasswordHasher();
+            _userRepository = new UserRepository(_db, hasher);
             _quoteRepository = new QuoteRepository(_db);
             _imageComplexityService = new ImageComplexityService();
 
@@ -85,7 +86,7 @@ namespace InfernalInkSteelSuite.Views
             this.Close();
         }
 
-        private void Home_Click(object sender, RoutedEventArgs e)
+        internal void Home_Click(object? sender, RoutedEventArgs? e)
         {
             var homeDashboardViewModel = new HomeDashboardViewModel(_currentUser, _db);
             var homeDashboardView = new HomeDashboardView
@@ -95,17 +96,17 @@ namespace InfernalInkSteelSuite.Views
             MainContent.Content = homeDashboardView;
         }
 
-        private void Clients_Click(object sender, RoutedEventArgs e)
+        internal void Clients_Click(object? sender, RoutedEventArgs? e)
         {
             MainContent.Content = new ClientsView(_db);
         }
 
-        private void Appointments_Click(object sender, RoutedEventArgs e)
+        internal void Appointments_Click(object? sender, RoutedEventArgs? e)
         {
             MainContent.Content = new AppointmentsView(_db);
         }
 
-        private void Quotes_Click(object sender, RoutedEventArgs e)
+        internal void Quotes_Click(object? sender, RoutedEventArgs? e)
         {
             var quotesViewModel = new QuotesViewModel(_appointmentRepository);
             var quotesView = new QuotesView(_appointmentRepository)
@@ -136,7 +137,7 @@ namespace InfernalInkSteelSuite.Views
             MainContent.Content = documentsView;
         }
 
-        private void Settings_Click(object sender, RoutedEventArgs e)
+        internal void Settings_Click(object? sender, RoutedEventArgs? e)
         {
             var settingsViewModel = new SettingsViewModel(_db, _currentUser);
             var settingsView = new SettingsView
@@ -146,7 +147,7 @@ namespace InfernalInkSteelSuite.Views
             MainContent.Content = settingsView;
         }
 
-        private void Statistics_Click(object sender, RoutedEventArgs e)
+        internal void Statistics_Click(object? sender, RoutedEventArgs? e)
         {
             MainContent.Content = new StatsView(_db);
         }

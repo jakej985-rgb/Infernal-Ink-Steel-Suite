@@ -28,7 +28,8 @@ namespace InfernalInkSteelSuite
             _currentUser = null!;
             if (App.LocalDb != null)
             {
-                _userRepository = new UserRepository(App.LocalDb);
+                var hasher = new InfernalInkSteelSuite.Repositories.Services.PasswordHasher();
+                _userRepository = new UserRepository(App.LocalDb, hasher);
                 _settingsRepository = new ShopSettingsRepository(App.LocalDb);
             }
             else
@@ -182,20 +183,6 @@ namespace InfernalInkSteelSuite
             {
                 SignIn_Click(sender, e);
             }
-        }
-
-
-
-
-        private static string GetSha256Hash(string input)
-        {
-            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
-            var builder = new StringBuilder();
-            foreach (var b in bytes)
-            {
-                builder.Append(b.ToString("x2"));
-            }
-            return builder.ToString();
         }
 
         private static Color GetLighterColor(Color color, float factor)

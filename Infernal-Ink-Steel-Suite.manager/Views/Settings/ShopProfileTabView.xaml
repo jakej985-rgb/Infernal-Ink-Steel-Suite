@@ -1,0 +1,115 @@
+<UserControl x:Class="InfernalInkSteelSuite.Views.Settings.ShopProfileTabView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:InfernalInkSteelSuite.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="800" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        <converters:ImagePreviewConverter x:Key="ImagePreviewConverter"/>
+        <Style x:Key="SettingLabelStyle" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+            <Setter Property="Margin" Value="0,15,0,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <TextBlock Text="Shop Profile &amp; Branding" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,20"/>
+
+            <!-- Identity -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="🏷️ Shop Identity" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <StackPanel Margin="15">
+                    <Label Content="Display Shop Name" Style="{StaticResource SettingLabelStyle}"/>
+                    <TextBox Text="{Binding ShopName, UpdateSourceTrigger=PropertyChanged}" FontSize="16" Padding="8"/>
+                    
+                    <CheckBox IsChecked="{Binding IsSpecialMessageEnabled}" Content="Enable Special Broadcast Message" Margin="0,20,0,0" Foreground="{DynamicResource TextColor}" FontWeight="Medium"/>
+                    
+                    <Label Content="Broadcast Message Text" Style="{StaticResource SettingLabelStyle}"/>
+                    <TextBox Text="{Binding SpecialMessageText, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" Padding="8"/>
+                </StackPanel>
+            </Expander>
+
+            <!-- Visual Assets -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="🖼️ Visual Brand Assets" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Background -->
+                    <StackPanel Grid.Column="0">
+                        <Label Content="Login Screen Background" Style="{StaticResource SettingLabelStyle}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding LoginBackgroundPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+                                <Button Content="📁" Command="{Binding BrowseFileCommand}" CommandParameter="LoginBackgroundPath" Padding="8,2" ToolTip="Browse..."/>
+                                <Button Content="❌" Command="{Binding ClearImageCommand}" CommandParameter="LoginBackgroundPath" Margin="5,0,0,0" Foreground="Red" ToolTip="Clear Image"/>
+                            </StackPanel>
+                        </Grid>
+                        <Border Margin="0,10,0,0" BorderBrush="{DynamicResource PrimaryBorderBrush}" BorderThickness="1" CornerRadius="4" ClipToBounds="True" Visibility="{Binding LoginBackgroundPath, Converter={StaticResource NotNullToVisibilityConverter}}">
+                            <Image Source="{Binding LoginBackgroundPath, Converter={StaticResource ImagePreviewConverter}}" MaxHeight="180" Stretch="Uniform"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Sidebar -->
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Sidebar Branding Artwork" Style="{StaticResource SettingLabelStyle}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding SidebarArtworkPath, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" VerticalContentAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="5,0,0,0">
+                                <Button Content="📁" Command="{Binding BrowseFileCommand}" CommandParameter="SidebarArtworkPath" Padding="8,2" ToolTip="Browse..."/>
+                                <Button Content="❌" Command="{Binding ClearImageCommand}" CommandParameter="SidebarArtworkPath" Margin="5,0,0,0" Foreground="Red" ToolTip="Clear Image"/>
+                            </StackPanel>
+                        </Grid>
+                        <Border Margin="0,10,0,0" BorderBrush="{DynamicResource PrimaryBorderBrush}" BorderThickness="1" CornerRadius="4" ClipToBounds="True" Visibility="{Binding SidebarArtworkPath, Converter={StaticResource NotNullToVisibilityConverter}}">
+                            <Image Source="{Binding SidebarArtworkPath, Converter={StaticResource ImagePreviewConverter}}" MaxHeight="180" Stretch="Uniform"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+
+            <!-- Global Preferences -->
+            <Expander IsExpanded="True" Margin="0,0,0,10">
+                <Expander.Header>
+                    <TextBlock Text="⚙️ Global Display Preferences" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                </Expander.Header>
+                <StackPanel Margin="15">
+                    <CheckBox IsChecked="{Binding EnableHolidayThemes}" Content="Enable automatic global holiday themes" Foreground="{DynamicResource TextColor}"/>
+                    
+                    <Label Content="Base Application Font Size" Style="{StaticResource SettingLabelStyle}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Smaller" VerticalAlignment="Center" Margin="0,0,12,0" Foreground="{DynamicResource TextColor}"/>
+                        <Slider Grid.Column="1" Minimum="10" Maximum="22" Value="{Binding AppFontSize}" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft"/>
+                        <TextBlock Grid.Column="2" Text="Bigger" VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{DynamicResource TextColor}"/>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+
+            <Button Content="Save Profile &amp; Branding" Command="{Binding SaveSettingsCommand}" Style="{StaticResource PrimaryButtonStyle}" HorizontalAlignment="Right" Margin="0,25,0,0" Padding="30,12"/>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

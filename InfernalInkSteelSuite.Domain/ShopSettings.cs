@@ -36,6 +36,7 @@ namespace InfernalInkSteelSuite.Domain
         public string BackupSettingsJson { get; set; } = string.Empty;
         public string LinkedAccountsJson { get; set; } = string.Empty;
         public double AppFontSize { get; set; } = 14.0;
+        public DateTime LastSyncUtc { get; set; } = DateTime.MinValue;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;

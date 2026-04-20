@@ -8,11 +8,17 @@
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type viewmodels:AdminTabViewModel}">
-            <views:AdminTabView/>
+        <DataTemplate DataType="{x:Type viewmodels:UserManagementTabViewModel}">
+            <views:UserManagementTabView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type viewmodels:ManagerTabViewModel}">
-            <views:ManagerTabView/>
+        <DataTemplate DataType="{x:Type viewmodels:ShopHoursTabViewModel}">
+            <views:ShopHoursTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:PricingTabViewModel}">
+            <views:PricingTabView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodels:ShopProfileTabViewModel}">
+            <views:ShopProfileTabView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type viewmodels:UserTabViewModel}">
             <views:UserTabView/>

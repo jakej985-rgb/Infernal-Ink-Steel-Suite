@@ -6,11 +6,15 @@ namespace InfernalInkSteelSuite.Api.Services;
 public class StatsService(
     IAppointmentRepository appointmentRepository,
     IClientRepository clientRepository,
-    IShopSettingsRepository shopSettingsRepository)
+    IShopSettingsRepository shopSettingsRepository,
+    IQuoteRepository quoteRepository,
+    IUserRepository userRepository)
 {
     private readonly IAppointmentRepository _appointmentRepository = appointmentRepository;
     private readonly IClientRepository _clientRepository = clientRepository;
     private readonly IShopSettingsRepository _shopSettingsRepository = shopSettingsRepository;
+    private readonly IQuoteRepository _quoteRepository = quoteRepository;
+    private readonly IUserRepository _userRepository = userRepository;
 
     public DashboardStatsDto GetOverview()
     {
@@ -20,25 +24,25 @@ public class StatsService(
         // Optimally we'd add Count() methods to repositories.
         var appointments = _appointmentRepository.GetAll();
         var clients = _clientRepository.GetAll();
+        var quotes = _quoteRepository.GetAllQuotes();
 
-        var today = DateTime.UtcNow.Date;
+        var now = DateTime.UtcNow;
+        var today = now.Date;
+        
         var appointmentsToday = appointments.Count(a => a.StartTime.Date == today);
+        var upcomingAppointments = appointments.Count(a => a.StartTime > now);
+        var openQuotes = quotes.Count; // Assuming all returned quotes are "open" for now
 
         var recentClients = clients
-            .OrderByDescending(c => c.Id) // Assuming higher ID is newer, or we need CreatedAt which Client might not have
+            .OrderByDescending(c => c.Id)
             .Take(5)
             .Select(c => new ClientSummaryDto(c.Id, $"{c.FirstName} {c.LastName}", c.Email))
             .ToList();
 
-        // Check if shop is open
-        bool isOpen = false;
-        if (settings != null)
-        {
-            var now = DateTime.Now; // Local time for shop logic usually
-            var dayOfWeek = now.DayOfWeek.ToString();
-            // Simple check logic placeholder
-            isOpen = true;
-        }
+        // Check if shop is open (simplified placeholder)
+        bool isOpen = true;
+
+        var activeArtistsCount = _userRepository.GetActiveUsers().Count;
 
         return new DashboardStatsDto
         {
@@ -46,7 +50,9 @@ public class StatsService(
             TotalClients = clients.Count,
             RecentClients = recentClients,
             IsShopOpen = isOpen,
-            ActiveArtistsCount = 1 // Placeholder until we have UserRepo connected
+            ActiveArtistsCount = activeArtistsCount,
+            UpcomingAppointments = upcomingAppointments,
+            OpenQuotes = openQuotes
         };
     }
 
@@ -71,6 +77,8 @@ public class DashboardStatsDto
     public List<ClientSummaryDto> RecentClients { get; set; } = [];
     public bool IsShopOpen { get; set; }
     public int ActiveArtistsCount { get; set; }
+    public int UpcomingAppointments { get; set; }
+    public int OpenQuotes { get; set; }
 }
 
 public record ClientSummaryDto(int Id, string Name, string Email);

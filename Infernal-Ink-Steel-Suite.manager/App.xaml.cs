@@ -22,19 +22,36 @@ namespace InfernalInkSteelSuite
             {
                 SQLitePCL.Batteries.Init();
 
-                var dbPath = "C:\\InfernalInkSteelSuite\\Data\\infernalinksteel.db";
-                var dbDir = System.IO.Path.GetDirectoryName(dbPath);
-                if (!string.IsNullOrEmpty(dbDir) && !System.IO.Directory.Exists(dbDir))
+                var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var dbDir = System.IO.Path.Combine(appData, "InfernalInkSteelSuite", "Data");
+                if (!System.IO.Directory.Exists(dbDir))
                 {
                     System.IO.Directory.CreateDirectory(dbDir);
                 }
+                var dbPath = System.IO.Path.Combine(dbDir, "infernalinksteel.db");
                 ConnectionString = $"Data Source={dbPath}";
 
                 // Initialize EF Core Context for Desktop (SQLite)
                 var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
                 optionsBuilder.UseSqlite(ConnectionString);
                 LocalDb = new AppDbContext(optionsBuilder.Options);
-                LocalDb.Database.EnsureCreated();
+
+                // Add retry logic for database creation to handle race conditions with API
+                int retryCount = 0;
+                bool created = false;
+                while (!created && retryCount < 5)
+                {
+                    try
+                    {
+                        LocalDb.Database.EnsureCreated();
+                        created = true;
+                    }
+                    catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 5) // SQLITE_BUSY
+                    {
+                        retryCount++;
+                        System.Threading.Thread.Sleep(1000);
+                    }
+                }
 
                 // Initialize Sync Services
                 var settingsRepo = new ShopSettingsRepository(LocalDb);

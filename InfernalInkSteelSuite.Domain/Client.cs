@@ -18,6 +18,7 @@ namespace InfernalInkSteelSuite.Domain
         public string LastModifiedBy { get; set; } = "";
         public bool IsDeleted { get; set; }
         public byte[]? RowVersion { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public string FirstName
         {

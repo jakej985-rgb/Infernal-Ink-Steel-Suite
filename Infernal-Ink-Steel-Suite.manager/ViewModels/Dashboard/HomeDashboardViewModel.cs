@@ -14,8 +14,8 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
     public class HomeDashboardViewModel : BaseViewModel
     {
         private readonly AppDbContext _db;
-        private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IClientRepository _clientRepository;
+        private readonly AppointmentRepository _appointmentRepository;
+        private readonly ClientRepository _clientRepository;
         private readonly ShopSettingsRepository _shopSettingsRepository;
 
         // Properties for Data Binding
@@ -66,29 +66,11 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             ShopName = string.IsNullOrEmpty(shopSettings.ShopName) ? "Infernal Ink & Steel" : shopSettings.ShopName;
             CurrentDate = DateTime.Now.ToString("ddd, MMM dd, yyyy");
             Greeting = string.Empty;
+            AppointmentSummary = string.Empty;
             SetGreeting();
 
 
-            // Mock Data
-            TodayRevenue = 1250;
-            ThisWeekBookings = 18;
-            NewClients = 3;
-
-            TodayAppointments =
-            [
-                new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" },
-                new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" }
-            ];
-
-            AppointmentSummary = $"{TodayAppointments.Count} booked · 1 no-show risk · 2 walk-ins";
-
-            PopulateWeekDays();
-
-            ActionInboxItems =
-            [
-                new() { Icon = "⚠", Description = "Unsigned consent form – Maria Lopez (Today 11:00)" },
-                new() { Icon = "💰", Description = "Deposit overdue – John Smith (Tomorrow 14:00)" }
-            ];
+            LoadDashboardData();
 
             // Initialize Commands
             SelectDayCommand = new RelayCommand(SelectDay);
@@ -129,11 +111,11 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
                 view.ShowDialog();
             });
 
-            OpenFullCalendarCommand = new RelayCommand(p => Console.WriteLine("Open Full Calendar"));
-            OpenClientsListCommand = new RelayCommand(p => Console.WriteLine("Open Clients List"));
-            OpenInventoryCommand = new RelayCommand(p => Console.WriteLine("Open Inventory"));
-            OpenShopSettingsCommand = new RelayCommand(p => Console.WriteLine("Open Shop Settings"));
-            ResolveActionItemCommand = new RelayCommand(p => Console.WriteLine("Resolve Action Item"));
+            OpenFullCalendarCommand = new RelayCommand(p => (Application.Current.MainWindow as DashboardWindow)?.Appointments_Click(null, null));
+            OpenClientsListCommand = new RelayCommand(p => (Application.Current.MainWindow as DashboardWindow)?.Clients_Click(null, null));
+            OpenInventoryCommand = new RelayCommand(p => MessageBox.Show("Inventory management coming soon!", "Information", MessageBoxButton.OK, MessageBoxImage.Information));
+            OpenShopSettingsCommand = new RelayCommand(p => (Application.Current.MainWindow as DashboardWindow)?.Settings_Click(null, null));
+            ResolveActionItemCommand = new RelayCommand(p => MessageBox.Show("Action item resolution implemented in future update.", "Information", MessageBoxButton.OK, MessageBoxImage.Information));
         }
 
         private void SetGreeting()
@@ -149,6 +131,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
         private void PopulateWeekDays()
         {
+            WeekDays.Clear();
             var today = DateTime.Now;
             var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
             for (int i = 0; i < 7; i++)
@@ -177,18 +160,67 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             }
             selectedDay.IsSelected = true;
 
-            // In a real implementation, you would load appointments for the selected day here.
-            // For now, we'll just clear and add a dummy item to show it works.
+            LoadAppointmentsForDate(selectedDay.Date);
+        }
+
+        private void LoadDashboardData()
+        {
+            var today = DateTime.Today;
+            var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+            var endOfWeek = startOfWeek.AddDays(7);
+
+            // Today's Stats
+            var todayAppts = _appointmentRepository.GetAppointmentsByDateRange(today, today.AddDays(1).AddSeconds(-1));
+            TodayRevenue = todayAppts
+                .Where(a => a.Status.Equals("Completed", StringComparison.OrdinalIgnoreCase) || a.Status.Equals("Paid", StringComparison.OrdinalIgnoreCase))
+                .Sum(a => a.PriceCharged);
+
+            // Weekly Stats
+            var weekAppts = _appointmentRepository.GetAppointmentsByDateRange(startOfWeek, endOfWeek);
+            ThisWeekBookings = weekAppts.Count;
+
+            // Client Growth
+            var allClients = _clientRepository.GetAll();
+            NewClients = allClients.Count(c => c.CreatedAt >= startOfWeek && c.CreatedAt < endOfWeek);
+
+            LoadAppointmentsForDate(today);
+            PopulateWeekDays();
+
+            // Action Items (Simple logic)
+            ActionInboxItems.Clear();
+            var noShows = todayAppts.Where(a => a.Status.Equals("No-Show", StringComparison.OrdinalIgnoreCase));
+            foreach (var ns in noShows)
+            {
+                ActionInboxItems.Add(new ActionItemVm { Icon = "⚠", Description = $"Follow up on No-Show: {ns.Client?.FirstName ?? "Unknown"}" });
+            }
+
+            if (!ActionInboxItems.Any())
+            {
+                ActionInboxItems.Add(new ActionItemVm { Icon = "✅", Description = "All caught up! No urgent actions." });
+            }
+        }
+
+        private void LoadAppointmentsForDate(DateTime date)
+        {
+            var appts = _appointmentRepository.GetAppointmentsByDateRange(date.Date, date.Date.AddDays(1).AddSeconds(-1));
             TodayAppointments.Clear();
-            if (selectedDay.Date.Date == DateTime.Now.Date)
+            foreach (var a in appts)
             {
-                TodayAppointments.Add(new() { TimeRange = "11:00–12:30", ClientName = "Maria Lopez", Service = "Full sleeve linework", Artist = "AB", Status = "Confirmed" });
-                TodayAppointments.Add(new() { TimeRange = "13:00–14:00", ClientName = "John Smith", Service = "Piercing", Artist = "CD", Status = "Pending" });
+                TodayAppointments.Add(new TodayAppointmentVm
+                {
+                    TimeRange = $"{a.StartTime:HH:mm}–{a.EndTime:HH:mm}",
+                    ClientName = $"{a.Client?.FirstName} {a.Client?.LastName}".Trim(),
+                    Service = a.ServiceType,
+                    Artist = a.Artist?.Username?[..Math.Min(2, a.Artist.Username.Length)].ToUpper() ?? "??",
+                    Status = a.Status
+                });
             }
-            else
-            {
-                TodayAppointments.Add(new() { TimeRange = "10:00-11:00", ClientName = "Another Client", Service = "Consultation", Artist = "XY", Status = "Confirmed" });
-            }
+
+            AppointmentSummary = $"{TodayAppointments.Count} booked · {appts.Count(a => a.IsBlockOff)} blocked";
+            OnPropertyChanged(nameof(AppointmentSummary));
+            OnPropertyChanged(nameof(TodayRevenue));
+            OnPropertyChanged(nameof(ThisWeekBookings));
+            OnPropertyChanged(nameof(NewClients));
         }
     }
 }

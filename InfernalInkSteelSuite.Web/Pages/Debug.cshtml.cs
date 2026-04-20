@@ -25,8 +25,13 @@ namespace InfernalInkSteelSuite.Web.Pages
         public string ConnectionResult { get; set; } = "";
         public string ConnectionError { get; set; } = "";
 
-        public void OnGet()
+        public Microsoft.AspNetCore.Mvc.IActionResult OnGet()
         {
+            if (!_env.IsDevelopment())
+            {
+                return NotFound();
+            }
+
             ContentRootPath = _env.ContentRootPath;
             WebRootPath = _env.WebRootPath;
             ProcessName = Process.GetCurrentProcess().ProcessName;
@@ -97,6 +102,8 @@ namespace InfernalInkSteelSuite.Web.Pages
                 ConnectionResult = "Failed";
                 ConnectionError = ex.ToString();
             }
+
+            return Page();
         }
     }
 }

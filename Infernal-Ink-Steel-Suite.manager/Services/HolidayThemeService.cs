@@ -41,7 +41,13 @@ namespace InfernalInkSteelSuite.Services
             HolidayRanges.Add(ThemeId.Spring, (new DateTime(year, 3, 20), new DateTime(year, 6, 20)));
             HolidayRanges.Add(ThemeId.Summer, (new DateTime(year, 6, 21), new DateTime(year, 9, 22)));
             HolidayRanges.Add(ThemeId.Fall, (new DateTime(year, 9, 23), new DateTime(year, 12, 21)));
-            HolidayRanges.Add(ThemeId.Winter, (new DateTime(year, 12, 22), new DateTime(year + 1, 3, 19)));
+            
+            // Winter cross-year handling:
+            // 1. Current winter (started last year, ends this March)
+            HolidayRanges.Add(ThemeId.Winter, (new DateTime(year - 1, 12, 22), new DateTime(year, 3, 19)));
+            // 2. Upcoming winter (starts this December, ends next March)
+            // Note: Since we use a dictionary with ThemeId as key, we can't have duplicate keys.
+            // We'll handle this by checking both ranges specifically for Winter.
         }
 
         public static ThemeDefinition? GetCurrentHolidayTheme()
@@ -52,13 +58,26 @@ namespace InfernalInkSteelSuite.Services
             }
 
             var today = DateTime.Now;
-            if (today.Year != HolidayRanges.First().Value.Start.Year)
+            if (HolidayRanges.Count == 0 || today.Year != HolidayRanges.First(r => r.Key != ThemeId.Winter).Value.Start.Year)
             {
                 InitializeHolidayRanges(today.Year);
             }
 
+            // Specific check for Winter due to cross-year boundary
+            var winterStartThisYear = new DateTime(today.Year, 12, 22);
+            var winterEndThisYear = new DateTime(today.Year, 3, 19);
+            var winterStartLastYear = new DateTime(today.Year - 1, 12, 22);
+            var winterEndNextYear = new DateTime(today.Year + 1, 3, 19);
+
+            if ((today >= winterStartLastYear && today < winterEndThisYear) || 
+                (today >= winterStartThisYear && today < winterEndNextYear))
+            {
+                return ThemeManager.AvailableThemes.FirstOrDefault(t => t.Id == ThemeId.Winter);
+            }
+
             foreach (var range in HolidayRanges)
             {
+                if (range.Key == ThemeId.Winter) continue;
                 if (today >= range.Value.Start && today < range.Value.End)
                 {
                     return ThemeManager.AvailableThemes.FirstOrDefault(t => t.Id == range.Key);

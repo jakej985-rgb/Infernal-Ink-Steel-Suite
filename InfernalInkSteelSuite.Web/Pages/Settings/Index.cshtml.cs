@@ -21,7 +21,7 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
         // --- Helper Models for JSON sections ---
 
         [BindProperty]
-        public List<ShopDaySetting> ShopHours { get; set; } = [];
+        public List<ShopDaySettingVm> ShopHours { get; set; } = [];
 
         [BindProperty]
         public NotificationSettingsModel NotificationSettings { get; set; } = new();
@@ -57,7 +57,6 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
                 LoadShopHours(Settings.ShopHoursJson);
                 LoadNotificationSettings(Settings.NotificationSettingsJson);
                 LoadBackupSettings(Settings.BackupSettingsJson);
-                LoadBackupSettings(Settings.BackupSettingsJson);
                 LoadLinkedAccounts(Settings.LinkedAccountsJson);
             }
 
@@ -73,8 +72,17 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
             var token = HttpContext.Session.GetString("ApiToken");
             if (string.IsNullOrEmpty(token)) return RedirectToPage("/Account/Login");
 
+            // Map VM back to Domain before serializing
+            var hoursDomain = ShopHours.Select(h => new ShopDaySetting
+            {
+                Day = h.Day,
+                IsOpen = h.IsOpen,
+                StartTime = TimeSpan.Parse(h.StartTimeStr),
+                EndTime = TimeSpan.Parse(h.EndTimeStr)
+            }).ToList();
+
             // Serialize helpers back to JSON
-            Settings.ShopHoursJson = JsonSerializer.Serialize(ShopHours);
+            Settings.ShopHoursJson = JsonSerializer.Serialize(hoursDomain);
             Settings.NotificationSettingsJson = JsonSerializer.Serialize(NotificationSettings);
             Settings.BackupSettingsJson = JsonSerializer.Serialize(BackupSettings);
             Settings.LinkedAccountsJson = JsonSerializer.Serialize(LinkedAccounts);
@@ -97,17 +105,27 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
             if (string.IsNullOrEmpty(json))
             {
                 // Default Hours
-                ShopHours = Enum.GetValues<DayOfWeek>().Select(d => new ShopDaySetting
+                ShopHours = Enum.GetValues<DayOfWeek>().Select(d => new ShopDaySettingVm
                 {
                     Day = d,
                     IsOpen = d != DayOfWeek.Sunday,
-                    StartTime = new TimeSpan(10, 0, 0),
-                    EndTime = new TimeSpan(19, 0, 0)
+                    StartTimeStr = "10:00",
+                    EndTimeStr = "19:00"
                 }).ToList();
             }
             else
             {
-                try { ShopHours = JsonSerializer.Deserialize<List<ShopDaySetting>>(json) ?? []; }
+                try 
+                { 
+                    var domain = JsonSerializer.Deserialize<List<ShopDaySetting>>(json) ?? []; 
+                    ShopHours = domain.Select(h => new ShopDaySettingVm
+                    {
+                        Day = h.Day,
+                        IsOpen = h.IsOpen,
+                        StartTimeStr = h.StartTime.ToString(@"hh\:mm"),
+                        EndTimeStr = h.EndTime.ToString(@"hh\:mm")
+                    }).ToList();
+                }
                 catch { ShopHours = []; }
             }
         }
@@ -137,6 +155,14 @@ namespace InfernalInkSteelSuite.Web.Pages.Settings
                 try { LinkedAccounts = JsonSerializer.Deserialize<LinkedAccountsModel>(json) ?? new(); }
                 catch { LinkedAccounts = new(); }
             }
+        }
+
+        public class ShopDaySettingVm
+        {
+            public DayOfWeek Day { get; set; }
+            public bool IsOpen { get; set; }
+            public string StartTimeStr { get; set; } = "10:00";
+            public string EndTimeStr { get; set; } = "19:00";
         }
 
         public class NotificationSettingsModel

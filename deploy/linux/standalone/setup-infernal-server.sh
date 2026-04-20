@@ -90,6 +90,9 @@ if [[ ! -f "$APPSETTINGS" ]]; then
   echo
   echo "appsettings.json not found in $API_DIR, creating a default one..."
 
+  # Generate a unique JWT secret if not provided
+  JWT_SECRET=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 32)
+  
   cat > "$APPSETTINGS" <<EOF
 {
   "ConnectionStrings": {
@@ -106,14 +109,14 @@ if [[ ! -f "$APPSETTINGS" ]]; then
   },
   "AllowedHosts": "*",
   "Jwt": {
-    "Key": "A-STRONGER-DEFAULT-KEY-FOR-LOCAL-DEV-ENV-ONLY-CHANGE-THIS-IN-PRODUCTION-VIA-ENV-VAR-OR-SECRET-STORE",
+    "Key": "$JWT_SECRET",
     "Issuer": "InfernalInkSteelSuite.Api",
     "Audience": "InfernalInkSteelSuite.Clients",
-    "ExpiryHours": 1
+    "ExpiryHours": 8
   }
 }
 EOF
-
+  echo "  [OK] Default appsettings.json created with generated JWT secret."
   chown "$APPUSER:$APPUSER" "$APPSETTINGS"
 else
   echo
@@ -138,6 +141,7 @@ Restart=always
 RestartSec=10
 User=$APPUSER
 Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5000
 
 [Install]
 WantedBy=multi-user.target
@@ -158,6 +162,7 @@ Restart=always
 RestartSec=10
 User=$APPUSER
 Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=ASPNETCORE_URLS=http://127.0.0.1:5001
 
 [Install]
 WantedBy=multi-user.target
@@ -169,18 +174,67 @@ echo "=== Enabling and starting services... ==="
 systemctl daemon-reload
 systemctl enable infernal-api.service
 systemctl enable infernal-web.service
-systemctl start infernal-api.service || echo "Warning: infernal-api failed to start, check logs with: journalctl -u infernal-api.service -n 50"
-systemctl start infernal-web.service || echo "Warning: infernal-web failed to start, check logs with: journalctl -u infernal-web.service -n 50"
+systemctl start infernal-api.service || echo "Warning: infernal-api failed to start"
+echo "Waiting for API to initialize database..."
+sleep 5
+systemctl start infernal-web.service || echo "Warning: infernal-web failed to start"
 
 systemctl status infernal-api.service --no-pager || true
 systemctl status infernal-web.service --no-pager || true
 
+# ----- INSTALL NGINX & CONFIGURE PROXY -----
+echo
+echo "=== Installing and configuring Nginx reverse proxy... ==="
+apt install -y nginx
+systemctl enable nginx
+systemctl start nginx
+
+NGINX_SITE="/etc/nginx/sites-available/infernal-ink"
+cat >"$NGINX_SITE" <<'EOF'
+server {
+    listen 80;
+    listen [::]:80;
+    server_name _;
+
+    # Proxy /api -> API service on port 5000
+    location /api/ {
+        proxy_pass         http://127.0.0.1:5000/;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection keep-alive;
+        proxy_set_header   Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+
+    # Everything else -> Web app on port 5001
+    location / {
+        proxy_pass         http://127.0.0.1:5001/;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection keep-alive;
+        proxy_set_header   Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+    }
+}
+EOF
+
+ln -sf "$NGINX_SITE" /etc/nginx/sites-enabled/infernal-ink
+rm -f /etc/nginx/sites-enabled/default || true
+systemctl restart nginx
+
 # ----- FIREWALL -----
 echo
-echo "=== Configuring UFW firewall (allowing SSH, 5000, 5001)... ==="
+echo "=== Configuring UFW firewall (allowing SSH and Port 80/443)... ==="
 ufw allow OpenSSH
-ufw allow 5000/tcp
-ufw allow 5001/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+# Deny direct access to app ports from external network
+ufw deny 5000/tcp
+ufw deny 5001/tcp
 yes | ufw enable || true
 ufw status
 
@@ -189,10 +243,11 @@ echo "=== Setup complete! ==="
 echo "Check your services with:"
 echo "  systemctl status infernal-api.service"
 echo "  systemctl status infernal-web.service"
+echo "  systemctl status nginx"
 echo
 echo "From another device on your network, you should be able to visit:"
-echo "  http://<server-ip>:5000  (API)"
-echo "  http://<server-ip>:5001  (Web UI)"
+echo "  http://<server-ip>/       (Portal)"
+echo "  http://<server-ip>/api/   (API Health/Health)"
 echo
 echo "If something fails to start, run:"
 echo "  journalctl -u infernal-api.service -n 100 --no-pager"

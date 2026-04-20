@@ -12,7 +12,9 @@
     <Thickness x:Key="ControlPadding">10</Thickness>
 
     <!-- NOTE: We don't define colors here; those live in theme-specific files.
-         We only define styles that *reference* the theme resources. -->
+         We only define styles that *reference* the theme resources. 
+         However, we provide default fallbacks for critical brushes to prevent crashes. -->
+    <SolidColorBrush x:Key="AccentTextBrush" Color="#FFecf0f1" /> <!-- Default Off-white -->
 
     <!-- Example global button style -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">

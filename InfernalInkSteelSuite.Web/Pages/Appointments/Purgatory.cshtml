@@ -88,10 +88,30 @@
         if (dropZone) {
             dropZone.appendChild(card);
             
-            // Here we would trigger an API call to update status
+            // Trigger API call to update status
             var newStatus = dropZone.getAttribute('data-status');
             var id = card.getAttribute('data-id');
-            showOmen(`Soul ${id} moved to ${newStatus}`, 'info');
+            
+            fetch(`?handler=UpdateStatus&id=${id}&status=${newStatus}`, {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.getElementsByName("__RequestVerificationToken")[0].value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showOmen(`Status preserved: Soul ${id} is now ${newStatus}`, 'success');
+                } else {
+                    showOmen(`Failed to update status for Soul ${id}`, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating status:', error);
+                showOmen(`Comm error: Soul ${id} status not saved`, 'error');
+            });
         }
     }
 </script>
+
+@Html.AntiForgeryToken()

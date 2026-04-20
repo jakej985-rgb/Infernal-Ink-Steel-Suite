@@ -3,6 +3,7 @@ using InfernalInkSteelSuite.Repositories;
 using InfernalInkSteelSuite.Data;
 using System.Collections.ObjectModel;
 using InfernalInkSteelSuite.Domain;
+using System;
 
 namespace InfernalInkSteelSuite.ViewModels
 {
@@ -38,7 +39,7 @@ namespace InfernalInkSteelSuite.ViewModels
         {
             _user = user;
             _shopSettingsRepository = new ShopSettingsRepository(db);
-            _userRepository = new UserRepository(db);
+            _userRepository = new UserRepository(db, new Repositories.Services.PasswordHasher());
             _tabs = [];
             _selectedTab = null!;
 
@@ -51,8 +52,10 @@ namespace InfernalInkSteelSuite.ViewModels
             var role = _user.Role ?? string.Empty;
             if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
             {
-                Tabs.Add(new ManagerTabViewModel(_userRepository));
-                Tabs.Add(new AdminTabViewModel(_userRepository, _shopSettingsRepository));
+                Tabs.Add(new UserManagementTabViewModel(_userRepository));
+                Tabs.Add(new ShopHoursTabViewModel(_shopSettingsRepository));
+                Tabs.Add(new PricingTabViewModel(_shopSettingsRepository));
+                Tabs.Add(new ShopProfileTabViewModel(_shopSettingsRepository));
             }
 
             SelectedTab = Tabs[0];
