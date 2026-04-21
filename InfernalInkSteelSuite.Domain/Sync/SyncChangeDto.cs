@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace InfernalInkSteelSuite.Domain.Sync
 {
@@ -6,7 +7,9 @@ namespace InfernalInkSteelSuite.Domain.Sync
     {
         public string EntityName { get; set; } = "";
         public Guid EntityId { get; set; }
-        public string Operation { get; set; } = ""; // "Create" | "Update" | "Delete"
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public SyncOperation Operation { get; set; } = SyncOperation.Update;
         public T Payload { get; set; } = default!;
         public DateTime ClientTimestampUtc { get; set; }
     }

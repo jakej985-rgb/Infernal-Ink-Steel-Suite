@@ -18,8 +18,19 @@ namespace InfernalInkSteelSuite.Repositories
             }
             else
             {
-                // Update properties - this is safer than DELETE/INSERT
+                // Preserve sync metadata and identity from the existing record
+                var preservedId = existing.Id;
+                var preservedSyncId = existing.SyncId;
+                var preservedRowVersion = existing.RowVersion;
+                var preservedCreatedAt = existing.CreatedAt;
+
                 _db.Entry(existing).CurrentValues.SetValues(settings);
+
+                // Restore protected fields
+                existing.Id = preservedId;
+                existing.SyncId = preservedSyncId;
+                existing.RowVersion = preservedRowVersion;
+                existing.CreatedAt = preservedCreatedAt;
                 existing.UpdatedAt = DateTime.UtcNow;
             }
             _db.SaveChanges();

@@ -28,6 +28,10 @@ namespace InfernalInkSteelSuite.Api.Controllers
             {
                 appointments = _appointments.GetAppointmentsByUserId(artistId.Value);
             }
+            else if (clientId.HasValue)
+            {
+                appointments = _appointments.GetAppointmentsByClientId(clientId.Value);
+            }
             else
             {
                 appointments = _appointments.GetAll();
@@ -36,7 +40,10 @@ namespace InfernalInkSteelSuite.Api.Controllers
             var user = HttpContext.User;
             if (user.IsInRole(UserRole.Artist.ToString()) && !user.IsInRole(UserRole.Admin.ToString()))
             {
-                var userId = int.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+                if (!int.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
+                {
+                    return Forbid();
+                }
 
                 if (artistId.HasValue && artistId.Value != userId)
                 {

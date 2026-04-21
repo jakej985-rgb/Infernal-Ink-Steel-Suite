@@ -13,7 +13,11 @@ namespace InfernalInkSteelSuite.Api.Services
 
         public string GenerateToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? string.Empty));
+            var jwtKey = _configuration["JWT_KEY"] ?? _configuration["Jwt:Key"] ?? string.Empty;
+            if (string.IsNullOrEmpty(jwtKey))
+                throw new InvalidOperationException("JWT signing key is not configured. Set the JWT_KEY environment variable.");
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]

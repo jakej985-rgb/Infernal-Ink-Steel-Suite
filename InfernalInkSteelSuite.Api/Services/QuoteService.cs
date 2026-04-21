@@ -60,8 +60,8 @@ public class QuoteService(IQuoteRepository repository, IShopSettingsRepository s
             PriceHigh = priceHigh,
             ShopMinimum = shopMinimum,
             RecommendedDeposit = Math.Round(deposit, 2),
-            ConfidenceScore = 0.85, // Placeholder
-            SimilarJobsCount = 0 // Placeholder
+            ConfidenceScore = 0.0, // Not yet implemented — requires historical job data analysis
+            SimilarJobsCount = 0   // Not yet implemented — requires job similarity matching
         };
     }
 

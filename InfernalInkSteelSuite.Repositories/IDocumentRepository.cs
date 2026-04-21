@@ -12,5 +12,6 @@ namespace InfernalInkSteelSuite.Repositories
         void Insert(Document document);
         void Update(Document document);
         void Delete(int id);
+        List<Document> GetByClientId(int clientId);
     }
 }

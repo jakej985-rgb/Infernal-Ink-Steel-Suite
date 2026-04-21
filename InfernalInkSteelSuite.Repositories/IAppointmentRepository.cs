@@ -18,5 +18,9 @@ namespace InfernalInkSteelSuite.Repositories
         List<Appointment> GetAppointmentsByStatus(string status);
         List<Appointment> GetPaged(int page, int pageSize);
         Task<List<Appointment>> GetPagedAsync(int page, int pageSize);
+
+        // Efficient count methods (H6: avoid full table scans)
+        int CountByDate(DateTime date);
+        int CountUpcoming();
     }
 }

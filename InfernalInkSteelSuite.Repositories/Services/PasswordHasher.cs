@@ -48,14 +48,15 @@ namespace InfernalInkSteelSuite.Repositories.Services
                 var salt = Convert.FromBase64String(parts[0]);
                 var hash = parts[1];
 
-                string hashed = Convert.ToBase64String(Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
+                byte[] hashedBytes = Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
                     password: password,
                     salt: salt,
                     prf: Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA256,
                     iterationCount: 100000,
-                    numBytesRequested: 256 / 8));
+                    numBytesRequested: 256 / 8);
 
-                return hash == hashed;
+                byte[] expectedBytes = Convert.FromBase64String(hash);
+                return CryptographicOperations.FixedTimeEquals(hashedBytes, expectedBytes);
             }
             catch
             {

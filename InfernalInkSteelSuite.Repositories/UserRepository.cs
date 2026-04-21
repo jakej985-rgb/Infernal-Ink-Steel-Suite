@@ -35,7 +35,8 @@ namespace InfernalInkSteelSuite.Repositories
 
         public bool AddUser(User user)
         {
-            if (string.IsNullOrEmpty(user.PasswordHash)) user.PasswordHash = HashPassword("password");
+            if (string.IsNullOrEmpty(user.PasswordHash))
+                throw new ArgumentException("PasswordHash must be set before adding a user. Use HashPassword() first.", nameof(user));
             if (string.IsNullOrEmpty(user.Role)) user.Role = "User";
             
             _db.Users.Add(user);

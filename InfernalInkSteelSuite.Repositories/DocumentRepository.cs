@@ -57,5 +57,13 @@ namespace InfernalInkSteelSuite.Repositories
                 _db.SaveChanges();
             }
         }
+
+        public List<Document> GetByClientId(int clientId)
+        {
+            return _db.Documents
+                .Where(d => d.ClientId == clientId)
+                .OrderByDescending(d => d.CreatedAt)
+                .ToList();
+        }
     }
 }

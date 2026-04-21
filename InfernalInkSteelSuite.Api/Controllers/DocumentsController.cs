@@ -1,12 +1,14 @@
 using InfernalInkSteelSuite.Api.DTOs;
 using InfernalInkSteelSuite.Api.Services;
 using InfernalInkSteelSuite.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class DocumentsController(DocumentService service) : ControllerBase
 {
     private readonly DocumentService _service = service;
@@ -23,9 +25,9 @@ public class DocumentsController(DocumentService service) : ControllerBase
             var dto = new DocumentDto(document.Id, document.ClientId, document.UploadedByUserId, document.Title, document.FilePath, document.CreatedAt);
             return Ok(dto);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, $"Internal server error: {ex.Message}");
+            return StatusCode(500, "An error occurred while uploading the file.");
         }
     }
 

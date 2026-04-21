@@ -122,5 +122,17 @@ namespace InfernalInkSteelSuite.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public int CountByDate(DateTime date)
+        {
+            var d = date.Date;
+            return _db.Appointments.Count(a => a.DateTime.Date == d);
+        }
+
+        public int CountUpcoming()
+        {
+            var now = DateTime.UtcNow;
+            return _db.Appointments.Count(a => a.DateTime > now);
+        }
     }
 }

@@ -11,7 +11,6 @@ namespace InfernalInkSteelSuite.Domain
         public Guid SyncId { get; set; } = Guid.NewGuid();
         public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
         public string LastModifiedBy { get; set; } = "";
-        bool ISyncEntity.IsDeleted { get => IsDeleted; set => IsDeleted = value; }
         public bool IsDeleted { get; set; }
         public byte[]? RowVersion { get; set; }
         public string Username { get; set; } = "";

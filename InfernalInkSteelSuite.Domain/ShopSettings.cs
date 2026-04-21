@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace InfernalInkSteelSuite.Domain
 {
@@ -15,6 +17,7 @@ namespace InfernalInkSteelSuite.Domain
         public string AccentColor { get; set; } = string.Empty;
         public string SidebarArtworkPath { get; set; } = string.Empty;
         [Obsolete("This property is no longer used and will be removed in a future version.")]
+        [NotMapped]
         public string LoginHeadline { get; set; } = string.Empty;
         public string SpecialMessageText { get; set; } = string.Empty;
         public string LoginBackgroundPath { get; set; } = string.Empty;
@@ -43,8 +46,8 @@ namespace InfernalInkSteelSuite.Domain
         public double AppFontSize { get; set; } = 14.0;
         public DateTime LastSyncUtc { get; set; } = DateTime.MinValue;
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         // Force refresh for compiler metadata
     }

@@ -22,5 +22,9 @@ namespace InfernalInkSteelSuite.Repositories
         Task UpdateAsync(Client client);
         Task DeleteAsync(int id);
         Task<List<Client>> GetPagedAsync(int page, int pageSize);
+
+        // Efficient count/query methods (H6: avoid full table scans)
+        int Count();
+        List<Client> GetRecent(int count);
     }
 }
