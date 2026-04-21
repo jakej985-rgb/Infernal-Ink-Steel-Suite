@@ -18,24 +18,13 @@ public class StatsService(
 
     public DashboardStatsDto GetOverview()
     {
-        var settings = _shopSettingsRepository.LoadSettings();
+        // H6 fix: Use efficient count queries instead of loading entire tables
+        var appointmentsToday = _appointmentRepository.CountByDate(DateTime.UtcNow);
+        var upcomingAppointments = _appointmentRepository.CountUpcoming();
+        var totalClients = _clientRepository.Count();
+        var openQuotes = _quoteRepository.GetAllQuotes().Count; // TODO: Add CountAll to IQuoteRepository
 
-        // This is inefficient (fetching all), but fits the current "repo" pattern which lacks count methods.
-        // Optimally we'd add Count() methods to repositories.
-        var appointments = _appointmentRepository.GetAll();
-        var clients = _clientRepository.GetAll();
-        var quotes = _quoteRepository.GetAllQuotes();
-
-        var now = DateTime.UtcNow;
-        var today = now.Date;
-        
-        var appointmentsToday = appointments.Count(a => a.StartTime.Date == today);
-        var upcomingAppointments = appointments.Count(a => a.StartTime > now);
-        var openQuotes = quotes.Count; // Assuming all returned quotes are "open" for now
-
-        var recentClients = clients
-            .OrderByDescending(c => c.Id)
-            .Take(5)
+        var recentClients = _clientRepository.GetRecent(5)
             .Select(c => new ClientSummaryDto(c.Id, $"{c.FirstName} {c.LastName}", c.Email))
             .ToList();
 
@@ -47,7 +36,7 @@ public class StatsService(
         return new DashboardStatsDto
         {
             AppointmentsToday = appointmentsToday,
-            TotalClients = clients.Count,
+            TotalClients = totalClients,
             RecentClients = recentClients,
             IsShopOpen = isOpen,
             ActiveArtistsCount = activeArtistsCount,

@@ -125,7 +125,7 @@ namespace InfernalInkSteelSuite.Repositories
 
         public List<User> GetActiveUsers()
         {
-            return [.. _db.Users.Where(u => u.IsActive && !((ISyncEntity)u).IsDeleted)];
+            return [.. _db.Users.Where(u => u.IsActive && !u.IsDeleted)];
         }
 
         public bool SoftDeleteUser(string username)

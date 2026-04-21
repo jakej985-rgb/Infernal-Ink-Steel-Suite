@@ -44,7 +44,7 @@ namespace InfernalInkSteelSuite
         private void BuildUserGrid()
         {
             UserGrid.Children.Clear();
-            var users = _userRepository.GetAllUsers();
+            var users = _userRepository.GetActiveUsers();
             foreach (var user in users)
             {
                 var userWidget = new StackPanel { Margin = new Thickness(12) };

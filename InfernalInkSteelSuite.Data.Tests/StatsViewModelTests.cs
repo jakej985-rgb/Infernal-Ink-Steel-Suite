@@ -39,6 +39,9 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
 
         public System.Threading.Tasks.Task<List<Appointment>> GetPagedAsync(int page, int pageSize) 
             => System.Threading.Tasks.Task.FromResult(GetPaged(page, pageSize));
+
+        public int CountByDate(DateTime date) => _appointments.Count(a => a.DateTime.Date == date.Date);
+        public int CountUpcoming() => _appointments.Count(a => a.DateTime > DateTime.UtcNow);
     }
 
     public class MockShopSettingsRepository : IShopSettingsRepository

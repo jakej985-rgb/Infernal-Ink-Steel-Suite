@@ -84,7 +84,8 @@ namespace InfernalInkSteelSuite.Services
             // Simplified deserialization since we just need the URL and Key
             var linked = JsonSerializer.Deserialize<JsonElement>(settings.LinkedAccountsJson);
             string? webAppUrl = linked.TryGetProperty("WebAppUrl", out var urlEl) ? urlEl.GetString() : null;
-            string? apiKey = linked.TryGetProperty("ApiKey", out var keyEl) ? keyEl.GetString() : null;
+            string? syncUsername = linked.TryGetProperty("SyncUsername", out var userEl) ? userEl.GetString() : null;
+            string? syncPassword = linked.TryGetProperty("SyncPassword", out var passEl) ? passEl.GetString() : null;
 
             if (string.IsNullOrEmpty(webAppUrl)) 
             {
@@ -92,7 +93,7 @@ namespace InfernalInkSteelSuite.Services
                 return;
             }
 
-            _syncClient.Configure(webAppUrl, apiKey ?? "");
+            _syncClient.Configure(webAppUrl, syncUsername ?? "admin", syncPassword ?? "");
             if (!_syncClient.IsConfigured) 
             {
                 OnSyncStatusChanged?.Invoke("Sync Error (Client Config)");
@@ -180,7 +181,7 @@ namespace InfernalInkSteelSuite.Services
                     Changes = [.. localClientChanges.Select(c => new SyncChangeDto<Client>
                     {
                         EntityId = c.SyncId,
-                        Operation = "Update",
+                        Operation = SyncOperation.Update,
                         Payload = c,
                         ClientTimestampUtc = c.LastModifiedUtc
                     })]
@@ -200,7 +201,7 @@ namespace InfernalInkSteelSuite.Services
                     Changes = [.. localApptChanges.Select(a => new SyncChangeDto<Appointment>
                     {
                         EntityId = a.SyncId,
-                        Operation = "Update",
+                        Operation = SyncOperation.Update,
                         Payload = a,
                         ClientTimestampUtc = a.LastModifiedUtc
                     })]

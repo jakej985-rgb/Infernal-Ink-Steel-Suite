@@ -27,7 +27,7 @@ namespace InfernalInkSteelSuite.Services
             _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
 
             // Authenticate via JWT Bearer (C2 fix — was using X-Api-Key which the API never validates)
-            _ = Task.Run(async () =>
+            Task.Run(async () =>
             {
                 try
                 {

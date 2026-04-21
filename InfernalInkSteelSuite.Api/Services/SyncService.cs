@@ -50,33 +50,36 @@ namespace InfernalInkSteelSuite.Api.Services
                 var existing = await context.Clients
                     .FirstOrDefaultAsync(c => c.SyncId == change.EntityId);
 
-                if (change.Operation == "Create")
+                // H8: Use SyncOperation enum instead of magic strings
+                switch (change.Operation)
                 {
-                    if (existing == null)
-                    {
-                        payload.SyncId = change.EntityId;
-                        payload.Id = 0; // Let DB generate ID
-                        context.Clients.Add(payload);
-                    }
-                    else
-                    {
-                        UpdateClient(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Update")
-                {
-                    if (existing != null)
-                    {
-                        UpdateClient(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Delete")
-                {
-                    if (existing != null)
-                    {
-                        existing.IsDeleted = true;
-                        existing.LastModifiedUtc = DateTime.UtcNow;
-                    }
+                    case SyncOperation.Create:
+                        if (existing == null)
+                        {
+                            payload.SyncId = change.EntityId;
+                            payload.Id = 0; // Let DB generate ID
+                            context.Clients.Add(payload);
+                        }
+                        else
+                        {
+                            UpdateClient(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Update:
+                        if (existing != null)
+                        {
+                            UpdateClient(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Delete:
+                        if (existing != null)
+                        {
+                            existing.IsDeleted = true;
+                            existing.LastModifiedUtc = DateTime.UtcNow;
+                        }
+                        break;
                 }
             }
             await context.SaveChangesAsync();
@@ -108,7 +111,7 @@ namespace InfernalInkSteelSuite.Api.Services
                         continue; 
                     }
                 }
-                else if (change.Operation == "Create" || change.Operation == "Update")
+                else if (change.Operation is SyncOperation.Create or SyncOperation.Update)
                 {
                     if (payload.ClientId == 0)
                     {
@@ -117,33 +120,35 @@ namespace InfernalInkSteelSuite.Api.Services
                     }
                 }
 
-                if (change.Operation == "Create")
+                switch (change.Operation)
                 {
-                    if (existing == null)
-                    {
-                        payload.SyncId = change.EntityId;
-                        payload.Id = 0;
-                        context.Appointments.Add(payload);
-                    }
-                    else
-                    {
-                        UpdateAppointment(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Update")
-                {
-                    if (existing != null)
-                    {
-                        UpdateAppointment(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Delete")
-                {
-                    if (existing != null)
-                    {
-                        existing.IsDeleted = true;
-                        existing.LastModifiedUtc = DateTime.UtcNow;
-                    }
+                    case SyncOperation.Create:
+                        if (existing == null)
+                        {
+                            payload.SyncId = change.EntityId;
+                            payload.Id = 0;
+                            context.Appointments.Add(payload);
+                        }
+                        else
+                        {
+                            UpdateAppointment(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Update:
+                        if (existing != null)
+                        {
+                            UpdateAppointment(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Delete:
+                        if (existing != null)
+                        {
+                            existing.IsDeleted = true;
+                            existing.LastModifiedUtc = DateTime.UtcNow;
+                        }
+                        break;
                 }
             }
             await context.SaveChangesAsync();
@@ -175,7 +180,7 @@ namespace InfernalInkSteelSuite.Api.Services
                         continue;
                     }
                 }
-                else if (change.Operation == "Create" || change.Operation == "Update")
+                else if (change.Operation is SyncOperation.Create or SyncOperation.Update)
                 {
                     if (payload.ClientId == 0)
                     {
@@ -184,33 +189,35 @@ namespace InfernalInkSteelSuite.Api.Services
                     }
                 }
 
-                if (change.Operation == "Create")
+                switch (change.Operation)
                 {
-                    if (existing == null)
-                    {
-                        payload.SyncId = change.EntityId;
-                        payload.Id = 0;
-                        context.Documents.Add(payload);
-                    }
-                    else
-                    {
-                        UpdateDocument(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Update")
-                {
-                    if (existing != null)
-                    {
-                        UpdateDocument(existing, payload);
-                    }
-                }
-                else if (change.Operation == "Delete")
-                {
-                    if (existing != null)
-                    {
-                        existing.IsDeleted = true;
-                        existing.LastModifiedUtc = DateTime.UtcNow;
-                    }
+                    case SyncOperation.Create:
+                        if (existing == null)
+                        {
+                            payload.SyncId = change.EntityId;
+                            payload.Id = 0;
+                            context.Documents.Add(payload);
+                        }
+                        else
+                        {
+                            UpdateDocument(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Update:
+                        if (existing != null)
+                        {
+                            UpdateDocument(existing, payload);
+                        }
+                        break;
+
+                    case SyncOperation.Delete:
+                        if (existing != null)
+                        {
+                            existing.IsDeleted = true;
+                            existing.LastModifiedUtc = DateTime.UtcNow;
+                        }
+                        break;
                 }
             }
             await context.SaveChangesAsync();
@@ -229,15 +236,16 @@ namespace InfernalInkSteelSuite.Api.Services
 
         private static void UpdateAppointment(Appointment existing, Appointment payload)
         {
-            existing.StartTime = payload.StartTime;
-            existing.EndTime = payload.EndTime;
+            // M1/M7 fix: Set DateTime and DurationMinutes directly instead of
+            // using the [NotMapped] StartTime/EndTime aliases, which have order-dependent behavior
+            existing.DateTime = payload.DateTime;
+            existing.DurationMinutes = payload.DurationMinutes;
             existing.ServiceType = payload.ServiceType;
             existing.ServiceCategory = payload.ServiceCategory;
             existing.Status = payload.Status;
             existing.QuotedPrice = payload.QuotedPrice;
             existing.FinalPrice = payload.FinalPrice;
             existing.Notes = payload.Notes;
-            // Update ClientId if we resolved it?
             if (payload.ClientId > 0) existing.ClientId = payload.ClientId;
 
             existing.LastModifiedUtc = DateTime.UtcNow;

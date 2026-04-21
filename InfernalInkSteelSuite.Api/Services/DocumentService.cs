@@ -1,6 +1,6 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace InfernalInkSteelSuite.Api.Services;
 
@@ -8,6 +8,7 @@ public class DocumentService(IDocumentRepository repository, IConfiguration conf
 {
     private readonly IDocumentRepository _repository = repository;
     private readonly string _rootPath = config["FileStorage:RootPath"] ?? Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+    private static readonly FileExtensionContentTypeProvider _contentTypeProvider = new();
 
     public async Task<Document> UploadDocumentAsync(int clientId, int uploadedByUserId, string title, IFormFile file)
     {
@@ -17,7 +18,9 @@ public class DocumentService(IDocumentRepository repository, IConfiguration conf
             Directory.CreateDirectory(clientDir);
         }
 
-        var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+        // L5: Sanitize filename to prevent path traversal attacks
+        var safeOriginalName = Path.GetFileName(file.FileName);
+        var fileName = $"{Guid.NewGuid()}_{safeOriginalName}";
         var filePath = Path.Combine(clientDir, fileName);
         var relativePath = Path.Combine("Clients", clientId.ToString(), fileName);
 
@@ -30,7 +33,7 @@ public class DocumentService(IDocumentRepository repository, IConfiguration conf
         {
             ClientId = clientId,
             UploadedByUserId = uploadedByUserId,
-            Title = string.IsNullOrWhiteSpace(title) ? file.FileName : title,
+            Title = string.IsNullOrWhiteSpace(title) ? safeOriginalName : title,
             FilePath = relativePath,
             CreatedAt = DateTime.UtcNow
         };
@@ -53,9 +56,15 @@ public class DocumentService(IDocumentRepository repository, IConfiguration conf
         if (!File.Exists(fullPath)) return (null, "", "");
 
         var stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-        var contentType = "application/octet-stream"; // Can be improved with a MIME type map
 
-        return (stream, contentType, Path.GetFileName(doc.FilePath));
+        // L4: Proper MIME type detection instead of always returning octet-stream
+        var fileName = Path.GetFileName(doc.FilePath);
+        if (!_contentTypeProvider.TryGetContentType(fileName, out var contentType))
+        {
+            contentType = "application/octet-stream";
+        }
+
+        return (stream, contentType, fileName);
     }
 
     public Document? GetMetadata(int id)
@@ -65,21 +74,8 @@ public class DocumentService(IDocumentRepository repository, IConfiguration conf
 
     public List<Document> GetDocumentsForClient(int clientId)
     {
-        // The repository method 'GetDocuments' is filtered by userId and role, or returns all.
-        // We need a specific method to get by ClientId, but for now we can filter in memory or add a repo method.
-        // Adding a repo method is better, but let's check if 'GetAll' is efficient enough or if we should just modify the repo.
-        // Given the instructions, I should probably stick to what I have or extend slightly.
-        // The current repo doesn't have GetByClientId. I'll add a helper here or modify repo.
-        // Since I can't easily modify the interface across projects without recompiling everything carefully,
-        // and 'GetAll' might be heavy, I will use raw SQL here or just filter GetAll if the list is small.
-        // Actually, let's look at the Repo again. It uses raw SQL.
-        // I will add a new method to the Repo interface and implementation?
-        // Or just filter GetAll() for now to be safe with existing code?
-        // Wait, 'GetDocuments' takes userId. Maybe that's what we need if documents belong to a user?
-        // No, documents belong to a Client (ClientId).
-
-        // Let's filter GetAll() for now to avoid breaking changes if I don't need to.
-        return [.. _repository.GetAll().Where(d => d.ClientId == clientId)];
+        // H7: Use efficient DB query via repository instead of loading all documents
+        return _repository.GetByClientId(clientId);
     }
 
     public void DeleteDocument(int id)

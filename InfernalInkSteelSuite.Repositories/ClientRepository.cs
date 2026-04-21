@@ -133,5 +133,15 @@ namespace InfernalInkSteelSuite.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
+        public int Count() => _db.Clients.Count();
+
+        public List<Client> GetRecent(int count)
+        {
+            return _db.Clients
+                .OrderByDescending(c => c.Id)
+                .Take(count)
+                .ToList();
+        }
     }
 }

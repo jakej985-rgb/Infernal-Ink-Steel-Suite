@@ -22,6 +22,14 @@ public static class ServiceExtensions
         var connectionString = configuration.GetConnectionString("DefaultConnection") 
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
+        // Fix M12: Resolve relative paths to AppContext.BaseDirectory
+        if (connectionString.StartsWith("Data Source=../"))
+        {
+            var relativePath = connectionString.Substring("Data Source=".Length);
+            var absolutePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, relativePath));
+            connectionString = $"Data Source={absolutePath}";
+        }
+
         services.AddDbContext<AppDbContext>(options =>
         {
             options.UseSqlite(connectionString);

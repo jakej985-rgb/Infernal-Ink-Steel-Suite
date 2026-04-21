@@ -62,6 +62,7 @@ using (var scope = app.Services.CreateScope())
     // (C2) Seeding restricted to Development
     if (app.Environment.IsDevelopment() && !db.Users.Any())
     {
+        app.Logger.LogWarning("Seeding default users with WEAK passwords — change immediately in production.");
         db.Users.AddRange(
             new User
             {
