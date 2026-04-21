@@ -123,5 +123,15 @@ namespace InfernalInkSteelSuite.Repositories
                 await _db.SaveChangesAsync();
             }
         }
+
+        public async Task<List<Client>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _db.Clients
+                .OrderBy(c => c.FirstName)
+                .ThenBy(c => c.LastName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

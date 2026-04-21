@@ -8,16 +8,18 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize(Policy = "IsArtist")]
-[Authorize(Policy = "IsArtist")]
 public class ClientsController(IClientRepository clients, IWebHostEnvironment env) : ControllerBase
 {
     private readonly IClientRepository _clients = clients;
     private readonly IWebHostEnvironment _env = env;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Client>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Client>>> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var items = await _clients.GetAllAsync();
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > 100) pageSize = 10;
+
+        var items = await _clients.GetPagedAsync(page, pageSize);
         return Ok(items);
     }
 

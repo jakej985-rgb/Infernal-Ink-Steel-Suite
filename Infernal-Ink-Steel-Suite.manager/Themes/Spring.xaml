@@ -16,11 +16,13 @@
     <Color x:Key="PrimaryTextColor">#FF3e2723</Color>     <!-- Dark Brown -->
     <Color x:Key="SecondaryTextColor">#FF6d4c41</Color>   <!-- Brown -->
     <Color x:Key="MutedTextColor">#FF8d6e63</Color>      <!-- Light Brown -->
+    <Color x:Key="AccentTextColor">#FF3e2723</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+    <SolidColorBrush x:Key="AccentTextBrush" Color="{StaticResource AccentTextColor}" />
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
     <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHoverColor}" />

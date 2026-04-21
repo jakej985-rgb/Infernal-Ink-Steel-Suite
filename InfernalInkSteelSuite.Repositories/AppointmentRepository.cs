@@ -100,5 +100,27 @@ namespace InfernalInkSteelSuite.Repositories
                 .OrderBy(a => a.DateTime)
                 .ToList();
         }
+
+        public List<Appointment> GetPaged(int page, int pageSize)
+        {
+            return _db.Appointments
+                .Include(a => a.Client)
+                .Include(a => a.Artist)
+                .OrderByDescending(a => a.DateTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
+
+        public async Task<List<Appointment>> GetPagedAsync(int page, int pageSize)
+        {
+            return await _db.Appointments
+                .Include(a => a.Client)
+                .Include(a => a.Artist)
+                .OrderByDescending(a => a.DateTime)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

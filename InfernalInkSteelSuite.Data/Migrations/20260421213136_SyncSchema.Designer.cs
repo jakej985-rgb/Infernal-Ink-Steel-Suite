@@ -3,6 +3,7 @@ using System;
 using InfernalInkSteelSuite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfernalInkSteelSuite.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260421213136_SyncSchema")]
+    partial class SyncSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
@@ -359,18 +362,8 @@ namespace InfernalInkSteelSuite.Data.Migrations
                     b.Property<bool>("EnableAutomaticHolidayThemes")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("IsSpecialMessageEnabled")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("LastModifiedBy")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastModifiedUtc")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastSyncUtc")
                         .HasColumnType("TEXT");
@@ -413,9 +406,6 @@ namespace InfernalInkSteelSuite.Data.Migrations
                     b.Property<double>("PiercingSingle")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<byte[]>("RowVersion")
-                        .HasColumnType("BLOB");
-
                     b.Property<string>("ShopHoursJson")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -437,9 +427,6 @@ namespace InfernalInkSteelSuite.Data.Migrations
 
                     b.Property<string>("SpecialMessageText")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("SyncId")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("TattooPerHour")

@@ -70,7 +70,40 @@ namespace InfernalInkSteelSuite.Controls
         private static void OnBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (GlowAvatar)d;
-            control._ellipse.Fill = (Brush)e.NewValue;
+            control.UpdateFill();
+        }
+
+        public static readonly DependencyProperty PhotoPathProperty =
+            DependencyProperty.Register("PhotoPath", typeof(string), typeof(GlowAvatar), new PropertyMetadata(null, OnPhotoPathChanged));
+
+        public string PhotoPath
+        {
+            get { return (string)GetValue(PhotoPathProperty); }
+            set { SetValue(PhotoPathProperty, value); }
+        }
+
+        private static void OnPhotoPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var control = (GlowAvatar)d;
+            control.UpdateFill();
+        }
+
+        private void UpdateFill()
+        {
+            if (!string.IsNullOrEmpty(PhotoPath))
+            {
+                try
+                {
+                    var uri = new System.Uri(PhotoPath, System.UriKind.RelativeOrAbsolute);
+                    _ellipse.Fill = new ImageBrush(new System.Windows.Media.Imaging.BitmapImage(uri)) { Stretch = Stretch.UniformToFill };
+                    _initialsTextBlock.Visibility = Visibility.Collapsed;
+                    return;
+                }
+                catch { }
+            }
+            
+            _ellipse.Fill = BackgroundColor;
+            _initialsTextBlock.Visibility = Visibility.Visible;
         }
     }
 }

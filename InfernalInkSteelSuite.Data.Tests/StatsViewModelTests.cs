@@ -33,6 +33,12 @@ namespace InfernalInkSteelSuite.Tests.ViewModels
         public void Update(Appointment appointment) => throw new NotImplementedException();
         public void Delete(int id) => throw new NotImplementedException();
         public Appointment? Get(int id) => throw new NotImplementedException();
+
+        public List<Appointment> GetPaged(int page, int pageSize) 
+            => _appointments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        public System.Threading.Tasks.Task<List<Appointment>> GetPagedAsync(int page, int pageSize) 
+            => System.Threading.Tasks.Task.FromResult(GetPaged(page, pageSize));
     }
 
     public class MockShopSettingsRepository : IShopSettingsRepository

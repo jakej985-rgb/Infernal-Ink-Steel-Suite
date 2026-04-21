@@ -17,6 +17,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
         private readonly AppointmentRepository _appointmentRepository;
         private readonly ClientRepository _clientRepository;
         private readonly ShopSettingsRepository _shopSettingsRepository;
+        private readonly Services.IDialogService _dialogService;
 
         // Properties for Data Binding
         public string Greeting { get; private set; }
@@ -52,6 +53,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             _shopSettingsRepository = new ShopSettingsRepository(db);
             _appointmentRepository = new AppointmentRepository(db);
             _clientRepository = new ClientRepository(db);
+            _dialogService = new Services.DialogService(); // Ideally injected via DI container
 
             // Initialize Collections
             TodayAppointments = [];
@@ -80,11 +82,7 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
             CreateNewAppointmentCommand = new RelayCommand(p =>
             {
                 var appointment = new Appointment { DateTime = DateTime.Today };
-                var dialog = new AppointmentDialog(_db, appointment)
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                if (dialog.ShowDialog() == true)
+                if (_dialogService.ShowAppointmentDialog(_db, appointment) == true)
                 {
                     // Refresh logic if needed
                 }
@@ -92,23 +90,12 @@ namespace InfernalInkSteelSuite.ViewModels.Dashboard
 
             CreateNewClientCommand = new RelayCommand(p =>
             {
-                var vm = new AddEditClientViewModel(_clientRepository, new Client());
-                var view = new AddEditClientView(vm)
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                // Assuming we want to show it as a dialog
-                view.ShowDialog();
+                _dialogService.ShowAddEditClientView(_clientRepository, new Client());
             });
 
             OpenDailySummaryCommand = new RelayCommand(p =>
             {
-                var vm = new DailySummaryViewModel(_appointmentRepository);
-                var view = new DailySummaryView(vm)
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                view.ShowDialog();
+                _dialogService.ShowDailySummaryView(_appointmentRepository);
             });
 
             OpenFullCalendarCommand = new RelayCommand(p => (Application.Current.MainWindow as DashboardWindow)?.Appointments_Click(null, null));

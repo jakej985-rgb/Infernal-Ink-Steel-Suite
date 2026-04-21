@@ -150,7 +150,9 @@ namespace InfernalInkSteelSuite.Domain
             set { _isBlockOff = value; OnPropertyChanged(nameof(IsBlockOff)); }
         }
 
-        // Compatibility properties for API
+        /// <summary>
+        /// Alias for DateTime. Used for API compatibility.
+        /// </summary>
         [NotMapped]
         public DateTime StartTime
         {
@@ -158,6 +160,9 @@ namespace InfernalInkSteelSuite.Domain
             set => DateTime = value;
         }
 
+        /// <summary>
+        /// Calculated property based on DateTime and DurationMinutes. Used for API compatibility.
+        /// </summary>
         [NotMapped]
         public DateTime EndTime
         {
@@ -165,6 +170,9 @@ namespace InfernalInkSteelSuite.Domain
             set => DurationMinutes = (int)(value - DateTime).TotalMinutes;
         }
 
+        /// <summary>
+        /// Alias for UserId (the artist's system user ID). Used for API compatibility.
+        /// </summary>
         [NotMapped]
         public int ArtistId
         {

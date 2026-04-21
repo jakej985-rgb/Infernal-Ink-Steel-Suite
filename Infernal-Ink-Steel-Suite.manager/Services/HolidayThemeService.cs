@@ -43,11 +43,7 @@ namespace InfernalInkSteelSuite.Services
             HolidayRanges.Add(ThemeId.Fall, (new DateTime(year, 9, 23), new DateTime(year, 12, 21)));
             
             // Winter cross-year handling:
-            // 1. Current winter (started last year, ends this March)
-            HolidayRanges.Add(ThemeId.Winter, (new DateTime(year - 1, 12, 22), new DateTime(year, 3, 19)));
-            // 2. Upcoming winter (starts this December, ends next March)
-            // Note: Since we use a dictionary with ThemeId as key, we can't have duplicate keys.
-            // We'll handle this by checking both ranges specifically for Winter.
+            // Handled dynamically in GetCurrentHolidayTheme instead of using the dictionary.
         }
 
         public static ThemeDefinition? GetCurrentHolidayTheme()
@@ -63,14 +59,25 @@ namespace InfernalInkSteelSuite.Services
                 InitializeHolidayRanges(today.Year);
             }
 
-            // Specific check for Winter due to cross-year boundary
-            var winterStartThisYear = new DateTime(today.Year, 12, 22);
-            var winterEndThisYear = new DateTime(today.Year, 3, 19);
-            var winterStartLastYear = new DateTime(today.Year - 1, 12, 22);
-            var winterEndNextYear = new DateTime(today.Year + 1, 3, 19);
+            // Specific check for Winter due to cross-year boundary (Dec 22 - Mar 19)
+            // It either started in Dec of the previous year OR starts in Dec of this year.
+            bool isWinter = false;
+            
+            // Dec 22 (Current Year) to Mar 19 (Next Year)
+            var upcomingWinterStart = new DateTime(today.Year, 12, 22);
+            var upcomingWinterEnd = new DateTime(today.Year + 1, 3, 19);
+            
+            // Dec 22 (Last Year) to Mar 19 (Current Year)
+            var currentWinterStart = new DateTime(today.Year - 1, 12, 22);
+            var currentWinterEnd = new DateTime(today.Year, 3, 19);
 
-            if ((today >= winterStartLastYear && today < winterEndThisYear) || 
-                (today >= winterStartThisYear && today < winterEndNextYear))
+            if ((today >= currentWinterStart && today <= currentWinterEnd) || 
+                (today >= upcomingWinterStart && today <= upcomingWinterEnd))
+            {
+                isWinter = true;
+            }
+
+            if (isWinter)
             {
                 return ThemeManager.AvailableThemes.FirstOrDefault(t => t.Id == ThemeId.Winter);
             }

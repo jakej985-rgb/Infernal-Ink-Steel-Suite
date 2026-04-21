@@ -16,11 +16,13 @@
     <Color x:Key="PrimaryTextColor">#FF1c2833</Color>     <!-- Dark Charcoal -->
     <Color x:Key="SecondaryTextColor">#FF34495e</Color>   <!-- Wet Asphalt -->
     <Color x:Key="MutedTextColor">#FF7f8c8d</Color>      <!-- Grayish -->
+    <Color x:Key="AccentTextColor">#FFFFFFFF</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}" />
     <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceAltColor}" />
+    <SolidColorBrush x:Key="AccentTextBrush" Color="{StaticResource AccentTextColor}" />
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
     <SolidColorBrush x:Key="PrimaryHoverBrush" Color="{StaticResource PrimaryHoverColor}" />

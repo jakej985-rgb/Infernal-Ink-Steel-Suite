@@ -21,5 +21,10 @@ namespace InfernalInkSteelSuite.Repositories
         {
             return _db.Quotes.OrderByDescending(q => q.CreatedAt).ToList();
         }
+
+        public Quote? GetQuoteById(int id)
+        {
+            return _db.Quotes.FirstOrDefault(q => q.Id == id);
+        }
     }
 }

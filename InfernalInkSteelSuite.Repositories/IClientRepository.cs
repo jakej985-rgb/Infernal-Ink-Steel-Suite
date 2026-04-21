@@ -21,5 +21,6 @@ namespace InfernalInkSteelSuite.Repositories
         Task<Client> AddAsync(Client client);
         Task UpdateAsync(Client client);
         Task DeleteAsync(int id);
+        Task<List<Client>> GetPagedAsync(int page, int pageSize);
     }
 }

@@ -30,27 +30,7 @@ public class ApiClient
         }
     }
 
-    private void ApplyAuthHeader()
-    {
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext == null)
-        {
-            _http.DefaultRequestHeaders.Authorization = null;
-            return;
-        }
-
-        var token = httpContext.Session.GetString("ApiToken");
-
-        if (!string.IsNullOrWhiteSpace(token))
-        {
-            _http.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-        }
-        else
-        {
-            _http.DefaultRequestHeaders.Authorization = null;
-        }
-    }
+    // ApplyAuthHeader removed in favor of AuthHeaderHandler
 
     // DTOs matching the API responses
     public record LoginRequest(string Username, string Password);
@@ -132,20 +112,20 @@ public class ApiClient
 
     public async Task<List<ClientDto>> GetClientsAsync()
     {
-        ApplyAuthHeader();
+
         var result = await _http.GetFromJsonAsync<List<ClientDto>>("api/clients");
         return result ?? [];
     }
 
     public async Task<ClientDto?> GetClientAsync(int id)
     {
-        ApplyAuthHeader();
+
         return await _http.GetFromJsonAsync<ClientDto>($"api/clients/{id}");
     }
 
     public async Task<ClientDto> CreateClientAsync(ClientDto client)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PostAsJsonAsync("api/clients", client);
         if (!response.IsSuccessStatusCode)
         {
@@ -157,7 +137,7 @@ public class ApiClient
 
     public async Task UpdateClientAsync(ClientDto client)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PutAsJsonAsync($"api/clients/{client.Id}", client);
         if (!response.IsSuccessStatusCode)
         {
@@ -168,7 +148,7 @@ public class ApiClient
 
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null, string? status = null, int? clientId = null)
     {
-        ApplyAuthHeader();
+
         var query = new List<string>();
         if (date.HasValue) query.Add($"date={date.Value:O}");
         if (artistId.HasValue) query.Add($"artistId={artistId.Value}");
@@ -182,13 +162,13 @@ public class ApiClient
 
     public async Task<AppointmentDto?> GetAppointmentAsync(int id)
     {
-        ApplyAuthHeader();
+
         return await _http.GetFromJsonAsync<AppointmentDto>($"api/appointments/{id}");
     }
 
     public async Task<AppointmentDto> CreateAppointmentAsync(AppointmentDto appt)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PostAsJsonAsync("api/appointments", appt);
         if (!response.IsSuccessStatusCode)
         {
@@ -200,7 +180,7 @@ public class ApiClient
 
     public async Task UpdateAppointmentAsync(AppointmentDto appt)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PutAsJsonAsync($"api/appointments/{appt.Id}", appt);
         if (!response.IsSuccessStatusCode)
         {
@@ -213,13 +193,13 @@ public class ApiClient
 
     public Task<List<DocumentDto>?> GetDocumentsAsync()
     {
-        ApplyAuthHeader();
+
         return _http.GetFromJsonAsync<List<DocumentDto>>("api/Documents");
     }
 
     public async Task<List<DocumentDto>> GetDocumentsForClientAsync(int clientId)
     {
-        ApplyAuthHeader();
+
         // Updated endpoint to match new controller if needed, but the new controller exposes "api/Documents/by-client/{clientId}"
         var result = await _http.GetFromJsonAsync<List<DocumentDto>>($"api/Documents/by-client/{clientId}");
         return result ?? [];
@@ -227,7 +207,7 @@ public class ApiClient
 
     public async Task<List<UserDto>> GetUsersAsync()
     {
-        ApplyAuthHeader();
+
         var result = await _http.GetFromJsonAsync<List<UserDto>>("api/Users");
         return result ?? [];
     }
@@ -238,7 +218,7 @@ public class ApiClient
         string? title,
         IFormFile file)
     {
-        ApplyAuthHeader();
+
         using var content = new MultipartFormDataContent
         {
             { new StringContent(clientId.ToString()), "clientId" },
@@ -261,7 +241,7 @@ public class ApiClient
 
     public async Task<string?> UploadAvatarAsync(int clientId, Stream imageStream, string fileName)
     {
-        ApplyAuthHeader();
+
         using var content = new MultipartFormDataContent();
         var streamContent = new StreamContent(imageStream);
         // Assuming JPEG from smartcrop or detect via filename
@@ -286,7 +266,7 @@ public class ApiClient
 
     public async Task<QuoteEstimate?> CalculateQuoteAsync(QuoteInput input)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PostAsJsonAsync("api/Quotes/preview", input);
         if (!response.IsSuccessStatusCode) return null;
         return await response.Content.ReadFromJsonAsync<QuoteEstimate>();
@@ -294,7 +274,7 @@ public class ApiClient
 
     public async Task<QuoteDto?> CreateQuoteAsync(QuoteInput input)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PostAsJsonAsync("api/Quotes", input);
         if (!response.IsSuccessStatusCode) return null;
         return await response.Content.ReadFromJsonAsync<QuoteDto>();
@@ -302,7 +282,7 @@ public class ApiClient
 
     public async Task<List<QuoteDto>> GetAllQuotesAsync()
     {
-        ApplyAuthHeader();
+
         var result = await _http.GetFromJsonAsync<List<QuoteDto>>("api/Quotes");
         return result ?? [];
     }
@@ -311,7 +291,7 @@ public class ApiClient
 
     public async Task<DashboardStatsDto?> GetDashboardStatsAsync()
     {
-        ApplyAuthHeader();
+
         try
         {
             return await _http.GetFromJsonAsync<DashboardStatsDto>("api/Stats/overview");
@@ -325,7 +305,7 @@ public class ApiClient
 
     public async Task<List<AppointmentStatDto>> GetAppointmentStatsAsync(DateTime? from, DateTime? to)
     {
-        ApplyAuthHeader();
+
         var query = new List<string>();
         if (from.HasValue) query.Add($"from={from.Value:O}");
         if (to.HasValue) query.Add($"to={to.Value:O}");
@@ -381,7 +361,7 @@ public class ApiClient
 
     public async Task<ShopSettingsDto?> GetShopSettingsAsync()
     {
-        ApplyAuthHeader();
+
         try
         {
             return await _http.GetFromJsonAsync<ShopSettingsDto>("api/Settings");
@@ -418,7 +398,7 @@ public class ApiClient
 
     public async Task<bool> UpdateShopSettingsAsync(ShopSettingsDto settings)
     {
-        ApplyAuthHeader();
+
         var response = await _http.PutAsJsonAsync("api/Settings", settings);
         return response.IsSuccessStatusCode;
     }

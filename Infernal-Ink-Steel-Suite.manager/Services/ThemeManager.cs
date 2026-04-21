@@ -147,10 +147,18 @@ namespace InfernalInkSteelSuite.Services
         public static ThemeDefinition CurrentTheme { get; private set; } =
             AvailableThemes.First(t => t.Id == ThemeId.InfernalNeon);
 
+        public static ThemeDefinition? CurrentHolidayTheme { get; private set; }
+
         public static void ApplyTheme(ThemeId id)
         {
             var theme = AvailableThemes.First(t => t.Id == id);
-            ApplyTheme(theme);
+            ApplyThemeInternal(theme, false);
+        }
+
+        public static void ApplyHolidayTheme(ThemeId id)
+        {
+            var theme = AvailableThemes.First(t => t.Id == id);
+            ApplyThemeInternal(theme, true);
         }
 
         public static void ApplyTheme(string themeKey)
@@ -159,33 +167,35 @@ namespace InfernalInkSteelSuite.Services
                 t => string.Equals(t.Key, themeKey, StringComparison.OrdinalIgnoreCase))
                 ?? AvailableThemes.First(t => t.Id == ThemeId.InfernalNeon);
 
-            ApplyTheme(theme);
+            ApplyThemeInternal(theme, false);
         }
 
-        private static void ApplyTheme(ThemeDefinition theme)
+        private static void ApplyThemeInternal(ThemeDefinition theme, bool isHoliday)
         {
             var app = Application.Current;
-            if (app is null)
-                return;
+            if (app is null) return;
+
+            if (isHoliday) CurrentHolidayTheme = theme;
+            else CurrentTheme = theme;
 
             var dictionaries = app.Resources.MergedDictionaries;
 
             var toRemove = dictionaries
                 .Where(d => d.Source != null &&
-                            !d.Source.OriginalString.EndsWith("Base.xaml",
-                                StringComparison.OrdinalIgnoreCase))
+                            !d.Source.OriginalString.EndsWith("Base.xaml", StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
-            foreach (var dict in toRemove)
-                dictionaries.Remove(dict);
+            foreach (var dict in toRemove) dictionaries.Remove(dict);
 
-            var themeDict = new ResourceDictionary
+            if (CurrentTheme != null)
             {
-                Source = theme.ResourceUri
-            };
-            dictionaries.Add(themeDict);
+                dictionaries.Add(new ResourceDictionary { Source = CurrentTheme.ResourceUri });
+            }
 
-            CurrentTheme = theme;
+            if (CurrentHolidayTheme != null)
+            {
+                dictionaries.Add(new ResourceDictionary { Source = CurrentHolidayTheme.ResourceUri });
+            }
         }
     }
 }

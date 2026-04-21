@@ -7,5 +7,6 @@ namespace InfernalInkSteelSuite.Repositories
     {
         bool AddQuote(Quote quote);
         List<Quote> GetAllQuotes();
+        Quote? GetQuoteById(int id);
     }
 }

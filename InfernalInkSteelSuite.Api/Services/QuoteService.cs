@@ -105,10 +105,6 @@ public class QuoteService(IQuoteRepository repository, IShopSettingsRepository s
 
     public Quote? GetQuote(int id)
     {
-        // Repo doesn't have Get(id) yet?
-        // Let's rely on GetAll and filter for now if strictly necessary, or add to repo.
-        // Given I can edit repo, I should add it.
-        // But to save time and stick to plan, I'll filter GetAll() for now as it returns a List in memory.
-        return _repository.GetAllQuotes().FirstOrDefault(q => q.Id == id);
+        return _repository.GetQuoteById(id);
     }
 }

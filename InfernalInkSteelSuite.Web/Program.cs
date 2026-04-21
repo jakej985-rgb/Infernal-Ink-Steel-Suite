@@ -1,7 +1,4 @@
 using InfernalInkSteelSuite.Web.Services;
-using InfernalInkSteelSuite.Data;
-using InfernalInkSteelSuite.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,13 +17,17 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 // Configure ApiOptions
 builder.Services.Configure<ApiOptions>(builder.Configuration);
 
+builder.Services.AddTransient<AuthHeaderHandler>();
 // HttpClient for API
-builder.Services.AddHttpClient<ApiClient>();
+builder.Services.AddHttpClient<ApiClient>()
+    .AddHttpMessageHandler<AuthHeaderHandler>();
 
 var app = builder.Build();
 

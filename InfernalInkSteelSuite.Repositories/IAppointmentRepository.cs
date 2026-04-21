@@ -16,5 +16,7 @@ namespace InfernalInkSteelSuite.Repositories
         List<Appointment> GetAppointmentsByClientId(int clientId);
         List<Appointment> GetAppointmentsByDateRange(DateTime start, DateTime end);
         List<Appointment> GetAppointmentsByStatus(string status);
+        List<Appointment> GetPaged(int page, int pageSize);
+        Task<List<Appointment>> GetPagedAsync(int page, int pageSize);
     }
 }

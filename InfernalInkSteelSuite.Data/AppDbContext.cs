@@ -1,13 +1,11 @@
 using InfernalInkSteelSuite.Domain;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace InfernalInkSteelSuite.Data;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAccessor? httpContextAccessor = null) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options, ICurrentUserProvider? userProvider = null) : DbContext(options)
 {
-    private readonly IHttpContextAccessor? _httpContextAccessor = httpContextAccessor;
+    private readonly ICurrentUserProvider? _userProvider = userProvider;
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Client> Clients => Set<Client>();
@@ -33,9 +31,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, IHttpContextAc
         var entries = ChangeTracker.Entries<ISyncEntity>()
             .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
-        var currentUser = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value
-                          ?? _httpContextAccessor?.HttpContext?.User?.Identity?.Name
-                          ?? "System";
+        var currentUser = _userProvider?.GetCurrentUsername() ?? "System";
 
         foreach (var entry in entries)
         {

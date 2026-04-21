@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Data.Sqlite;
 using System.Diagnostics;
 using System.Security.Principal;
 
@@ -44,64 +43,8 @@ namespace InfernalInkSteelSuite.Web.Pages
                 UserName = "Non-Windows Environment";
             }
 
-            ConnectionStringConfig = _configuration.GetConnectionString("DefaultConnection") ?? "Not Found";
-
-            if (ConnectionStringConfig.Contains("Data Source="))
-            {
-                DbPath = ConnectionStringConfig.Replace("Data Source=", "").Trim();
-            }
-            else
-            {
-                DbPath = "Could not parse path";
-            }
-
-            if (!string.IsNullOrEmpty(DbPath) && DbPath != "Could not parse path")
-            {
-                var dir = Path.GetDirectoryName(DbPath);
-                DirExists = Directory.Exists(dir);
-                FileExists = System.IO.File.Exists(DbPath);
-
-                if (FileExists)
-                {
-                    try
-                    {
-                        var info = new FileInfo(DbPath);
-                        FileAttributes = info.Attributes.ToString();
-                    }
-                    catch (Exception ex) { FileAttributes = "Error: " + ex.Message; }
-
-                    try
-                    {
-                        using var fs = System.IO.File.OpenRead(DbPath);
-                        CanRead = true;
-                    }
-                    catch { CanRead = false; }
-
-                    try
-                    {
-                        using var fs = System.IO.File.OpenWrite(DbPath);
-                        CanWrite = true;
-                    }
-                    catch { CanWrite = false; }
-                }
-            }
-
-            try
-            {
-                using var conn = new SqliteConnection(ConnectionStringConfig);
-                conn.Open();
-                ConnectionResult = "Success! State: " + conn.State;
-
-                using var cmd = conn.CreateCommand();
-                cmd.CommandText = "SELECT sqlite_version()";
-                var version = cmd.ExecuteScalar()?.ToString();
-                ConnectionResult += $" (SQLite Version: {version})";
-            }
-            catch (Exception ex)
-            {
-                ConnectionResult = "Failed";
-                ConnectionError = ex.ToString();
-            }
+            ConnectionStringConfig = "Direct database access disabled for Web Portal (H5).";
+            ConnectionResult = "N/A - Use API Health endpoints instead.";
 
             return Page();
         }

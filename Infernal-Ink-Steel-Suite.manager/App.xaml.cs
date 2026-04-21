@@ -43,8 +43,27 @@ namespace InfernalInkSteelSuite
                 {
                     try
                     {
-                        LocalDb.Database.EnsureCreated();
+                        using var mutex = new System.Threading.Mutex(false, "Global\\InfernalInkSteelSuiteDbMigration");
+                        var hasHandle = false;
+                        try
+                        {
+                            hasHandle = mutex.WaitOne(TimeSpan.FromSeconds(30), false);
+                            if (!hasHandle) throw new TimeoutException("Timeout waiting for exclusive access to DB migration.");
+                            LocalDb.Database.Migrate();
+                        }
+                        finally
+                        {
+                            if (hasHandle) mutex.ReleaseMutex();
+                        }
                         created = true;
+
+                        // Seed default admin if no users exist
+                        if (!LocalDb.Users.Any())
+                        {
+                            var hasher = new InfernalInkSteelSuite.Repositories.Services.PasswordHasher();
+                            var userRepo = new UserRepository(LocalDb, hasher);
+                            userRepo.AddUser("Admin", "admin123", "Admin");
+                        }
                     }
                     catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 5) // SQLITE_BUSY
                     {
@@ -54,9 +73,8 @@ namespace InfernalInkSteelSuite
                 }
 
                 // Initialize Sync Services
-                var settingsRepo = new ShopSettingsRepository(LocalDb);
                 var syncClient = new SyncClient();
-                SyncService = new BackgroundSyncService(LocalDb, syncClient, settingsRepo);
+                SyncService = new BackgroundSyncService(ConnectionString, syncClient);
                 SyncService.Start();
 
                 if (LocalDb != null)
@@ -69,7 +87,7 @@ namespace InfernalInkSteelSuite
                 var holidayTheme = HolidayThemeService.GetCurrentHolidayTheme();
                 if (holidayTheme != null)
                 {
-                    ThemeManager.ApplyTheme(holidayTheme.Id);
+                    ThemeManager.ApplyHolidayTheme(holidayTheme.Id);
                 }
             }
             catch (Exception ex)

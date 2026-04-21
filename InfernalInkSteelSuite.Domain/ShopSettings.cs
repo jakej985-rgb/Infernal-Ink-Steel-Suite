@@ -2,9 +2,14 @@ using System;
 
 namespace InfernalInkSteelSuite.Domain
 {
-    public class ShopSettings
+    public class ShopSettings : ISyncEntity
     {
         public int Id { get; set; } = -1;
+        public Guid SyncId { get; set; } = Guid.NewGuid();
+        public DateTime LastModifiedUtc { get; set; } = DateTime.UtcNow;
+        public string LastModifiedBy { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; } = false;
+        public byte[]? RowVersion { get; set; }
         public string ShopName { get; set; } = string.Empty;
         public string LogoPath { get; set; } = string.Empty;
         public string AccentColor { get; set; } = string.Empty;

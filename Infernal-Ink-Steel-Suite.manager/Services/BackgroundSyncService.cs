@@ -12,12 +12,18 @@ using System.Threading.Tasks;
 
 namespace InfernalInkSteelSuite.Services
 {
-    public class BackgroundSyncService(AppDbContext localDb, SyncClient syncClient, IShopSettingsRepository settingsRepo)
+    public class BackgroundSyncService(string connectionString, SyncClient syncClient)
     {
-        private readonly AppDbContext _localDb = localDb;
+        private readonly string _connectionString = connectionString;
         private readonly SyncClient _syncClient = syncClient;
-        private readonly IShopSettingsRepository _settingsRepo = settingsRepo;
         private CancellationTokenSource? _cts;
+
+        private AppDbContext CreateContext()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlite(_connectionString);
+            return new AppDbContext(optionsBuilder.Options);
+        }
 
         public event Action<string>? OnSyncStatusChanged;
 
@@ -34,35 +40,64 @@ namespace InfernalInkSteelSuite.Services
 
         private async Task SyncLoop(CancellationToken ct)
         {
+            int failureCount = 0;
             while (!ct.IsCancellationRequested)
             {
                 try
                 {
                     await PerformSyncAsync();
+                    failureCount = 0; // Reset on success
+                    await Task.Delay(TimeSpan.FromMinutes(2), ct);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
                 }
                 catch (Exception ex)
                 {
-                    OnSyncStatusChanged?.Invoke($"Sync failed: {ex.Message}");
+                    failureCount++;
+                    var backoffMinutes = Math.Min(Math.Pow(2, failureCount), 30); // Max 30 min backoff
+                    
+                    OnSyncStatusChanged?.Invoke($"Sync failed: {ex.Message}. Retrying in {backoffMinutes} min.");
+                    
+                    try 
+                    {
+                        await Task.Delay(TimeSpan.FromMinutes(backoffMinutes), ct);
+                    }
+                    catch (OperationCanceledException) { break; }
                 }
-
-                await Task.Delay(TimeSpan.FromMinutes(2), ct);
             }
         }
 
         public async Task PerformSyncAsync()
         {
-            InfernalInkSteelSuite.Domain.ShopSettings settings = _settingsRepo.LoadSettings();
-            if (string.IsNullOrEmpty(settings.LinkedAccountsJson)) return;
+            using var db = CreateContext();
+            var settingsRepo = new ShopSettingsRepository(db);
+
+            InfernalInkSteelSuite.Domain.ShopSettings settings = settingsRepo.LoadSettings();
+            if (string.IsNullOrEmpty(settings.LinkedAccountsJson)) 
+            {
+                OnSyncStatusChanged?.Invoke("Local (Not Linked)");
+                return;
+            }
 
             // Simplified deserialization since we just need the URL and Key
             var linked = JsonSerializer.Deserialize<JsonElement>(settings.LinkedAccountsJson);
             string? webAppUrl = linked.TryGetProperty("WebAppUrl", out var urlEl) ? urlEl.GetString() : null;
             string? apiKey = linked.TryGetProperty("ApiKey", out var keyEl) ? keyEl.GetString() : null;
 
-            if (string.IsNullOrEmpty(webAppUrl)) return;
+            if (string.IsNullOrEmpty(webAppUrl)) 
+            {
+                OnSyncStatusChanged?.Invoke("Sync Disabled (No URL)");
+                return;
+            }
 
             _syncClient.Configure(webAppUrl, apiKey ?? "");
-            if (!_syncClient.IsConfigured) return;
+            if (!_syncClient.IsConfigured) 
+            {
+                OnSyncStatusChanged?.Invoke("Sync Error (Client Config)");
+                return;
+            }
 
             OnSyncStatusChanged?.Invoke("Syncing...");
 
@@ -70,33 +105,33 @@ namespace InfernalInkSteelSuite.Services
             var nextSyncUtc = DateTime.UtcNow;
 
             // 1. Pull Changes from Server
-            await PullChangesAsync(lastSyncUtc);
+            await PullChangesAsync(db, lastSyncUtc);
 
             // 2. Push Local Changes to Server
-            await PushChangesAsync(lastSyncUtc);
+            await PushChangesAsync(db, lastSyncUtc);
 
             // 3. Persist successful sync timestamp
             settings.LastSyncUtc = nextSyncUtc;
-            _settingsRepo.SaveSettings(settings);
+            settingsRepo.SaveSettings(settings);
 
             OnSyncStatusChanged?.Invoke("Synced");
         }
 
-        private async Task PullChangesAsync(DateTime lastSyncUtc)
+        private async Task PullChangesAsync(AppDbContext db, DateTime lastSyncUtc)
         {
             // Pull Clients
             var remoteClients = await _syncClient.GetChangesAsync<Client>("api/sync/clients", lastSyncUtc);
             foreach (var remote in remoteClients)
             {
-                var local = await _localDb.Clients.FirstOrDefaultAsync(c => c.SyncId == remote.SyncId);
+                var local = await db.Clients.FirstOrDefaultAsync(c => c.SyncId == remote.SyncId);
                 if (local == null)
                 {
                     remote.Id = 0; // Ensure local ID is generated
-                    _localDb.Clients.Add(remote);
+                    db.Clients.Add(remote);
                 }
                 else if (remote.LastModifiedUtc > local.LastModifiedUtc)
                 {
-                    _localDb.Entry(local).CurrentValues.SetValues(remote);
+                    db.Entry(local).CurrentValues.SetValues(remote);
                 }
             }
 
@@ -104,11 +139,11 @@ namespace InfernalInkSteelSuite.Services
             var remoteAppts = await _syncClient.GetChangesAsync<Appointment>("api/sync/appointments", lastSyncUtc);
             foreach (var remote in remoteAppts)
             {
-                var local = await _localDb.Appointments.FirstOrDefaultAsync(a => a.SyncId == remote.SyncId);
+                var local = await db.Appointments.FirstOrDefaultAsync(a => a.SyncId == remote.SyncId);
                 if (local == null)
                 {
                     // Double-booking check
-                    var overlap = await _localDb.Appointments.AnyAsync(a => 
+                    var overlap = await db.Appointments.AnyAsync(a => 
                         a.UserId == remote.UserId && 
                         a.StartTime < remote.EndTime && 
                         a.EndTime > remote.StartTime);
@@ -120,21 +155,21 @@ namespace InfernalInkSteelSuite.Services
                     }
 
                     remote.Id = 0;
-                    _localDb.Appointments.Add(remote);
+                    db.Appointments.Add(remote);
                 }
                 else if (remote.LastModifiedUtc > local.LastModifiedUtc)
                 {
-                    _localDb.Entry(local).CurrentValues.SetValues(remote);
+                    db.Entry(local).CurrentValues.SetValues(remote);
                 }
             }
 
-            await _localDb.SaveChangesAsync();
+            await db.SaveChangesAsync();
         }
 
-        private async Task PushChangesAsync(DateTime lastSyncUtc)
+        private async Task PushChangesAsync(AppDbContext db, DateTime lastSyncUtc)
         {
             // Push Local Clients
-            var localClientChanges = await _localDb.Clients
+            var localClientChanges = await db.Clients
                 .Where(c => c.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
@@ -154,7 +189,7 @@ namespace InfernalInkSteelSuite.Services
             }
 
             // Push Local Appointments
-            var localApptChanges = await _localDb.Appointments
+            var localApptChanges = await db.Appointments
                 .Where(a => a.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
