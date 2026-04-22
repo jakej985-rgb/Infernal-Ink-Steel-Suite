@@ -146,6 +146,12 @@ public class ApiClient
         }
     }
 
+    public async Task<Dictionary<string, int>> GetAppointmentHeatmapAsync()
+    {
+        var result = await _http.GetFromJsonAsync<Dictionary<string, int>>("api/appointments/heatmap");
+        return result ?? [];
+    }
+
     public async Task<List<AppointmentDto>> GetAppointmentsAsync(DateTime? date = null, int? artistId = null, string? status = null, int? clientId = null)
     {
 

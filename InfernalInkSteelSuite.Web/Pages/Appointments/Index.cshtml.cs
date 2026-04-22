@@ -33,26 +33,18 @@ public class IndexModel(ApiClient api) : PageModel
             SelectedDate = parsedDate;
         }
 
-        // Fetch ALL appointments to populate the Calendar Heatmap & Filter locally
-        // This avoids multiple API calls and enables the heatmap counts.
-        var allAppointments = await _api.GetAppointmentsAsync();
+        // 1. Fetch Heatmap Counts (H1 Fix: Use optimized endpoint)
+        var heatmap = await _api.GetAppointmentHeatmapAsync();
+        AppointmentCounts = heatmap.ToDictionary(
+            kvp => DateOnly.Parse(kvp.Key),
+            kvp => kvp.Value
+        );
 
-        // 1. Populate Calendar Counts
-        AppointmentCounts = allAppointments
-            .GroupBy(a => DateOnly.FromDateTime(a.StartTime))
-            .ToDictionary(g => g.Key, g => g.Count());
+        // 2. Fetch Appointments for the Selected Date (Filtered API Call)
+        Appointments = await _api.GetAppointmentsAsync(date: SelectedDate.ToDateTime(TimeOnly.MinValue));
 
-        // 2. Filter for Main Stage (Selected Date)
-        Appointments = allAppointments
-            .Where(a => DateOnly.FromDateTime(a.StartTime) == SelectedDate)
-            .OrderBy(a => a.StartTime)
-            .ToList();
-
-        // 3. Filter Waitlist (Pending status)
-        WaitlistAppointments = allAppointments
-            .Where(a => a.Status == "Pending")
-            .OrderBy(a => a.StartTime)
-            .ToList();
+        // 3. Fetch Waitlist (Pending status)
+        WaitlistAppointments = await _api.GetAppointmentsAsync(status: "Pending");
 
         return Page();
     }

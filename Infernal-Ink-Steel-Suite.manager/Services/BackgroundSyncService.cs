@@ -126,6 +126,7 @@ namespace InfernalInkSteelSuite.Services
             var remoteClients = await _syncClient.GetChangesAsync<Client>("api/sync/clients", lastSyncUtc);
             foreach (var remote in remoteClients)
             {
+                if (remote.SyncId == Guid.Empty) continue;
                 var local = await db.Clients.FirstOrDefaultAsync(c => c.SyncId == remote.SyncId);
                 if (local == null)
                 {
@@ -142,6 +143,7 @@ namespace InfernalInkSteelSuite.Services
             var remoteAppts = await _syncClient.GetChangesAsync<Appointment>("api/sync/appointments", lastSyncUtc);
             foreach (var remote in remoteAppts)
             {
+                if (remote.SyncId == Guid.Empty) continue;
                 var local = await db.Appointments.FirstOrDefaultAsync(a => a.SyncId == remote.SyncId);
                 if (local == null)
                 {

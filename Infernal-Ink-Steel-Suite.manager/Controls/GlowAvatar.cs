@@ -70,7 +70,7 @@ namespace InfernalInkSteelSuite.Controls
         private static void OnBackgroundColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (GlowAvatar)d;
-            control.UpdateFill();
+            control.UpdateFill(control.PhotoPath, (Brush)e.NewValue);
         }
 
         public static readonly DependencyProperty PhotoPathProperty =
@@ -85,16 +85,16 @@ namespace InfernalInkSteelSuite.Controls
         private static void OnPhotoPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (GlowAvatar)d;
-            control.UpdateFill();
+            control.UpdateFill((string)e.NewValue, control.BackgroundColor);
         }
 
-        private void UpdateFill()
+        private void UpdateFill(string path, Brush backgroundColor)
         {
-            if (!string.IsNullOrEmpty(PhotoPath))
+            if (!string.IsNullOrEmpty(path))
             {
                 try
                 {
-                    var uri = new System.Uri(PhotoPath, System.UriKind.RelativeOrAbsolute);
+                    var uri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
                     _ellipse.Fill = new ImageBrush(new System.Windows.Media.Imaging.BitmapImage(uri)) { Stretch = Stretch.UniformToFill };
                     _initialsTextBlock.Visibility = Visibility.Collapsed;
                     return;
@@ -102,7 +102,7 @@ namespace InfernalInkSteelSuite.Controls
                 catch { }
             }
             
-            _ellipse.Fill = BackgroundColor;
+            _ellipse.Fill = backgroundColor;
             _initialsTextBlock.Visibility = Visibility.Visible;
         }
     }
