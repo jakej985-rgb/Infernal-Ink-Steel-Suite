@@ -35,17 +35,21 @@ else
 
         <!-- Visual Charts (Mocked Data for Visual Demo as backend doesn't support time-series yet) -->
         <div class="chart-container">
-            <h4 class="chart-title">Weekly Activity (Heatmap)</h4>
+            <h4 class="chart-title">Weekly Activity (Projected / Demo Only)</h4>
             <div class="heatmap-grid">
-                @for (int i = 0; i < 7; i++)
-                {
-                    var height = new Random().Next(20, 100);
-                    <div class="heatmap-col">
-                        <div class="heatmap-bar" style="height: @height%;"></div>
-                        <span class="heatmap-label">@DateTime.Now.AddDays(-6+i).ToString("ddd")</span>
-                    </div>
+                @{
+                    var rand = new Random();
+                    for (int i = 0; i < 7; i++)
+                    {
+                        var height = rand.Next(20, 100);
+                        <div class="heatmap-col">
+                            <div class="heatmap-bar" style="height: @height%;"></div>
+                            <span class="heatmap-label">@DateTime.Now.AddDays(-6+i).ToString("ddd")</span>
+                        </div>
+                    }
                 }
             </div>
+            <p class="text-muted small mt-2">Note: Historical activity charts are currently using simulated data for interface demonstration.</p>
         </div>
     </div>
 

@@ -14,7 +14,7 @@ namespace InfernalInkSteelSuite.Services
         private HttpClient? _httpClient;
         private string? _jwtToken;
 
-        public void Configure(string baseUrl, string username, string password)
+        public async Task ConfigureAsync(string baseUrl, string username, string password)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -27,36 +27,33 @@ namespace InfernalInkSteelSuite.Services
             _httpClient = new HttpClient { BaseAddress = new Uri(baseUrl) };
 
             // Authenticate via JWT Bearer (C2 fix — was using X-Api-Key which the API never validates)
-            Task.Run(async () =>
+            try
             {
-                try
+                var response = await _httpClient.PostAsJsonAsync("auth/login", new { Username = username, Password = password });
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await _httpClient.PostAsJsonAsync("auth/login", new { Username = username, Password = password });
-                    if (response.IsSuccessStatusCode)
+                    var result = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
+                    if (result.TryGetProperty("token", out var tokenEl))
                     {
-                        var result = await response.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
-                        if (result.TryGetProperty("token", out var tokenEl))
-                        {
-                            _jwtToken = tokenEl.GetString();
-                            _httpClient.DefaultRequestHeaders.Authorization =
-                                new AuthenticationHeaderValue("Bearer", _jwtToken);
-                        }
+                        _jwtToken = tokenEl.GetString();
+                        _httpClient.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue("Bearer", _jwtToken);
                     }
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"SyncClient auth failed: {ex.Message}");
-                }
-            }).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SyncClient auth failed: {ex.Message}");
+            }
         }
 
         /// <summary>
         /// Legacy overload for backward compatibility. Uses username/password from linked settings.
         /// </summary>
-        public void Configure(string baseUrl, string apiKeyOrPassword)
+        public async Task ConfigureAsync(string baseUrl, string apiKeyOrPassword)
         {
             // Treat the second parameter as a password with a default sync username
-            Configure(baseUrl, "admin", apiKeyOrPassword);
+            await ConfigureAsync(baseUrl, "admin", apiKeyOrPassword);
         }
 
         public bool IsConfigured => _httpClient != null && _jwtToken != null;

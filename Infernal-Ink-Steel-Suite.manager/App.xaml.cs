@@ -64,6 +64,10 @@ namespace InfernalInkSteelSuite
                             var userRepo = new UserRepository(LocalDb, hasher);
                             userRepo.AddUser("Admin", "admin123", "Admin");
                         }
+                        // Initialize Sync Services
+                        var syncClient = new SyncClient();
+                        SyncService = new BackgroundSyncService(ConnectionString, syncClient);
+                        SyncService.Start();
                     }
                     catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 5) // SQLITE_BUSY
                     {
@@ -71,11 +75,6 @@ namespace InfernalInkSteelSuite
                         System.Threading.Thread.Sleep(1000);
                     }
                 }
-
-                // Initialize Sync Services
-                var syncClient = new SyncClient();
-                SyncService = new BackgroundSyncService(ConnectionString, syncClient);
-                SyncService.Start();
 
                 if (LocalDb != null)
                 {

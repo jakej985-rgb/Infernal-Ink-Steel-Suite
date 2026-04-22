@@ -18,7 +18,7 @@ namespace InfernalInkSteelSuite.Services
                 SuggestedDifficulty = 3, // Mock value
                 SolidDarkFill = 0.25,
                 StyleHint = "PENDING IMPLEMENTATION",
-                Notes = "AUTOMATED ANALYSIS PLACEHOLDER: Values are hardcoded."
+                Notes = "PLACEHOLDER: Actual AI-based complexity analysis is planned for Phase 4. These values are currently for UI demonstration only."
             };
         }
     }

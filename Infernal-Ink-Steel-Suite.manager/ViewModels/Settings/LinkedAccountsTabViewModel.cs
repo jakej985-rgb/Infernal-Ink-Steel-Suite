@@ -11,7 +11,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
         public string TwitterUrl { get; set; } = string.Empty;
         public string WebsiteUrl { get; set; } = string.Empty;
         public string WebAppUrl { get; set; } = string.Empty;
-        public string ApiKey { get; set; } = string.Empty;
+        public string SyncUsername { get; set; } = string.Empty;
+        public string SyncPassword { get; set; } = string.Empty;
     }
 
     public class LinkedAccountsTabViewModel : SettingsTabViewModel
@@ -75,13 +76,24 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        private string _apiKey = string.Empty;
-        public string ApiKey
+        private string _syncUsername = string.Empty;
+        public string SyncUsername
         {
-            get => _apiKey;
+            get => _syncUsername;
             set
             {
-                _apiKey = value;
+                _syncUsername = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _syncPassword = string.Empty;
+        public string SyncPassword
+        {
+            get => _syncPassword;
+            set
+            {
+                _syncPassword = value;
                 OnPropertyChanged();
             }
         }
@@ -110,7 +122,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                         TwitterUrl = linkedAccounts.TwitterUrl;
                         WebsiteUrl = linkedAccounts.WebsiteUrl;
                         WebAppUrl = linkedAccounts.WebAppUrl;
-                        ApiKey = linkedAccounts.ApiKey;
+                        SyncUsername = linkedAccounts.SyncUsername;
+                        SyncPassword = linkedAccounts.SyncPassword;
                     }
                 }
                 catch { }
@@ -126,7 +139,8 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 TwitterUrl = TwitterUrl,
                 WebsiteUrl = WebsiteUrl,
                 WebAppUrl = WebAppUrl,
-                ApiKey = ApiKey
+                SyncUsername = SyncUsername,
+                SyncPassword = SyncPassword
             };
 
             var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();

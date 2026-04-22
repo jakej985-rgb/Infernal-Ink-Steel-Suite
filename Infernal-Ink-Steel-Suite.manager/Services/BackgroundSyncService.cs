@@ -93,7 +93,7 @@ namespace InfernalInkSteelSuite.Services
                 return;
             }
 
-            _syncClient.Configure(webAppUrl, syncUsername ?? "admin", syncPassword ?? "");
+            await _syncClient.ConfigureAsync(webAppUrl, syncUsername ?? "admin", syncPassword ?? "");
             if (!_syncClient.IsConfigured) 
             {
                 OnSyncStatusChanged?.Invoke("Sync Error (Client Config)");

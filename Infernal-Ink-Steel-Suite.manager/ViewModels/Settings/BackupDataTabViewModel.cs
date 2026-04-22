@@ -7,14 +7,6 @@ using System.Text.Json;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
-    public class BackupSettings
-    {
-        public string BackupPath { get; set; } = @"C:\Backups\InfernalInk";
-        public bool AutoBackupEnabled { get; set; }
-        public string BackupFrequency { get; set; } = "Daily";
-        public int RetentionDays { get; set; } = 30;
-    }
-
     public class BackupDataTabViewModel : SettingsTabViewModel
     {
         private readonly IShopSettingsRepository _shopSettingsRepository;
@@ -43,13 +35,13 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             }
         }
 
-        private string _backupFrequency = "Daily";
-        public string BackupFrequency
+        private string _backupSchedule = "Daily";
+        public string BackupSchedule
         {
-            get => _backupFrequency;
+            get => _backupSchedule;
             set
             {
-                _backupFrequency = value;
+                _backupSchedule = value;
                 OnPropertyChanged();
             }
         }
@@ -95,7 +87,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                     {
                         BackupPath = backupSettings.BackupPath;
                         AutoBackupEnabled = backupSettings.AutoBackupEnabled;
-                        BackupFrequency = backupSettings.BackupFrequency;
+                        BackupSchedule = backupSettings.BackupSchedule;
                         RetentionDays = backupSettings.RetentionDays;
                         return;
                     }
@@ -106,7 +98,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             // Defaults
             BackupPath = @"C:\Backups\InfernalInk";
             AutoBackupEnabled = false;
-            BackupFrequency = "Daily";
+            BackupSchedule = "Daily";
             RetentionDays = 30;
         }
 
@@ -148,7 +140,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
             {
                 BackupPath = BackupPath,
                 AutoBackupEnabled = AutoBackupEnabled,
-                BackupFrequency = BackupFrequency,
+                BackupSchedule = BackupSchedule,
                 RetentionDays = RetentionDays
             };
 

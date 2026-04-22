@@ -87,11 +87,7 @@ public static class ServiceExtensions
         var jwtKey = configuration["JWT_KEY"] ?? configuration["Jwt:Key"];
         if (string.IsNullOrEmpty(jwtKey))
         {
-            if (environment.IsProduction())
-            {
-                throw new InvalidOperationException("CRITICAL: JWT_KEY environment variable is missing for production deployment.");
-            }
-            jwtKey = "INSECURE_DEVELOPMENT_ONLY_KEY_CHANGE_IN_PRODUCTION_1234567890";
+            throw new InvalidOperationException("CRITICAL: JWT_KEY environment variable (or Jwt:Key in appsettings) is missing. Authentication cannot be configured.");
         }
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
