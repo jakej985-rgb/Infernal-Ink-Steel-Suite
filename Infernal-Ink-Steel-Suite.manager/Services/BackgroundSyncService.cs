@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using InfernalInkSteelSuite.Repositories.Services;
 
 namespace InfernalInkSteelSuite.Services
 {
@@ -93,7 +94,8 @@ namespace InfernalInkSteelSuite.Services
                 return;
             }
 
-            await _syncClient.ConfigureAsync(webAppUrl, syncUsername ?? "admin", syncPassword ?? "");
+            string decryptedPassword = StringEncryption.Decrypt(syncPassword ?? "");
+            await _syncClient.ConfigureAsync(webAppUrl, syncUsername ?? "admin", decryptedPassword);
             if (!_syncClient.IsConfigured) 
             {
                 OnSyncStatusChanged?.Invoke("Sync Error (Client Config)");

@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Text.Json;
+using InfernalInkSteelSuite.ViewModels;
 
 namespace InfernalInkSteelSuite.Views
 {
@@ -14,6 +16,7 @@ namespace InfernalInkSteelSuite.Views
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly ShopSettingsRepository _shopSettingsRepository;
         private readonly List<Client> _allClients;
 
         public Appointment Appointment { get; set; }
@@ -81,6 +84,7 @@ namespace InfernalInkSteelSuite.Views
             InitializeComponent();
             _appointmentRepository = new AppointmentRepository(db);
             _clientRepository = new ClientRepository(db);
+            _shopSettingsRepository = new ShopSettingsRepository(db);
 
             _allClients = [.. _clientRepository.GetAll()];
             FilterClients();
@@ -223,6 +227,20 @@ namespace InfernalInkSteelSuite.Views
                 var timeOfDay = new TimeSpan(hour, minute, 0);
 
                 Appointment.DateTime = DatePicker.SelectedDate.Value.Date + timeOfDay;
+
+                var endTime = Appointment.DateTime.AddMinutes(Appointment.DurationMinutes);
+                if (!ValidateShopHours(Appointment.DateTime, endTime))
+                {
+                    MessageBox.Show("Selected time is outside of shop hours.", "Shop Closed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                if (CheckConflicts(Appointment.DateTime, endTime))
+                {
+                    MessageBox.Show("This time slot conflicts with another appointment.", "Conflict", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
                 _appointmentRepository.Update(Appointment);
                 DialogResult = true;
             }
@@ -230,6 +248,26 @@ namespace InfernalInkSteelSuite.Views
             {
                 MessageBox.Show($"Error saving appointment: {ex.Message}");
             }
+        }
+
+        private bool ValidateShopHours(DateTime start, DateTime end)
+        {
+            var settings = _shopSettingsRepository.LoadSettings();
+            if (string.IsNullOrEmpty(settings.ShopHoursJson)) return true;
+            try
+            {
+                var shopHours = JsonSerializer.Deserialize<List<ShopDaySetting>>(settings.ShopHoursJson);
+                var daySetting = shopHours?.FirstOrDefault(d => d.Day == start.DayOfWeek);
+                if (daySetting == null || !daySetting.IsOpen) return false;
+                return start.TimeOfDay >= daySetting.StartTime && end.TimeOfDay <= daySetting.EndTime;
+            }
+            catch { return true; }
+        }
+
+        private bool CheckConflicts(DateTime start, DateTime end)
+        {
+            var appointments = _appointmentRepository.GetAppointmentsByDate(start.Date);
+            return appointments.Any(appt => appt.Id != Appointment.Id && start < appt.DateTime.AddMinutes(appt.DurationMinutes) && end > appt.DateTime);
         }
     }
 }

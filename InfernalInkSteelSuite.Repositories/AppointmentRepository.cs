@@ -134,5 +134,14 @@ namespace InfernalInkSteelSuite.Repositories
             var now = DateTime.UtcNow;
             return _db.Appointments.Count(a => a.DateTime > now);
         }
+
+        public Dictionary<DateTime, int> GetHeatmapData(DateTime start, DateTime end)
+        {
+            return _db.Appointments
+                .Where(a => a.DateTime >= start && a.DateTime < end)
+                .GroupBy(a => a.DateTime.Date)
+                .Select(g => new { Date = g.Key, Count = g.Count() })
+                .ToDictionary(x => x.Date, x => x.Count);
+        }
     }
 }

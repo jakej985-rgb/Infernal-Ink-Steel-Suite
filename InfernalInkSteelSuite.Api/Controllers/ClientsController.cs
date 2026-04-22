@@ -36,6 +36,13 @@ public class ClientsController(IClientRepository clients, IWebHostEnvironment en
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
+        // Audit Fix 2: Add duplicate-check to API
+        if (!string.IsNullOrEmpty(client.Email) && _clients.GetClientIdByEmail(client.Email).HasValue)
+            return Conflict("A client with this email already exists.");
+        
+        if (!string.IsNullOrEmpty(client.PhoneNumber) && _clients.GetClientIdByPhone(client.PhoneNumber).HasValue)
+            return Conflict("A client with this phone number already exists.");
+
         var created = await _clients.AddAsync(client);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
@@ -48,6 +55,21 @@ public class ClientsController(IClientRepository clients, IWebHostEnvironment en
 
         var existing = await _clients.GetByIdAsync(id);
         if (existing == null) return NotFound();
+
+        // Audit Fix: Duplicate-check on update
+        if (!string.IsNullOrEmpty(client.Email))
+        {
+            var emailOwnerId = _clients.GetClientIdByEmail(client.Email);
+            if (emailOwnerId.HasValue && emailOwnerId.Value != id)
+                return Conflict("A client with this email already exists.");
+        }
+
+        if (!string.IsNullOrEmpty(client.PhoneNumber))
+        {
+            var phoneOwnerId = _clients.GetClientIdByPhone(client.PhoneNumber);
+            if (phoneOwnerId.HasValue && phoneOwnerId.Value != id)
+                return Conflict("A client with this phone number already exists.");
+        }
 
         await _clients.UpdateAsync(client);
         return NoContent();

@@ -39,7 +39,7 @@ namespace InfernalInkSteelSuite
                 // Add retry logic for database creation to handle race conditions with API
                 int retryCount = 0;
                 bool created = false;
-                while (!created && retryCount < 5)
+                while (!created && retryCount < 10)
                 {
                     try
                     {
@@ -47,7 +47,7 @@ namespace InfernalInkSteelSuite
                         var hasHandle = false;
                         try
                         {
-                            hasHandle = mutex.WaitOne(TimeSpan.FromSeconds(30), false);
+                            hasHandle = mutex.WaitOne(TimeSpan.FromSeconds(10), false);
                             if (!hasHandle) throw new TimeoutException("Timeout waiting for exclusive access to DB migration.");
                             LocalDb.Database.Migrate();
                         }
@@ -72,8 +72,13 @@ namespace InfernalInkSteelSuite
                     catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 5) // SQLITE_BUSY
                     {
                         retryCount++;
-                        System.Threading.Thread.Sleep(1000);
+                        System.Threading.Thread.Sleep(500 * retryCount); // Exponential backoff (ish)
                     }
+                }
+
+                if (!created)
+                {
+                    throw new Exception("The database is currently locked by another process (likely the API server). Please ensure no other instances are running and try again.");
                 }
 
                 if (LocalDb != null)

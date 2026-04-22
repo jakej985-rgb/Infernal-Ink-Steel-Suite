@@ -22,5 +22,6 @@ namespace InfernalInkSteelSuite.Repositories
         // Efficient count methods (H6: avoid full table scans)
         int CountByDate(DateTime date);
         int CountUpcoming();
+        Dictionary<DateTime, int> GetHeatmapData(DateTime start, DateTime end);
     }
 }

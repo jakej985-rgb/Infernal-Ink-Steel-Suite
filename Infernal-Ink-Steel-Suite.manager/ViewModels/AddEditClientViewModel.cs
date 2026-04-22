@@ -99,6 +99,27 @@ namespace InfernalInkSteelSuite.ViewModels
             }
             else
             {
+                // Audit Fix: Duplicate-check on update
+                if (!string.IsNullOrWhiteSpace(Client.Email))
+                {
+                    var existingIdByEmail = _clientRepository.GetClientIdByEmail(Client.Email);
+                    if (existingIdByEmail.HasValue && existingIdByEmail.Value != Client.Id)
+                    {
+                        ErrorMessage = "Another client with this email already exists.";
+                        return;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(Client.Phone))
+                {
+                    var existingIdByPhone = _clientRepository.GetClientIdByPhone(Client.Phone);
+                    if (existingIdByPhone.HasValue && existingIdByPhone.Value != Client.Id)
+                    {
+                        ErrorMessage = "Another client with this phone number already exists.";
+                        return;
+                    }
+                }
+
                 _clientRepository.Update(Client);
             }
             OnRequestClose();

@@ -16,7 +16,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
         private readonly IAppointmentRepository _appointments = appointments;
 
         [HttpGet]
-        public ActionResult<List<AppointmentDto>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId, [FromQuery] int? clientId)
+        public ActionResult<List<AppointmentDto>> GetAppointments([FromQuery] DateTime? date, [FromQuery] int? artistId, [FromQuery] int? clientId, [FromQuery] string? status)
         {
             List<Appointment> appointments;
 
@@ -31,6 +31,10 @@ namespace InfernalInkSteelSuite.Api.Controllers
             else if (clientId.HasValue)
             {
                 appointments = _appointments.GetAppointmentsByClientId(clientId.Value);
+            }
+            else if (!string.IsNullOrEmpty(status))
+            {
+                appointments = _appointments.GetAppointmentsByStatus(status);
             }
             else
             {
@@ -56,8 +60,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
                 }
             }
 
-            // Filter by Status if provided explicitly (e.g. for Purgatory/Waitlist)
-            string? status = HttpContext.Request.Query["status"];
+            // Filter by Status if not already filtered by repository (for mixed queries)
             if (!string.IsNullOrEmpty(status))
             {
                 appointments = [.. appointments.Where(a => a.Status.Equals(status, StringComparison.OrdinalIgnoreCase))];
@@ -95,7 +98,19 @@ namespace InfernalInkSteelSuite.Api.Controllers
             return Ok(results);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("heatmap")]
+    public ActionResult<Dictionary<string, int>> GetHeatmap([FromQuery] DateTime? start, [FromQuery] DateTime? end)
+    {
+        var startDate = start ?? DateTime.UtcNow.AddMonths(-3);
+        var endDate = end ?? DateTime.UtcNow;
+
+        var data = _appointments.GetHeatmapData(startDate, endDate);
+        
+        // Convert to string keys for JSON serialization stability
+        return Ok(data.ToDictionary(k => k.Key.ToString("yyyy-MM-dd"), v => v.Value));
+    }
+
+    [HttpGet("{id:int}")]
         public ActionResult<Appointment> GetById(int id)
         {
             var item = _appointments.Get(id);

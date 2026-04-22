@@ -1,6 +1,7 @@
 using InfernalInkSteelSuite.Domain;
 using InfernalInkSteelSuite.Repositories;
 using System.Text.Json;
+using InfernalInkSteelSuite.Repositories.Services;
 
 namespace InfernalInkSteelSuite.ViewModels.Settings
 {
@@ -123,7 +124,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                         WebsiteUrl = linkedAccounts.WebsiteUrl;
                         WebAppUrl = linkedAccounts.WebAppUrl;
                         SyncUsername = linkedAccounts.SyncUsername;
-                        SyncPassword = linkedAccounts.SyncPassword;
+                        SyncPassword = StringEncryption.Decrypt(linkedAccounts.SyncPassword);
                     }
                 }
                 catch { }
@@ -140,7 +141,7 @@ namespace InfernalInkSteelSuite.ViewModels.Settings
                 WebsiteUrl = WebsiteUrl,
                 WebAppUrl = WebAppUrl,
                 SyncUsername = SyncUsername,
-                SyncPassword = SyncPassword
+                SyncPassword = StringEncryption.Encrypt(SyncPassword)
             };
 
             var latestSettings = _shopSettingsRepository.LoadSettings() ?? new ShopSettings();
