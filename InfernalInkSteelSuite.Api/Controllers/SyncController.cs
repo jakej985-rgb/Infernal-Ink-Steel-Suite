@@ -45,7 +45,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
         public async Task<ActionResult> BatchSyncClients([FromBody] SyncBatchRequestDto<Client> batch)
         {
             // (M6) Validation: Ensure EntityId matches Payload.SyncId
-            foreach (var entry in batch.Entries)
+            foreach (var entry in batch.Changes)
             {
                 if (entry.EntityId == Guid.Empty || entry.EntityId != entry.Payload.SyncId)
                     return BadRequest($"Inconsistent client batch entry: {entry.EntityId} vs {entry.Payload.SyncId}");
@@ -57,7 +57,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
         [HttpPost("appointments/batch-sync")]
         public async Task<ActionResult> BatchSyncAppointments([FromBody] SyncBatchRequestDto<Appointment> batch)
         {
-            foreach (var entry in batch.Entries)
+            foreach (var entry in batch.Changes)
             {
                 if (entry.EntityId == Guid.Empty || entry.EntityId != entry.Payload.SyncId)
                     return BadRequest($"Inconsistent appointment batch entry: {entry.EntityId} vs {entry.Payload.SyncId}");
@@ -69,7 +69,7 @@ namespace InfernalInkSteelSuite.Api.Controllers
         [HttpPost("documents/batch-sync")]
         public async Task<ActionResult> BatchSyncDocuments([FromBody] SyncBatchRequestDto<Document> batch)
         {
-            foreach (var entry in batch.Entries)
+            foreach (var entry in batch.Changes)
             {
                 if (entry.EntityId == Guid.Empty || entry.EntityId != entry.Payload.SyncId)
                     return BadRequest($"Inconsistent document batch entry: {entry.EntityId} vs {entry.Payload.SyncId}");

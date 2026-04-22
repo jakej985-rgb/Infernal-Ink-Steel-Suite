@@ -175,7 +175,7 @@ namespace InfernalInkSteelSuite.Services
         {
             // Push Local Clients
             var localClientChanges = await db.Clients
-                .Where(c => c.LastModifiedUtc > lastSyncUtc)
+                .Where(c => c.SyncId != Guid.Empty && c.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
             if (localClientChanges.Count > 0)
@@ -195,7 +195,7 @@ namespace InfernalInkSteelSuite.Services
 
             // Push Local Appointments
             var localApptChanges = await db.Appointments
-                .Where(a => a.LastModifiedUtc > lastSyncUtc)
+                .Where(a => a.SyncId != Guid.Empty && a.LastModifiedUtc > lastSyncUtc)
                 .ToListAsync();
 
             if (localApptChanges.Count > 0)

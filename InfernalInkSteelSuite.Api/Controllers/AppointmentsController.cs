@@ -99,16 +99,16 @@ namespace InfernalInkSteelSuite.Api.Controllers
         }
 
         [HttpGet("heatmap")]
-    public ActionResult<Dictionary<string, int>> GetHeatmap([FromQuery] DateTime? start, [FromQuery] DateTime? end)
-    {
-        var startDate = start ?? DateTime.UtcNow.AddMonths(-3);
-        var endDate = end ?? DateTime.UtcNow;
+        public ActionResult<Dictionary<string, int>> GetHeatmap([FromQuery] DateTime? start, [FromQuery] DateTime? end)
+        {
+            var startDate = start ?? DateTime.UtcNow.AddMonths(-3);
+            var endDate = end ?? DateTime.UtcNow.AddMonths(3);
 
-        var data = _appointments.GetHeatmapData(startDate, endDate);
-        
-        // Convert to string keys for JSON serialization stability
-        return Ok(data.ToDictionary(k => k.Key.ToString("yyyy-MM-dd"), v => v.Value));
-    }
+            var data = _appointments.GetHeatmapData(startDate, endDate);
+            
+            // Convert to string keys for JSON serialization stability
+            return Ok(data.ToDictionary(k => k.Key.ToString("yyyy-MM-dd"), v => v.Value));
+        }
 
     [HttpGet("{id:int}")]
         public ActionResult<Appointment> GetById(int id)

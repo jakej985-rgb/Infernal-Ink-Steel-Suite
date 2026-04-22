@@ -5,6 +5,7 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "IsArtist")]
 public class StatsController(StatsService service) : ControllerBase
 {
     private readonly StatsService _service = service;

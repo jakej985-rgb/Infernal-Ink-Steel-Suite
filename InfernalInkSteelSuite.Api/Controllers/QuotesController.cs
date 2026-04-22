@@ -6,6 +6,7 @@ namespace InfernalInkSteelSuite.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Policy = "IsArtist")]
 public class QuotesController(QuoteService service) : ControllerBase
 {
     private readonly QuoteService _service = service;

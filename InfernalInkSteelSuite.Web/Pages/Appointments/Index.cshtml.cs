@@ -36,7 +36,7 @@ public class IndexModel(ApiClient api) : PageModel
         // 1. Fetch Heatmap Counts (H1 Fix: Use optimized endpoint)
         var heatmap = await _api.GetAppointmentHeatmapAsync();
         AppointmentCounts = heatmap.ToDictionary(
-            kvp => DateOnly.Parse(kvp.Key),
+            kvp => DateOnly.ParseExact(kvp.Key, "yyyy-MM-dd", CultureInfo.InvariantCulture),
             kvp => kvp.Value
         );
 
